@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/study/Android/Builday365/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.18020833333333333" />
+        <entry key="..\:/study/Android/Builday365/app/src/main/res/drawable/ic_launcher_background.xml" value="0.18020833333333333" />
+        <entry key="..\:/study/Android/Builday365/app/src/main/res/drawable/splash.xml" value="0.29739583333333336" />
+        <entry key="..\:/study/Android/Builday365/app/src/main/res/drawable/splash_background.xml" value="0.2796875" />
+        <entry key="..\:/study/Android/Builday365/app/src/main/res/layout/activity_login.xml" value="0.28125" />
+        <entry key="..\:/study/Android/Builday365/app/src/main/res/layout/activity_main.xml" value="0.2635416666666667" />
+        <entry key="..\:/study/Android/Builday365/app/src/main/res/layout/activity_splash.xml" value="0.25092592592592594" />
+        <entry key="..\:/study/Android/Builday365/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2796875" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
