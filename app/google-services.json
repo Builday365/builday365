@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "975746511056",
+    "project_id": "builday365-5cb67",
+    "storage_bucket": "builday365-5cb67.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:975746511056:android:951ada4eb557fc9ee22ed5",
+        "android_client_info": {
+          "package_name": "com.example.builday365"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "975746511056-n2500gvath5gt24bsel1c99u7m97jddl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.builday365",
+            "certificate_hash": "c36f66b987d1dff4e23a291c4c6b685d43c0a9b3"
+          }
+        },
+        {
+          "client_id": "975746511056-ns01bosvic8t7o421qjqfi9u5afmm0fh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQWG2drrEiBwyfd1IZTodF9exesxFhmvg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "975746511056-ns01bosvic8t7o421qjqfi9u5afmm0fh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
