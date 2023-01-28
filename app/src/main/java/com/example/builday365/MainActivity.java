@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         tv_google_nickname.setText(google_nickname);
 
         iv_google_photo = findViewById(R.id.main_iv_google_photo);
-        Glide.with(this).load(google_photo);
+        Glide.with(this).load(google_photo).into(iv_google_photo);
 
     }
 }
