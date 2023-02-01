@@ -24,9 +24,18 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
+    TextView toolbar_tv_cur_date;
+    ImageButton ibtn_calendar, ibtn_day_prev, ibtn_day_next, ibtn_month_prev, ibtn_month_next, ibtn_side_menu;
+    DrawerLayout drawerLayout;
+    ImageView iv_google_photo;
+    TextView tv_google_name;
+
+    NavigationView navigationView;
+    View headerView;
+
     int set_year, set_month, set_day;
     Calendar calendar;
-    TextView toolbar_tv_cur_date;
+    CalendarView calendarView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,32 +43,33 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         toolbar_tv_cur_date = (TextView)findViewById(R.id.main_toolbar_tv_cur_date);
-
-        calendar = Calendar.getInstance();
-        set_date(new Date(calendar.getTimeInMillis()));
-
-        ImageButton ibtn_side_menu = (ImageButton)findViewById(R.id.main_toolbar_ibtn_side_menu);
-        DrawerLayout drawerLayout = (DrawerLayout)findViewById(R.id.main_drawer);
-        ibtn_side_menu.setOnClickListener(new View.OnClickListener() {
+        toolbar_tv_cur_date.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (!drawerLayout.isDrawerOpen(Gravity.LEFT)){
-                    drawerLayout.openDrawer(Gravity.LEFT);
-                }
-                else {
-                    drawerLayout.closeDrawers();
+            public void onClick(View view) {
+                calendar = Calendar.getInstance();
+                set_date(new Date(calendar.getTimeInMillis()));
+
+                if (calendarView.getVisibility() == View.VISIBLE) {
+                    calendarView.setVisibility(View.GONE);
                 }
             }
         });
 
-        ImageButton ibtn_calendar = (ImageButton)findViewById(R.id.main_toolbar_ibtn_calendar);
-        CalendarView calendarView = (CalendarView)findViewById(R.id.main_calendarview);
+        calendar = Calendar.getInstance();
+        set_date(new Date(calendar.getTimeInMillis()));
+
+        ibtn_calendar = (ImageButton)findViewById(R.id.main_toolbar_ibtn_calendar);
+        calendarView = (CalendarView)findViewById(R.id.main_calendarview);
         calendarView.setVisibility(View.GONE);
         ibtn_calendar.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View view) {
                  int cur_visibilty = calendarView.getVisibility();
                  calendarView.setVisibility((cur_visibilty==View.VISIBLE)? View.GONE : View.VISIBLE);
+
+                 if (drawerLayout.isDrawerOpen(Gravity.LEFT)){
+                     drawerLayout.closeDrawers();
+                 }
 
                  String date_str = String.format("%d-%d-%d", set_year, set_month, set_day);
                  SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -96,39 +106,73 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton ibtn_day_prev = (ImageButton)findViewById(R.id.main_toolbar_ibtn_day_prev);
+        ibtn_day_prev = (ImageButton)findViewById(R.id.main_toolbar_ibtn_day_prev);
         ibtn_day_prev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 calendar.add(Calendar.DATE, -1);
                 set_date(new Date(calendar.getTimeInMillis()));
+
+                if (calendarView.getVisibility() == View.VISIBLE) {
+                    calendarView.setVisibility(View.GONE);
+                }
             }
         });
 
-        ImageButton ibtn_day_next = (ImageButton)findViewById(R.id.main_toolbar_ibtn_day_next);
+        ibtn_day_next = (ImageButton)findViewById(R.id.main_toolbar_ibtn_day_next);
         ibtn_day_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 calendar.add(Calendar.DATE, +1);
                 set_date(new Date(calendar.getTimeInMillis()));
+
+                if (calendarView.getVisibility() == View.VISIBLE) {
+                    calendarView.setVisibility(View.GONE);
+                }
             }
         });
 
-        ImageButton ibtn_month_prev = (ImageButton)findViewById(R.id.main_toolbar_ibtn_month_prev);
+        ibtn_month_prev = (ImageButton)findViewById(R.id.main_toolbar_ibtn_month_prev);
         ibtn_month_prev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 calendar.add(Calendar.MONTH, -1);
                 set_date(new Date(calendar.getTimeInMillis()));
+
+                if (calendarView.getVisibility() == View.VISIBLE) {
+                    calendarView.setVisibility(View.GONE);
+                }
             }
         });
 
-        ImageButton ibtn_month_next = (ImageButton)findViewById(R.id.main_toolbar_ibtn_month_next);
+        ibtn_month_next = (ImageButton)findViewById(R.id.main_toolbar_ibtn_month_next);
         ibtn_month_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 calendar.add(Calendar.MONTH, +1);
                 set_date(new Date(calendar.getTimeInMillis()));
+
+                if (calendarView.getVisibility() == View.VISIBLE) {
+                    calendarView.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        ibtn_side_menu = (ImageButton)findViewById(R.id.main_toolbar_ibtn_side_menu);
+        drawerLayout = (DrawerLayout)findViewById(R.id.main_drawer);
+        ibtn_side_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!drawerLayout.isDrawerOpen(Gravity.LEFT)){
+                    drawerLayout.openDrawer(Gravity.LEFT);
+
+                    if (calendarView.getVisibility() == View.VISIBLE) {
+                        calendarView.setVisibility(View.GONE);
+                    }
+                }
+                else {
+                    drawerLayout.closeDrawers();
+                }
             }
         });
 
@@ -136,13 +180,13 @@ public class MainActivity extends AppCompatActivity {
         String google_photo = intent.getStringExtra("google_photo");
         String google_name = intent.getStringExtra("google_name");
 
-        NavigationView navigationView = (NavigationView)findViewById(R.id.main_navigationView);
-        View headerView = navigationView.getHeaderView(0);
+        navigationView = (NavigationView)findViewById(R.id.main_navigationView);
+        headerView = navigationView.getHeaderView(0);
 
-        ImageView iv_google_photo = headerView.findViewById(R.id.drawer_header_iv_google_photo);
+        iv_google_photo = headerView.findViewById(R.id.drawer_header_iv_google_photo);
         Glide.with(this).load(google_photo).override(200, 200).into(iv_google_photo);
 
-        TextView tv_google_name = headerView.findViewById(R.id.drawer_header_tv_google_name);
+        tv_google_name = headerView.findViewById(R.id.drawer_header_tv_google_name);
         tv_google_name.setText(google_name);
     }
 
