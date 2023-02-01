@@ -4,13 +4,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.CalendarView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.google.android.material.navigation.NavigationView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -125,6 +131,19 @@ public class MainActivity extends AppCompatActivity {
                 set_date(new Date(calendar.getTimeInMillis()));
             }
         });
+
+        Intent intent = getIntent();
+        String google_photo = intent.getStringExtra("google_photo");
+        String google_name = intent.getStringExtra("google_name");
+
+        NavigationView navigationView = (NavigationView)findViewById(R.id.main_navigationView);
+        View headerView = navigationView.getHeaderView(0);
+
+        ImageView iv_google_photo = headerView.findViewById(R.id.drawer_header_iv_google_photo);
+        Glide.with(this).load(google_photo).override(200, 200).into(iv_google_photo);
+
+        TextView tv_google_name = headerView.findViewById(R.id.drawer_header_tv_google_name);
+        tv_google_name.setText(google_name);
     }
 
     void set_date(Date date) {

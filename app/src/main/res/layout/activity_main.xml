@@ -126,6 +126,7 @@
         app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main_contents"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#F1FDFF">
@@ -147,7 +148,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            android:id="@+id/navigationView"
+            android:id="@+id/main_navigationView"
             android:layout_gravity="left"
             app:headerLayout="@layout/drawer_header"
             app:menu="@menu/drawer_menu" />
