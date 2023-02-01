@@ -23,25 +23,29 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:orientation="horizontal">
+
             <ImageButton
                 android:id="@+id/main_toolbar_ibtn_side_menu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:background="#00FFFFFF"
-                android:padding="12dp"
+                android:padding="10dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/builday_icon_side_menu"
                 tools:ignore="SpeakableTextPresentCheck"
                 tools:layout_editor_absoluteX="0dp" />
+
             <ImageButton
                 android:id="@+id/main_toolbar_ibtn_month_prev"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:background="#00FFFFFF"
-                android:padding="12dp"
+                android:padding="10dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/builday_icon_month_prev"
                 tools:ignore="SpeakableTextPresentCheck"
@@ -53,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:background="#00FFFFFF"
-                android:padding="12dp"
+                android:padding="10dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/builday_icon_day_prev"
                 tools:ignore="SpeakableTextPresentCheck"
@@ -63,10 +67,13 @@
                 android:id="@+id/main_toolbar_tv_cur_date"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1.7"
+                android:layout_weight="1.4"
                 android:gravity="center"
                 android:text="cur date"
                 android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold"
                 tools:layout_editor_absoluteX="411dp" />
 
             <ImageButton
@@ -75,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:background="#00FFFFFF"
-                android:padding="12dp"
+                android:padding="10dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/builday_icon_day_next"
                 tools:ignore="SpeakableTextPresentCheck"
@@ -87,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:background="#00FFFFFF"
-                android:padding="12dp"
+                android:padding="10dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/builday_icon_month_next"
                 tools:ignore="SpeakableTextPresentCheck"
@@ -99,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:background="#00FFFFFF"
-                android:padding="12dp"
+                android:padding="10dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/builday_icon_calendar"
                 tools:ignore="SpeakableTextPresentCheck"
@@ -133,6 +140,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.navigation.NavigationView
@@ -144,5 +152,17 @@
             app:headerLayout="@layout/drawer_header"
             app:menu="@menu/drawer_menu" />
     </androidx.drawerlayout.widget.DrawerLayout>
+
+    <CalendarView
+        android:id="@+id/main_calendarview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_top_bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_top_toolbar"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
