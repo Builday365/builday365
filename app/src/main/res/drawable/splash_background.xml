@@ -3,6 +3,6 @@
     android:opacity="opaque">
     <item android:drawable="@android:color/white" />
     <item
-        android:drawable="@drawable/ic_launcher_foreground"
+        android:drawable="@drawable/builday_icon_cat"
         android:gravity="center" />
 </layer-list>

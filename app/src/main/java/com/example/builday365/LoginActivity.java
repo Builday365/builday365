@@ -77,10 +77,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, "구글 로그인 성공!", Toast.LENGTH_SHORT);
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            intent.putExtra("google_nickname", account.getDisplayName());
+                            intent.putExtra("google_name", account.getDisplayName());
                             intent.putExtra("google_photo", String.valueOf(account.getPhotoUrl()));
 
-                            Log.e("DEBUG", "google_nickname" + account.getDisplayName());
+                            Log.e("DEBUG", "google_name" + account.getDisplayName());
                             Log.e("DEBUG", "google_photo" + String.valueOf(account.getPhotoUrl()));
                             startActivity(intent);
                         }
