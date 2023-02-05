@@ -2,12 +2,11 @@ package com.example.builday365;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.CalendarView;
@@ -24,11 +23,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
-    TextView toolbar_tv_cur_date;
-    ImageButton ibtn_calendar, ibtn_day_prev, ibtn_day_next, ibtn_month_prev, ibtn_month_next, ibtn_side_menu;
+    TextView toolbar_tv_cur_date, tv_google_name;
+    ImageButton ibtn_calendar, ibtn_day_prev, ibtn_day_next, ibtn_month_prev, ibtn_month_next,
+            ibtn_side_menu, ibtn_add_section;
     DrawerLayout drawerLayout;
+    ConstraintLayout timeBarLayout;
     ImageView iv_google_photo;
-    TextView tv_google_name;
 
     NavigationView navigationView;
     View headerView;
@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         calendar = Calendar.getInstance();
         set_date(new Date(calendar.getTimeInMillis()));
 
+        timeBarLayout = (ConstraintLayout)findViewById(R.id.main_layout_timebar);
         ibtn_calendar = (ImageButton)findViewById(R.id.main_toolbar_ibtn_calendar);
         calendarView = (CalendarView)findViewById(R.id.main_calendarview);
         calendarView.setVisibility(View.GONE);
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
              public void onClick(View view) {
                  int cur_visibilty = calendarView.getVisibility();
                  calendarView.setVisibility((cur_visibilty==View.VISIBLE)? View.GONE : View.VISIBLE);
+                 timeBarLayout.setVisibility((cur_visibilty==View.VISIBLE)? View.VISIBLE : View.GONE);
 
                  if (drawerLayout.isDrawerOpen(Gravity.LEFT)){
                      drawerLayout.closeDrawers();
@@ -103,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 calendarView.setVisibility(View.GONE);
+                timeBarLayout.setVisibility(View.VISIBLE);
             }
         });
 
@@ -160,11 +163,13 @@ public class MainActivity extends AppCompatActivity {
 
         ibtn_side_menu = (ImageButton)findViewById(R.id.main_toolbar_ibtn_side_menu);
         drawerLayout = (DrawerLayout)findViewById(R.id.main_drawer);
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         ibtn_side_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!drawerLayout.isDrawerOpen(Gravity.LEFT)){
                     drawerLayout.openDrawer(Gravity.LEFT);
+                    timeBarLayout.setVisibility(View.GONE);
 
                     if (calendarView.getVisibility() == View.VISIBLE) {
                         calendarView.setVisibility(View.GONE);
@@ -172,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else {
                     drawerLayout.closeDrawers();
+                    timeBarLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -188,6 +194,14 @@ public class MainActivity extends AppCompatActivity {
 
         tv_google_name = headerView.findViewById(R.id.drawer_header_tv_google_name);
         tv_google_name.setText(google_name);
+
+        ibtn_add_section = (ImageButton)findViewById(R.id.main_timebar_ibtn_add_section);
+        ibtn_add_section.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //
+            }
+        });
     }
 
     void set_date(Date date) {

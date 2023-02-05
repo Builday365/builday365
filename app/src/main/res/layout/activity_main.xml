@@ -36,7 +36,7 @@
                 android:padding="10dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/builday_icon_side_menu"
-                tools:ignore="SpeakableTextPresentCheck"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
                 tools:layout_editor_absoluteX="0dp" />
 
             <ImageButton
@@ -48,7 +48,7 @@
                 android:padding="10dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/builday_icon_month_prev"
-                tools:ignore="SpeakableTextPresentCheck"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
                 tools:layout_editor_absoluteX="411dp" />
 
             <ImageButton
@@ -60,7 +60,7 @@
                 android:padding="10dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/builday_icon_day_prev"
-                tools:ignore="SpeakableTextPresentCheck"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
                 tools:layout_editor_absoluteX="411dp" />
 
             <TextView
@@ -85,7 +85,7 @@
                 android:padding="10dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/builday_icon_day_next"
-                tools:ignore="SpeakableTextPresentCheck"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
                 tools:layout_editor_absoluteX="411dp" />
 
             <ImageButton
@@ -97,7 +97,7 @@
                 android:padding="10dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/builday_icon_month_next"
-                tools:ignore="SpeakableTextPresentCheck"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
                 tools:layout_editor_absoluteX="411dp" />
 
             <ImageButton
@@ -109,7 +109,7 @@
                 android:padding="10dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/builday_icon_calendar"
-                tools:ignore="SpeakableTextPresentCheck"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
                 tools:layout_editor_absoluteX="411dp" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
@@ -118,6 +118,7 @@
         android:id="@+id/main_drawer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -145,11 +146,11 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.navigation.NavigationView
+            android:id="@+id/main_navigationView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            android:id="@+id/main_navigationView"
             android:layout_gravity="left"
+            android:fitsSystemWindows="true"
             app:headerLayout="@layout/drawer_header"
             app:menu="@menu/drawer_menu" />
     </androidx.drawerlayout.widget.DrawerLayout>
@@ -159,11 +160,101 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/border_top_bottom"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_top_toolbar"
         app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_layout_timebar"
+        android:layout_width="85dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="180dp"
+        android:background="@drawable/background_sidebar"
+        app:layout_constraintBottom_toBottomOf="@+id/main_drawer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_top_toolbar">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Today"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.00999999" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-8dp"
+            android:text="00:00"
+            android:textColor="#2196F3"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
+            app:layout_constraintHorizontal_bias="0.85"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/constraintLayout"
+            app:layout_constraintVertical_bias="0" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-8dp"
+            android:text="24:00"
+            android:textColor="#2196F3"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
+            app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
+            app:layout_constraintHorizontal_bias="0.85"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/constraintLayout"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="8dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="40dp"
+            android:background="#2196F3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.82"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageButton
+            android:id="@+id/main_timebar_ibtn_add_section"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="#002196F3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
+            app:layout_constraintStart_toStartOf="@+id/constraintLayout"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+            app:srcCompat="@drawable/ic_baseline_add_24"
+            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
