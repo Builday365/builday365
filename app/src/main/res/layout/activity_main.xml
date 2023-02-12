@@ -132,16 +132,12 @@
             android:layout_height="match_parent"
             android:background="#F1FDFF">
 
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Main Layout"
-                android:textSize="40sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            <fragment
+                android:id="@+id/map"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="MapsActivity"
+                android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

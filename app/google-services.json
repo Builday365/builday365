@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "975746511056-qshgld63inbdu7v89190cofclpkm5d7t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.builday365",
+            "certificate_hash": "369dc87126d6e0e2c1581f0d25d8902aa7f5a43d"
+          }
+        },
+        {
           "client_id": "975746511056-ns01bosvic8t7o421qjqfi9u5afmm0fh.apps.googleusercontent.com",
           "client_type": 3
         }
