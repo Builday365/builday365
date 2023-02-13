@@ -3,9 +3,14 @@ package com.example.builday365;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -24,7 +29,25 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+
+import android.util.Log;
+
+public class MainActivity extends AppCompatActivity
+        implements OnMapReadyCallback,
+        ActivityCompat.OnRequestPermissionsResultCallback {
+
+    private static final String TAG = "MainActivity";
+    String[] REQUIRED_PERMISSIONS = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION};
+    private static final int PERMISSIONS_REQUEST_CODE = 100;
+
     TextView tv_toolbar_cur_date, tv_google_name;
     ImageButton ibtn_calendar, ibtn_day_prev, ibtn_day_next, ibtn_month_prev, ibtn_month_next,
             ibtn_side_menu, ibtn_add_section, ibtn_sidebar_memo, ibtn_sidebar_activity;
@@ -40,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
     int set_year, set_month, set_day;
     Calendar calendar;
     CalendarView calendarView;
+
+    private GoogleMap mGoogleMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -243,6 +268,9 @@ public class MainActivity extends AppCompatActivity {
                 makeSectionLayout.setVisibility(View.GONE);
             }
         });
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
 
     void set_date(Date date) {
@@ -259,5 +287,69 @@ public class MainActivity extends AppCompatActivity {
         else {
             tv_toolbar_cur_date.setText("Cal Err.");
         }
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        mGoogleMap = googleMap;
+        mGoogleMap.getUiSettings().setZoomGesturesEnabled(true);
+
+        LatLng lastLatLng = getLastLocation();
+        if (lastLatLng == null) {
+            Log.d(TAG, "[onMapReady] request permission");
+            ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE);
+            return;
+        }
+        updateLocation(lastLatLng);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int permsRequestCode, @NonNull String[] permissions, @NonNull int[] grandResults) {
+        super.onRequestPermissionsResult(permsRequestCode, permissions, grandResults);
+
+        if (permsRequestCode == PERMISSIONS_REQUEST_CODE && grandResults.length == REQUIRED_PERMISSIONS.length) {
+            for (int result : grandResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, "[onRequestPermissionsResult] permission is denied");
+                    return;
+                }
+            }
+            LatLng lastLatLng = getLastLocation();
+            if (lastLatLng != null) {
+                updateLocation(lastLatLng);
+            }
+        }
+    }
+
+    private LatLng getLastLocation() {
+        // permission check
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "[getLastLocation] permission denied");
+            return null;
+        }
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        if (lastLocation == null) {
+            Log.d(TAG, "[getLastLocation] the last location info is not exist");
+            return null;
+        }
+        double lastLatitude = lastLocation.getLatitude();
+        double lastLongtitude  = lastLocation.getLongitude();
+
+        LatLng lastLocationLatLng = new LatLng(lastLatitude, lastLongtitude);
+        return lastLocationLatLng;
+    }
+
+    private void updateLocation(LatLng location) {
+        Log.d(TAG, "[updateLocation] " + location.toString());
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(location);
+        markerOptions.draggable(true);
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        mGoogleMap.addMarker(markerOptions);
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(location, 15);
+        mGoogleMap.moveCamera(cameraUpdate);
     }
 }
