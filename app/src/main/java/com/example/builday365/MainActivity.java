@@ -14,7 +14,9 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,12 +48,14 @@ public class MainActivity extends AppCompatActivity
     String[] REQUIRED_PERMISSIONS = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION};
     private static final int PERMISSIONS_REQUEST_CODE = 100;
 
-    TextView toolbar_tv_cur_date, tv_google_name;
+    TextView tv_toolbar_cur_date, tv_google_name;
     ImageButton ibtn_calendar, ibtn_day_prev, ibtn_day_next, ibtn_month_prev, ibtn_month_next,
-            ibtn_side_menu, ibtn_add_section;
+            ibtn_side_menu, ibtn_add_section, ibtn_sidebar_memo, ibtn_sidebar_activity;
     DrawerLayout drawerLayout;
-    ConstraintLayout timeBarLayout;
+    ConstraintLayout timeBarLayout, makeSectionLayout;
     ImageView iv_google_photo;
+    Button btn_dialog_section_ok, btn_dialog_section_cancel;
+    EditText dialog_section_et_memo;
 
     NavigationView navigationView;
     View headerView;
@@ -67,8 +71,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar_tv_cur_date = (TextView)findViewById(R.id.main_toolbar_tv_cur_date);
-        toolbar_tv_cur_date.setOnClickListener(new View.OnClickListener() {
+        tv_toolbar_cur_date = (TextView)findViewById(R.id.main_toolbar_tv_cur_date);
+        tv_toolbar_cur_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 calendar = Calendar.getInstance();
@@ -93,6 +97,7 @@ public class MainActivity extends AppCompatActivity
                  int cur_visibilty = calendarView.getVisibility();
                  calendarView.setVisibility((cur_visibilty==View.VISIBLE)? View.GONE : View.VISIBLE);
                  timeBarLayout.setVisibility((cur_visibilty==View.VISIBLE)? View.VISIBLE : View.GONE);
+                 makeSectionLayout.setVisibility(View.GONE);
 
                  if (drawerLayout.isDrawerOpen(Gravity.LEFT)){
                      drawerLayout.closeDrawers();
@@ -113,7 +118,7 @@ public class MainActivity extends AppCompatActivity
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int day) {
-                toolbar_tv_cur_date.setText(String.format("%d.%02d.%02d", year, month+1, day));
+                tv_toolbar_cur_date.setText(String.format("%d.%02d.%02d", year, month+1, day));
 
                 set_year = year;
                 set_month = month+1;
@@ -195,6 +200,7 @@ public class MainActivity extends AppCompatActivity
                 if (!drawerLayout.isDrawerOpen(Gravity.LEFT)){
                     drawerLayout.openDrawer(Gravity.LEFT);
                     timeBarLayout.setVisibility(View.GONE);
+                    makeSectionLayout.setVisibility(View.GONE);
 
                     if (calendarView.getVisibility() == View.VISIBLE) {
                         calendarView.setVisibility(View.GONE);
@@ -220,11 +226,46 @@ public class MainActivity extends AppCompatActivity
         tv_google_name = headerView.findViewById(R.id.drawer_header_tv_google_name);
         tv_google_name.setText(google_name);
 
+        makeSectionLayout = (ConstraintLayout)findViewById(R.id.main_dialog_make_section);
+        makeSectionLayout.setVisibility(View.GONE);
         ibtn_add_section = (ImageButton)findViewById(R.id.main_timebar_ibtn_add_section);
         ibtn_add_section.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //
+            }
+        });
+
+        ibtn_sidebar_memo = (ImageButton)findViewById(R.id.main_sidebar_ibtn_memo);
+        ibtn_sidebar_memo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makeSectionLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        ibtn_sidebar_activity = (ImageButton)findViewById(R.id.main_sidebar_ibtn_activity);
+        ibtn_sidebar_activity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makeSectionLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        dialog_section_et_memo = (EditText)findViewById(R.id.dialog_section_et_memo);
+
+        btn_dialog_section_ok = (Button)findViewById(R.id.dialog_section_btn_ok);
+        btn_dialog_section_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makeSectionLayout.setVisibility(View.GONE);
+            }
+        });
+
+        btn_dialog_section_cancel = (Button)findViewById(R.id.dialog_section_btn_cancel);
+        btn_dialog_section_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makeSectionLayout.setVisibility(View.GONE);
             }
         });
 
@@ -240,11 +281,11 @@ public class MainActivity extends AppCompatActivity
             set_month = Integer.parseInt(getCurDate.split("\\.")[1]);
             set_day = Integer.parseInt(getCurDate.split("\\.")[2]);
 
-            toolbar_tv_cur_date.setText(getCurDate);
+            tv_toolbar_cur_date.setText(getCurDate);
         }
 
         else {
-            toolbar_tv_cur_date.setText("Cal Err.");
+            tv_toolbar_cur_date.setText("Cal Err.");
         }
     }
 

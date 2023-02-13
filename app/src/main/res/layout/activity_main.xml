@@ -11,14 +11,15 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@color/white"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp">
+        tools:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -124,13 +125,15 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_top_toolbar"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.0"
+        tools:visibility="invisible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/main_contents"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#F1FDFF">
+            android:background="#F1FDFF"
+            tools:visibility="gone">
 
             <fragment
                 android:id="@+id/map"
@@ -153,6 +156,7 @@
             android:fitsSystemWindows="true"
             app:headerLayout="@layout/drawer_header"
             app:menu="@menu/drawer_menu" />
+
     </androidx.drawerlayout.widget.DrawerLayout>
 
     <CalendarView
@@ -166,20 +170,23 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_top_toolbar"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:visibility="gone" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_layout_timebar"
-        android:layout_width="85dp"
+        android:layout_width="105dp"
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="180dp"
         android:background="@drawable/background_sidebar"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/main_drawer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_top_toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/main_top_toolbar"
+        tools:visibility="visible">
 
         <TextView
             android:id="@+id/textView"
@@ -196,18 +203,45 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.00999999" />
 
+        <ImageButton
+            android:id="@+id/main_sidebar_ibtn_activity"
+            android:layout_width="15dp"
+            android:layout_height="0dp"
+            android:background="#00FFFFFF"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@+id/textView2"
+            app:layout_constraintEnd_toStartOf="@+id/textView2"
+            app:layout_constraintStart_toEndOf="@+id/main_sidebar_ibtn_memo"
+            app:layout_constraintTop_toTopOf="@+id/textView2"
+            app:srcCompat="@drawable/builday_icon_activity"
+            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+        <ImageButton
+            android:id="@+id/main_sidebar_ibtn_memo"
+            android:layout_width="15dp"
+            android:layout_height="0dp"
+            android:background="#00FFFFFF"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@+id/textView2"
+            app:layout_constraintEnd_toStartOf="@+id/textView2"
+            app:layout_constraintHorizontal_bias="0.25"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView2"
+            app:srcCompat="@drawable/builday_icon_memo"
+            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-8dp"
+            android:layout_marginTop="-5dp"
             android:text="00:00"
             android:textColor="#2196F3"
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
-            app:layout_constraintHorizontal_bias="0.85"
+            app:layout_constraintHorizontal_bias="0.9"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/constraintLayout"
             app:layout_constraintVertical_bias="0" />
@@ -237,7 +271,7 @@
             android:background="#2196F3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.82"
+            app:layout_constraintHorizontal_bias="0.85"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView">
 
@@ -247,7 +281,7 @@
             android:id="@+id/main_timebar_ibtn_add_section"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="#002196F3"
+            android:background="#00FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
             app:layout_constraintStart_toStartOf="@+id/constraintLayout"
@@ -255,6 +289,27 @@
             app:srcCompat="@drawable/ic_baseline_add_24"
             tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_dialog_make_section"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_top_toolbar"
+        app:layout_constraintVertical_bias="0.35000002"
+        tools:visibility="gone">
+
+        <include
+            layout="@layout/dialog_make_section"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
