@@ -6,9 +6,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -92,28 +95,29 @@ public class MainActivity extends AppCompatActivity
         calendarView = (CalendarView)findViewById(R.id.main_calendarview);
         calendarView.setVisibility(View.GONE);
         ibtn_calendar.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
-                 int cur_visibilty = calendarView.getVisibility();
-                 calendarView.setVisibility((cur_visibilty==View.VISIBLE)? View.GONE : View.VISIBLE);
-                 timeBarLayout.setVisibility((cur_visibilty==View.VISIBLE)? View.VISIBLE : View.GONE);
+            @Override
+            public void onClick(View view) {
+                int cur_visibilty = calendarView.getVisibility();
+                calendarView.setVisibility((cur_visibilty==View.VISIBLE)? View.GONE : View.VISIBLE);
+                timeBarLayout.setVisibility((cur_visibilty==View.VISIBLE)? View.VISIBLE : View.GONE);
+                makeSectionLayout.setVisibility(View.GONE);
                  makeSectionLayout.setVisibility(View.GONE);
 
-                 if (drawerLayout.isDrawerOpen(Gravity.LEFT)){
-                     drawerLayout.closeDrawers();
-                 }
+                if (drawerLayout.isDrawerOpen(Gravity.LEFT)){
+                    drawerLayout.closeDrawers();
+                }
 
-                 String date_str = String.format("%d-%d-%d", set_year, set_month, set_day);
-                 SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String date_str = String.format("%d-%d-%d", set_year, set_month, set_day);
+                SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-                 try {
-                     Date date = transFormat.parse(date_str);
-                     calendarView.setDate(date.getTime());
-                 } catch (ParseException e) {
-                     e.printStackTrace();
-                 }
-             }
-         });
+                try {
+                    Date date = transFormat.parse(date_str);
+                    calendarView.setDate(date.getTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
@@ -235,7 +239,11 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        @SuppressLint("ResourceType")
+        String select_color = getResources().getString(R.color.blue);
+
         ibtn_sidebar_memo = (ImageButton)findViewById(R.id.main_sidebar_ibtn_memo);
+        ibtn_sidebar_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(select_color)));
         ibtn_sidebar_memo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -244,6 +252,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         ibtn_sidebar_activity = (ImageButton)findViewById(R.id.main_sidebar_ibtn_activity);
+        ibtn_sidebar_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(select_color)));
         ibtn_sidebar_activity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
