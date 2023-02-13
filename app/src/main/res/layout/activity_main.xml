@@ -124,7 +124,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_top_toolbar"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.0"
+        tools:visibility="invisible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/main_contents"
@@ -197,7 +198,7 @@
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
+            app:layout_constraintEnd_toEndOf="@+id/main_sidebar_layout_total_time"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -236,14 +237,28 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="-5dp"
             android:text="00:00"
-            android:textColor="#2196F3"
+            android:textColor="@color/blue"
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
-            app:layout_constraintHorizontal_bias="0.9"
+            app:layout_constraintEnd_toStartOf="@+id/main_sidebar_layout_total_time"
+            app:layout_constraintHorizontal_bias="0.88"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/constraintLayout"
+            app:layout_constraintTop_toTopOf="@+id/main_sidebar_layout_total_time"
+            app:layout_constraintVertical_bias="0" />
+
+        <TextView
+            android:id="@+id/main_sidebar_tv_cur_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="nn:nn"
+            android:textColor="@color/blue"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/textView5"
+            app:layout_constraintEnd_toEndOf="@+id/textView2"
+            app:layout_constraintStart_toStartOf="@+id/textView2"
+            app:layout_constraintTop_toTopOf="@+id/textView2"
             app:layout_constraintVertical_bias="0" />
 
         <TextView
@@ -252,18 +267,33 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="-8dp"
             android:text="24:00"
-            android:textColor="#2196F3"
+            android:textColor="@color/black"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
-            app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
+            app:layout_constraintBottom_toBottomOf="@+id/main_sidebar_layout_total_time"
+            app:layout_constraintEnd_toEndOf="@+id/textView2"
             app:layout_constraintHorizontal_bias="0.85"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/constraintLayout"
+            app:layout_constraintStart_toEndOf="@+id/main_sidebar_ibtn_activity"
+            app:layout_constraintTop_toTopOf="@+id/main_sidebar_layout_total_time"
             app:layout_constraintVertical_bias="1.0" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout"
+            android:id="@+id/main_sidebar_layout_total_time"
+            android:layout_width="8dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="40dp"
+            android:background="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.85"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main_sidebar_layout_cur_time"
             android:layout_width="8dp"
             android:layout_height="0dp"
             android:layout_marginTop="12dp"
@@ -273,7 +303,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.85"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView">
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintVertical_bias="0.0">
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -284,9 +315,9 @@
             android:background="#00FFFFFF"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
-            app:layout_constraintStart_toStartOf="@+id/constraintLayout"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+            app:layout_constraintEnd_toEndOf="@+id/main_sidebar_layout_total_time"
+            app:layout_constraintStart_toStartOf="@+id/main_sidebar_layout_total_time"
+            app:layout_constraintTop_toBottomOf="@+id/main_sidebar_layout_total_time"
             app:srcCompat="@drawable/builday_icon_add"
             tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 

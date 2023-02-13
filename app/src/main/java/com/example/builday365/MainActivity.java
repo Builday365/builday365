@@ -15,8 +15,11 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
@@ -51,11 +54,11 @@ public class MainActivity extends AppCompatActivity
     String[] REQUIRED_PERMISSIONS = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION};
     private static final int PERMISSIONS_REQUEST_CODE = 100;
 
-    TextView tv_toolbar_cur_date, tv_google_name;
+    TextView tv_toolbar_cur_date, tv_google_name, tv_sidebar_cur_time;
     ImageButton ibtn_calendar, ibtn_day_prev, ibtn_day_next, ibtn_month_prev, ibtn_month_next,
             ibtn_side_menu, ibtn_add_section, ibtn_sidebar_memo, ibtn_sidebar_activity;
     DrawerLayout drawerLayout;
-    ConstraintLayout timeBarLayout, makeSectionLayout;
+    ConstraintLayout timeBarLayout, makeSectionLayout, layout_sidebar_total_time, layout_sidebar_cur_time;
     ImageView iv_google_photo;
     Button btn_dialog_section_ok, btn_dialog_section_cancel;
     EditText dialog_section_et_memo;
@@ -241,6 +244,7 @@ public class MainActivity extends AppCompatActivity
 
         @SuppressLint("ResourceType")
         String select_color = getResources().getString(R.color.blue);
+        tv_sidebar_cur_time = (TextView)findViewById(R.id.main_sidebar_tv_cur_time);
 
         ibtn_sidebar_memo = (ImageButton)findViewById(R.id.main_sidebar_ibtn_memo);
         ibtn_sidebar_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(select_color)));
@@ -278,11 +282,26 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        layout_sidebar_total_time = (ConstraintLayout)findViewById(R.id.main_sidebar_layout_total_time);
+        layout_sidebar_cur_time = (ConstraintLayout)findViewById(R.id.main_sidebar_layout_cur_time);
+        ViewTreeObserver viewTreeObserver = layout_sidebar_total_time.getViewTreeObserver();
+
+        if (viewTreeObserver.isAlive()) {
+            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    layout_sidebar_total_time.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    update_time(layout_sidebar_total_time.getHeight());
+                }
+            });
+        }
     }
 
-    void set_date(Date date) {
+    public void set_date(Date date) {
         String getCurDate = new SimpleDateFormat("yyyy.MM.dd").format(date);
 
         if ((getCurDate.split("\\.")).length == 3) {
@@ -296,6 +315,62 @@ public class MainActivity extends AppCompatActivity
         else {
             tv_toolbar_cur_date.setText("Cal Err.");
         }
+    }
+
+    public String get_time() {
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm");
+        String cur_time = simpleDateFormat.format(date);
+        Log.e(TAG, "get_time() " + cur_time);
+
+        return cur_time;
+    }
+
+    public void update_time(int total_time_len) {
+        final Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message message) {
+                String cur_time = get_time();
+                tv_sidebar_cur_time.setText(cur_time);
+                Log.e(TAG, "handleMessage " + cur_time);
+
+                int cur_hour = Integer.parseInt(cur_time.split(":")[0]);
+                int cur_min = Integer.parseInt(cur_time.split(":")[1]);
+                double time_rate = (cur_hour * 60 + cur_min) / (24 * 60.0);
+                int cur_time_len = (int)(time_rate * total_time_len);
+                Log.e(TAG, "time_rate " + time_rate);
+                Log.e(TAG, "total_time_len " + total_time_len);
+                Log.e(TAG, "cur_time_len " + cur_time_len);
+
+                ConstraintLayout.LayoutParams layoutParams
+                        = (ConstraintLayout.LayoutParams) tv_sidebar_cur_time.getLayoutParams();
+                layoutParams.topMargin = cur_time_len;
+                tv_sidebar_cur_time.setLayoutParams(layoutParams);
+
+                layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
+                layoutParams.height = cur_time_len;
+                layout_sidebar_cur_time.setLayoutParams(layoutParams);
+            }
+        };
+
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(1000);
+                    }
+                    catch (InterruptedException e) {
+                        Log.e(TAG, "thread error " + e);
+                    }
+
+                    handler.sendEmptyMessage(1);
+                }
+            }
+        };
+
+        Thread thread = new Thread(task);
+        thread.start();
     }
 
     @Override
