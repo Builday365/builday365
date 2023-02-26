@@ -58,7 +58,8 @@ public class MainActivity extends AppCompatActivity
     ImageButton ibtn_calendar, ibtn_day_prev, ibtn_day_next, ibtn_month_prev, ibtn_month_next,
             ibtn_side_menu, ibtn_add_section, ibtn_sidebar_memo, ibtn_sidebar_activity;
     DrawerLayout drawerLayout;
-    ConstraintLayout timeBarLayout, makeSectionLayout, layout_sidebar_total_time, layout_sidebar_cur_time;
+    ConstraintLayout timeBarLayout, makeSectionLayout,
+                    layout_sidebar_total_time, layout_sidebar_cur_time, layout_sidebar_remain_time;
     ImageView iv_google_photo;
     Button btn_dialog_section_ok, btn_dialog_section_cancel;
     EditText dialog_section_et_memo;
@@ -104,7 +105,6 @@ public class MainActivity extends AppCompatActivity
                 calendarView.setVisibility((cur_visibilty==View.VISIBLE)? View.GONE : View.VISIBLE);
                 timeBarLayout.setVisibility((cur_visibilty==View.VISIBLE)? View.VISIBLE : View.GONE);
                 makeSectionLayout.setVisibility(View.GONE);
-                 makeSectionLayout.setVisibility(View.GONE);
 
                 if (drawerLayout.isDrawerOpen(Gravity.LEFT)){
                     drawerLayout.closeDrawers();
@@ -235,7 +235,11 @@ public class MainActivity extends AppCompatActivity
 
         makeSectionLayout = (ConstraintLayout)findViewById(R.id.main_dialog_make_section);
         makeSectionLayout.setVisibility(View.GONE);
+
         ibtn_add_section = (ImageButton)findViewById(R.id.main_timebar_ibtn_add_section);
+        @SuppressLint("ResourceType")
+        String ibtn_add_section_color = getResources().getString(R.color.default_color);
+        ibtn_add_section.setImageTintList(ColorStateList.valueOf(Color.parseColor(ibtn_add_section_color)));
         ibtn_add_section.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -288,6 +292,7 @@ public class MainActivity extends AppCompatActivity
 
         layout_sidebar_total_time = (ConstraintLayout)findViewById(R.id.main_sidebar_layout_total_time);
         layout_sidebar_cur_time = (ConstraintLayout)findViewById(R.id.main_sidebar_layout_cur_time);
+        layout_sidebar_remain_time = (ConstraintLayout)findViewById(R.id.main_sidebar_layout_remain_time);
         ViewTreeObserver viewTreeObserver = layout_sidebar_total_time.getViewTreeObserver();
 
         if (viewTreeObserver.isAlive()) {
@@ -319,7 +324,7 @@ public class MainActivity extends AppCompatActivity
 
     public String get_time() {
         Date date = new Date(System.currentTimeMillis());
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
         String cur_time = simpleDateFormat.format(date);
         Log.e(TAG, "get_time() " + cur_time);
 
@@ -332,15 +337,15 @@ public class MainActivity extends AppCompatActivity
             public void handleMessage(Message message) {
                 String cur_time = get_time();
                 tv_sidebar_cur_time.setText(cur_time);
-                Log.e(TAG, "handleMessage " + cur_time);
+//                Log.e(TAG, "handleMessage " + cur_time);
 
                 int cur_hour = Integer.parseInt(cur_time.split(":")[0]);
                 int cur_min = Integer.parseInt(cur_time.split(":")[1]);
                 double time_rate = (cur_hour * 60 + cur_min) / (24 * 60.0);
                 int cur_time_len = (int)(time_rate * total_time_len);
-                Log.e(TAG, "time_rate " + time_rate);
-                Log.e(TAG, "total_time_len " + total_time_len);
-                Log.e(TAG, "cur_time_len " + cur_time_len);
+//                Log.e(TAG, "time_rate " + time_rate);
+//                Log.e(TAG, "total_time_len " + total_time_len);
+//                Log.e(TAG, "cur_time_len " + cur_time_len);
 
                 ConstraintLayout.LayoutParams layoutParams
                         = (ConstraintLayout.LayoutParams) tv_sidebar_cur_time.getLayoutParams();
@@ -350,6 +355,16 @@ public class MainActivity extends AppCompatActivity
                 layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
                 layoutParams.height = cur_time_len;
                 layout_sidebar_cur_time.setLayoutParams(layoutParams);
+
+                layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_remain_time.getLayoutParams();
+//                Log.e(TAG, "layoutParams.height " + layoutParams.height);
+//                Log.e(TAG, "layoutParams.topMargin " + layoutParams.topMargin);
+                int layout_side_gap = 5;
+                layoutParams.topMargin = cur_time_len + layout_side_gap;
+                layoutParams.height = total_time_len - cur_time_len - layout_side_gap;
+                layout_sidebar_remain_time.setLayoutParams(layoutParams);
+//                Log.e(TAG, "layoutParams.height " + layoutParams.height);
+//                Log.e(TAG, "layoutParams.topMargin - cur_time_len" + layoutParams.topMargin);
             }
         };
 
