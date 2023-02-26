@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
+                    timeBarLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -155,6 +156,7 @@ public class MainActivity extends AppCompatActivity
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
+                    timeBarLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -168,6 +170,7 @@ public class MainActivity extends AppCompatActivity
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
+                    timeBarLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -181,6 +184,7 @@ public class MainActivity extends AppCompatActivity
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
+                    timeBarLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -194,24 +198,23 @@ public class MainActivity extends AppCompatActivity
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
+                    timeBarLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
 
         ibtn_side_menu = (ImageButton)findViewById(R.id.main_toolbar_ibtn_side_menu);
         drawerLayout = (DrawerLayout)findViewById(R.id.main_drawer);
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        drawerLayout.closeDrawers();
         ibtn_side_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!drawerLayout.isDrawerOpen(Gravity.LEFT)){
                     drawerLayout.openDrawer(Gravity.LEFT);
+                    calendarView.setVisibility(View.GONE);
                     timeBarLayout.setVisibility(View.GONE);
                     makeSectionLayout.setVisibility(View.GONE);
-
-                    if (calendarView.getVisibility() == View.VISIBLE) {
-                        calendarView.setVisibility(View.GONE);
-                    }
+                    drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
                 }
                 else {
                     drawerLayout.closeDrawers();
@@ -326,7 +329,7 @@ public class MainActivity extends AppCompatActivity
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
         String cur_time = simpleDateFormat.format(date);
-        Log.e(TAG, "get_time() " + cur_time);
+        //Log.e(TAG, "get_time() " + cur_time);
 
         return cur_time;
     }
