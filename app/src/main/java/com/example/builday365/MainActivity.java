@@ -7,18 +7,28 @@ import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -28,12 +38,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -45,9 +60,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
 import android.util.Log;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements OnMapReadyCallback,
+        GoogleMap.OnMapLongClickListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final String TAG = "MainActivity";
@@ -71,6 +88,8 @@ public class MainActivity extends AppCompatActivity
     CalendarView calendarView;
 
     private GoogleMap mGoogleMap;
+    private LatLng mHomeLocation;
+    private Marker mHomeMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -375,8 +394,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
+        Log.d(TAG, "[onMapReady]");
         mGoogleMap = googleMap;
         mGoogleMap.getUiSettings().setZoomGesturesEnabled(true);
+        mGoogleMap.setOnMapLongClickListener(this);
 
         LatLng lastLatLng = getLastLocation();
         if (lastLatLng == null) {
@@ -384,12 +405,47 @@ public class MainActivity extends AppCompatActivity
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE);
             return;
         }
-        updateLocation(lastLatLng);
+        setLastLocationMarker(lastLatLng);
+        setHomeLocationMarker();
+    }
+
+    @Override
+    public void onMapLongClick(@NonNull LatLng latLng) {
+        Log.d(TAG, "[onMapLongClick] " + latLng.toString());
+
+        String address = getAddress(latLng.latitude, latLng.longitude);
+        if (address.isEmpty()) {
+            Log.d(TAG, "[onMapLongClick] not found address");
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Add Home");
+        builder.setMessage("Is your home here?\n" + address);
+        builder.setCancelable(true);
+        builder.setPositiveButton("Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        mHomeLocation = latLng;
+                        setHomeLocationMarker();
+                    }
+                });
+
+        builder.setNegativeButton("No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Nothing
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
     public void onRequestPermissionsResult(int permsRequestCode, @NonNull String[] permissions, @NonNull int[] grandResults) {
         super.onRequestPermissionsResult(permsRequestCode, permissions, grandResults);
+        Log.d(TAG, "[onRequestPermissionsResult]");
 
         if (permsRequestCode == PERMISSIONS_REQUEST_CODE && grandResults.length == REQUIRED_PERMISSIONS.length) {
             for (int result : grandResults) {
@@ -400,12 +456,13 @@ public class MainActivity extends AppCompatActivity
             }
             LatLng lastLatLng = getLastLocation();
             if (lastLatLng != null) {
-                updateLocation(lastLatLng);
+                setLastLocationMarker(lastLatLng);
             }
         }
     }
 
     private LatLng getLastLocation() {
+        Log.d(TAG, "[getLastLocation]");
         // permission check
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -425,15 +482,66 @@ public class MainActivity extends AppCompatActivity
         return lastLocationLatLng;
     }
 
-    private void updateLocation(LatLng location) {
-        Log.d(TAG, "[updateLocation] " + location.toString());
+    private void setLastLocationMarker(LatLng location) {
+        Log.d(TAG, "[setLastLocationMarker] " + location.toString());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(location);
-        markerOptions.draggable(true);
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         mGoogleMap.addMarker(markerOptions);
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(location, 15);
         mGoogleMap.moveCamera(cameraUpdate);
+    }
+
+    private void setHomeLocationMarker() {
+        if (mHomeLocation == null) {
+            Log.d(TAG, "[setHomeLocationMarker] there is no home location");
+            return;
+        }
+        if (mHomeMarker != null) {
+            mHomeMarker.remove();
+        }
+        Log.d(TAG, "[setHomeLocationMarker] " + mHomeLocation.toString());
+        View markerView = LayoutInflater.from(this).inflate(R.layout.layout_marker, null);
+
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(mHomeLocation);
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(this, markerView)));
+        mHomeMarker = mGoogleMap.addMarker(markerOptions);
+    }
+    private Bitmap createDrawableFromView(Context context, View view) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        view.measure(displayMetrics.widthPixels, displayMetrics.heightPixels);
+        view.layout(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels);
+        view.buildDrawingCache();
+        Bitmap bitmap = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+
+        return bitmap;
+    }
+
+    public String getAddress( double latitude, double longitude) {
+        Log.d(TAG, "[getAddress]");
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses = null;
+
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 7);
+        } catch (IOException ioException) {
+            Toast.makeText(this, "Cannot use geocoder service", Toast.LENGTH_LONG).show();
+        } catch (IllegalArgumentException illegalArgumentException) {
+            Toast.makeText(this, "Invalid location", Toast.LENGTH_LONG).show();
+        }
+
+        if (addresses.isEmpty()) {
+            Toast.makeText(this, "Cannot find the address", Toast.LENGTH_LONG).show();
+            return "";
+        }
+        Address address = addresses.get(0);
+        return address.getAddressLine(0).toString()+"\n";
     }
 }
