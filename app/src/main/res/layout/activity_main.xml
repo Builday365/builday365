@@ -267,7 +267,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="-8dp"
             android:text="24:00"
-            android:textColor="@color/black"
+            android:textColor="@color/default_color"
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/main_sidebar_layout_total_time"
@@ -283,12 +283,13 @@
             android:layout_height="0dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="40dp"
-            android:background="@color/white"
+            android:background="@color/transparent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.85"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView">
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            tools:visibility="gone">
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -305,6 +306,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView"
             app:layout_constraintVertical_bias="0.0">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main_sidebar_layout_remain_time"
+            android:layout_width="9.5dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="40dp"
+            android:background="@drawable/border_all_dir"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.858"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintVertical_bias="1.0">
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
