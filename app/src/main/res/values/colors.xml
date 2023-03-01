@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="blue">#2D9BF0 </color>
+    <color name="disable_blue">#332D9BF0</color>
     <color name="red">#F15C80 </color>
     <color name="green">#48B38C </color>
     <color name="black">#6D6E77 </color>

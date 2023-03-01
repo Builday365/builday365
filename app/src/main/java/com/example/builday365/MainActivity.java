@@ -21,6 +21,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -71,12 +72,14 @@ public class MainActivity extends AppCompatActivity
     String[] REQUIRED_PERMISSIONS = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION};
     private static final int PERMISSIONS_REQUEST_CODE = 100;
 
-    TextView tv_toolbar_cur_date, tv_google_name, tv_sidebar_cur_time;
+    TextView tv_toolbar_cur_date, tv_google_name, tv_sidebar_cur_time, tv_timesection_cur_time;
     ImageButton ibtn_calendar, ibtn_day_prev, ibtn_day_next, ibtn_month_prev, ibtn_month_next,
-            ibtn_side_menu, ibtn_add_section, ibtn_sidebar_memo, ibtn_sidebar_activity;
+            ibtn_side_menu, ibtn_add_section, ibtn_sidebar_memo, ibtn_sidebar_activity,
+            ibtn_timesection_ok, ibtn_timesection_cancel, ibtn_timesection_palette;
     DrawerLayout drawerLayout;
-    ConstraintLayout timeBarLayout, makeSectionLayout,
-                    layout_sidebar_total_time, layout_sidebar_cur_time, layout_sidebar_remain_time;
+    ConstraintLayout timeBarLayout, layout_dialog_section,
+                    layout_sidebar_total_time, layout_sidebar_cur_time, layout_sidebar_remain_time,
+                    layout_time_section, layout_timesection_cur_time;
     ImageView iv_google_photo;
     Button btn_dialog_section_ok, btn_dialog_section_cancel;
     EditText dialog_section_et_memo;
@@ -124,7 +127,8 @@ public class MainActivity extends AppCompatActivity
                 int cur_visibilty = calendarView.getVisibility();
                 calendarView.setVisibility((cur_visibilty==View.VISIBLE)? View.GONE : View.VISIBLE);
                 timeBarLayout.setVisibility((cur_visibilty==View.VISIBLE)? View.VISIBLE : View.GONE);
-                makeSectionLayout.setVisibility(View.GONE);
+                layout_time_section.setVisibility((cur_visibilty==View.VISIBLE)? View.VISIBLE : View.GONE);
+                layout_dialog_section.setVisibility(View.GONE);
 
                 if (drawerLayout.isDrawerOpen(Gravity.LEFT)){
                     drawerLayout.closeDrawers();
@@ -232,12 +236,14 @@ public class MainActivity extends AppCompatActivity
                     drawerLayout.openDrawer(Gravity.LEFT);
                     calendarView.setVisibility(View.GONE);
                     timeBarLayout.setVisibility(View.GONE);
-                    makeSectionLayout.setVisibility(View.GONE);
+                    layout_time_section.setVisibility(View.GONE);
+                    layout_dialog_section.setVisibility(View.GONE);
                     drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
                 }
                 else {
                     drawerLayout.closeDrawers();
                     timeBarLayout.setVisibility(View.VISIBLE);
+                    layout_time_section.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -255,8 +261,11 @@ public class MainActivity extends AppCompatActivity
         tv_google_name = headerView.findViewById(R.id.drawer_header_tv_google_name);
         tv_google_name.setText(google_name);
 
-        makeSectionLayout = (ConstraintLayout)findViewById(R.id.main_dialog_make_section);
-        makeSectionLayout.setVisibility(View.GONE);
+        layout_dialog_section = (ConstraintLayout)findViewById(R.id.main_dialog_make_section);
+        layout_dialog_section.setVisibility(View.GONE);
+
+        layout_time_section = (ConstraintLayout)findViewById(R.id.main_layout_timesection);
+        layout_time_section.setVisibility(View.GONE);
 
         ibtn_add_section = (ImageButton)findViewById(R.id.main_timebar_ibtn_add_section);
         @SuppressLint("ResourceType")
@@ -265,19 +274,29 @@ public class MainActivity extends AppCompatActivity
         ibtn_add_section.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                layout_time_section.setVisibility(View.VISIBLE);
+
+                @SuppressLint("ResourceType")
+                String icon_disable_color = getResources().getString(R.color.disable_blue);
+                ibtn_sidebar_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(icon_disable_color)));
+                ibtn_sidebar_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(icon_disable_color)));
+
+                ibtn_sidebar_memo.setEnabled(false);
+                ibtn_sidebar_activity.setEnabled(false);
             }
         });
 
         @SuppressLint("ResourceType")
         String select_color = getResources().getString(R.color.blue);
         tv_sidebar_cur_time = (TextView)findViewById(R.id.main_sidebar_tv_cur_time);
+        tv_timesection_cur_time = (TextView)findViewById(R.id.main_timesection_tv_cur_time);
 
         ibtn_sidebar_memo = (ImageButton)findViewById(R.id.main_sidebar_ibtn_memo);
         ibtn_sidebar_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(select_color)));
         ibtn_sidebar_memo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                makeSectionLayout.setVisibility(View.VISIBLE);
+                layout_dialog_section.setVisibility(View.VISIBLE);
             }
         });
 
@@ -286,7 +305,7 @@ public class MainActivity extends AppCompatActivity
         ibtn_sidebar_activity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                makeSectionLayout.setVisibility(View.VISIBLE);
+                layout_dialog_section.setVisibility(View.VISIBLE);
             }
         });
 
@@ -296,7 +315,7 @@ public class MainActivity extends AppCompatActivity
         btn_dialog_section_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                makeSectionLayout.setVisibility(View.GONE);
+                layout_dialog_section.setVisibility(View.GONE);
             }
         });
 
@@ -304,7 +323,47 @@ public class MainActivity extends AppCompatActivity
         btn_dialog_section_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                makeSectionLayout.setVisibility(View.GONE);
+                layout_dialog_section.setVisibility(View.GONE);
+            }
+        });
+
+        ibtn_timesection_ok = (ImageButton) findViewById(R.id.main_timesection_ibtn_ok);
+        ibtn_timesection_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                layout_time_section.setVisibility(View.GONE);
+
+                @SuppressLint("ResourceType")
+                String icon_able_color = getResources().getString(R.color.blue);
+                ibtn_sidebar_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(icon_able_color)));
+                ibtn_sidebar_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(icon_able_color)));
+
+                ibtn_sidebar_memo.setEnabled(true);
+                ibtn_sidebar_activity.setEnabled(true);
+            }
+        });
+
+        ibtn_timesection_cancel = (ImageButton)findViewById(R.id.main_timesection_ibtn_cancel);
+        ibtn_timesection_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                layout_time_section.setVisibility(View.GONE);
+
+                @SuppressLint("ResourceType")
+                String icon_able_color = getResources().getString(R.color.blue);
+                ibtn_sidebar_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(icon_able_color)));
+                ibtn_sidebar_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(icon_able_color)));
+
+                ibtn_sidebar_memo.setEnabled(true);
+                ibtn_sidebar_activity.setEnabled(true);
+            }
+        });
+
+        ibtn_timesection_palette = (ImageButton)findViewById(R.id.main_timesection_ibtn_palette);
+        ibtn_timesection_palette.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //
             }
         });
 
@@ -314,6 +373,7 @@ public class MainActivity extends AppCompatActivity
 
         layout_sidebar_total_time = (ConstraintLayout)findViewById(R.id.main_sidebar_layout_total_time);
         layout_sidebar_cur_time = (ConstraintLayout)findViewById(R.id.main_sidebar_layout_cur_time);
+        layout_timesection_cur_time = (ConstraintLayout)findViewById(R.id.main_timesection_layout_cur_time);
         layout_sidebar_remain_time = (ConstraintLayout)findViewById(R.id.main_sidebar_layout_remain_time);
         ViewTreeObserver viewTreeObserver = layout_sidebar_total_time.getViewTreeObserver();
 
@@ -359,6 +419,7 @@ public class MainActivity extends AppCompatActivity
             public void handleMessage(Message message) {
                 String cur_time = get_time();
                 tv_sidebar_cur_time.setText(cur_time);
+                tv_timesection_cur_time.setText(cur_time);
 //                Log.e(TAG, "handleMessage " + cur_time);
 
                 int cur_hour = Integer.parseInt(cur_time.split(":")[0]);
@@ -371,22 +432,33 @@ public class MainActivity extends AppCompatActivity
 
                 ConstraintLayout.LayoutParams layoutParams
                         = (ConstraintLayout.LayoutParams) tv_sidebar_cur_time.getLayoutParams();
-                layoutParams.topMargin = cur_time_len;
+                int time_margin_gap = 15;
+                layoutParams.topMargin = cur_time_len - time_margin_gap;
                 tv_sidebar_cur_time.setLayoutParams(layoutParams);
+//                Log.e(TAG, "layoutParams.topMargin " + layoutParams.topMargin);
+
+                layoutParams = (ConstraintLayout.LayoutParams) tv_timesection_cur_time.getLayoutParams();
+                layoutParams.topMargin = cur_time_len - time_margin_gap;
+                tv_timesection_cur_time.setLayoutParams(layoutParams);
+//                Log.e(TAG, "layoutParams.topMargin " + layoutParams.topMargin);
 
                 layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
                 layoutParams.height = cur_time_len;
                 layout_sidebar_cur_time.setLayoutParams(layoutParams);
 
+                layoutParams = (ConstraintLayout.LayoutParams) layout_timesection_cur_time.getLayoutParams();
+                layoutParams.height = cur_time_len;
+                layout_timesection_cur_time.setLayoutParams(layoutParams);
+                layout_timesection_cur_time.setLayoutParams(layoutParams);
+
                 layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_remain_time.getLayoutParams();
-//                Log.e(TAG, "layoutParams.height " + layoutParams.height);
-//                Log.e(TAG, "layoutParams.topMargin " + layoutParams.topMargin);
                 int layout_side_gap = 5;
                 layoutParams.topMargin = cur_time_len + layout_side_gap;
                 layoutParams.height = total_time_len - cur_time_len - layout_side_gap;
                 layout_sidebar_remain_time.setLayoutParams(layoutParams);
 //                Log.e(TAG, "layoutParams.height " + layoutParams.height);
 //                Log.e(TAG, "layoutParams.topMargin - cur_time_len" + layoutParams.topMargin);
+//                Log.e(TAG, "-------------------");
             }
         };
 
@@ -395,7 +467,7 @@ public class MainActivity extends AppCompatActivity
             public void run() {
                 while (true) {
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(500);
                     }
                     catch (InterruptedException e) {
                         Log.e(TAG, "thread error " + e);

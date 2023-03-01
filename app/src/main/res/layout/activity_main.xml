@@ -193,11 +193,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="14dp"
             android:text="Today"
             android:textColor="@color/default_color"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/main_sidebar_layout_total_time"
             app:layout_constraintEnd_toEndOf="@+id/main_sidebar_layout_total_time"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -258,7 +259,7 @@
             app:layout_constraintBottom_toTopOf="@+id/textView5"
             app:layout_constraintEnd_toEndOf="@+id/textView2"
             app:layout_constraintStart_toStartOf="@+id/textView2"
-            app:layout_constraintTop_toTopOf="@+id/textView2"
+            app:layout_constraintTop_toTopOf="@+id/main_sidebar_layout_total_time"
             app:layout_constraintVertical_bias="0" />
 
         <TextView
@@ -281,15 +282,14 @@
             android:id="@+id/main_sidebar_layout_total_time"
             android:layout_width="8dp"
             android:layout_height="0dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="40dp"
             android:layout_marginBottom="40dp"
             android:background="@color/transparent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.85"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
-            tools:visibility="gone">
+            app:layout_constraintTop_toTopOf="parent">
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -297,14 +297,13 @@
             android:id="@+id/main_sidebar_layout_cur_time"
             android:layout_width="8dp"
             android:layout_height="0dp"
-            android:layout_marginTop="12dp"
             android:layout_marginBottom="40dp"
             android:background="@color/blue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.85"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintTop_toTopOf="@+id/main_sidebar_layout_total_time"
             app:layout_constraintVertical_bias="0.0">
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -313,14 +312,13 @@
             android:id="@+id/main_sidebar_layout_remain_time"
             android:layout_width="9.5dp"
             android:layout_height="0dp"
-            android:layout_marginTop="12dp"
             android:layout_marginBottom="40dp"
             android:background="@drawable/border_all_dir"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.858"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintTop_toTopOf="@+id/main_sidebar_layout_total_time"
             app:layout_constraintVertical_bias="1.0">
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -336,6 +334,123 @@
             app:layout_constraintStart_toStartOf="@+id/main_sidebar_layout_total_time"
             app:layout_constraintTop_toBottomOf="@+id/main_sidebar_layout_total_time"
             app:srcCompat="@drawable/builday_icon_add"
+            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_layout_timesection"
+        android:layout_width="105dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="180dp"
+        android:background="@drawable/background_sidebar"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/main_drawer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_top_toolbar"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/textView2_timesection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-5dp"
+            android:text="00:00"
+            android:textColor="@color/red"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/main_timesection_layout_total_time"
+            app:layout_constraintHorizontal_bias="0.88"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/main_timesection_layout_total_time"
+            app:layout_constraintVertical_bias="0" />
+
+        <TextView
+            android:id="@+id/main_timesection_tv_cur_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="nn:nn"
+            android:textColor="@color/red"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/main_timesection_layout_total_time"
+            app:layout_constraintEnd_toEndOf="@+id/textView2_timesection"
+            app:layout_constraintStart_toStartOf="@+id/textView2_timesection"
+            app:layout_constraintTop_toTopOf="@+id/main_timesection_layout_total_time"
+            app:layout_constraintVertical_bias="0" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main_timesection_layout_total_time"
+            android:layout_width="8dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
+            android:background="@color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.85"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main_timesection_layout_cur_time"
+            android:layout_width="8dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="40dp"
+            android:background="@color/red"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.85"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/main_timesection_layout_total_time"
+            app:layout_constraintVertical_bias="0.0">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageButton
+            android:id="@+id/main_timesection_ibtn_palette"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="#00FFFFFF"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/main_timesection_layout_total_time"
+            app:layout_constraintStart_toStartOf="@+id/main_timesection_layout_total_time"
+            app:layout_constraintTop_toBottomOf="@+id/main_timesection_layout_total_time"
+            app:srcCompat="@drawable/builday_icon_palette"
+            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+        <ImageButton
+            android:id="@+id/main_timesection_ibtn_cancel"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="#00FFFFFF"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/main_timesection_ibtn_palette"
+            app:layout_constraintStart_toEndOf="@+id/main_timesection_ibtn_ok"
+            app:layout_constraintTop_toBottomOf="@+id/main_timesection_layout_total_time"
+            app:srcCompat="@drawable/builday_icon_cancel"
+            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+        <ImageButton
+            android:id="@+id/main_timesection_ibtn_ok"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="#00FFFFFF"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/main_timesection_ibtn_palette"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/main_timesection_layout_total_time"
+            app:srcCompat="@drawable/builday_icon_ok"
             tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
