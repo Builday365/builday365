@@ -3,9 +3,7 @@ package com.example.builday365;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.annotation.SuppressLint;
@@ -81,9 +79,10 @@ public class MainActivity extends AppCompatActivity
     DrawerLayout drawerLayout;
     ConstraintLayout timeBarLayout, layout_dialog_section,
                     layout_sidebar_total_time, layout_sidebar_cur_time, layout_sidebar_remain_time,
-                    layout_time_section, layout_timesection_cur_time, layout_timesection_remain_time;
+                    layout_time_section, layout_timesection_cur_time, layout_timesection_remain_time,
+                    layout_palette;
     ImageView iv_google_photo, iv_timesection_ctrl;
-    Button btn_dialog_section_ok, btn_dialog_section_cancel;
+    Button btn_dialog_section_ok, btn_dialog_section_cancel, btn_palette_ok, btn_palette_cancel;
     EditText dialog_section_et_memo;
 
     NavigationView navigationView;
@@ -282,7 +281,7 @@ public class MainActivity extends AppCompatActivity
         layout_time_section.setVisibility(View.GONE);
 
         layout_timesection_remain_time = (ConstraintLayout)findViewById(R.id.main_timesection_layout_remain_time);
-        layout_timesection_remain_time.setBackgroundResource(R.drawable.border_all_dir_pink);
+        layout_timesection_remain_time.setBackgroundResource(R.drawable.border_all_dir_red);
         layout_timesection_remain_time.setVisibility(View.GONE);
 
         layout_time_section.setOnTouchListener(new View.OnTouchListener() {
@@ -436,11 +435,30 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        layout_palette = (ConstraintLayout)findViewById(R.id.main_layout_palette);
+        layout_palette.setVisibility(View.GONE);
+
         ibtn_timesection_palette = (ImageButton)findViewById(R.id.main_timesection_ibtn_palette);
         ibtn_timesection_palette.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //
+                layout_palette.setVisibility(View.VISIBLE);
+            }
+        });
+
+        btn_palette_ok = (Button)findViewById(R.id.palette_btn_ok);
+        btn_palette_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                layout_palette.setVisibility(View.GONE);
+            }
+        });
+
+        btn_palette_cancel= (Button)findViewById(R.id.palette_btn_cancel);
+        btn_palette_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                layout_palette.setVisibility(View.GONE);
             }
         });
 
@@ -504,8 +522,8 @@ public class MainActivity extends AppCompatActivity
                 double time_rate = (cur_hour * 60 + cur_min) / (24 * 60.0);
 
                 /* ***************** TIME DEBUG ****************** */
-//                cur_time_len = (int)(time_rate * total_time_len);
-                cur_time_len = (int)(0.6 * total_time_len);
+                cur_time_len = (int)(time_rate * total_time_len);
+//                cur_time_len = (int)(0.6 * total_time_len);
                 /***************************************************/
 
                 ConstraintLayout.LayoutParams layoutParams

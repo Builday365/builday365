@@ -180,13 +180,12 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="180dp"
         android:background="@drawable/background_sidebar"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/main_drawer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_top_toolbar"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <TextView
             android:id="@+id/textView"
@@ -345,23 +344,21 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="180dp"
         android:background="@drawable/background_sidebar"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/main_drawer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_top_toolbar"
-        tools:visibility="visible">
+        app:layout_constraintTop_toBottomOf="@+id/main_top_toolbar">
 
         <ImageView
             android:id="@+id/main_timesection_iv_ctrl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:src="@drawable/builday_icon_timesection_updown"
             app:layout_constraintBottom_toBottomOf="@+id/main_timesection_tv_click_time"
             app:layout_constraintEnd_toStartOf="@+id/main_timesection_tv_click_time"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/main_timesection_tv_click_time"
-            android:src="@drawable/builday_icon_timesection_updown" />
+            app:layout_constraintTop_toTopOf="@+id/main_timesection_tv_click_time" />
 
         <TextView
             android:id="@+id/textView2_timesection"
@@ -434,8 +431,7 @@
             app:layout_constraintHorizontal_bias="0.85"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/main_timesection_layout_total_time"
-            app:layout_constraintVertical_bias="0.0">
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintVertical_bias="0.0"></androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/main_timesection_layout_remain_time"
@@ -489,6 +485,27 @@
             app:srcCompat="@drawable/builday_icon_ok"
             tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_layout_palette"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="170dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.42"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_top_toolbar"
+        app:layout_constraintVertical_bias="0.56">
+
+        <include
+            layout="@layout/palette_view"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
