@@ -3,7 +3,9 @@ package com.example.builday365;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.annotation.SuppressLint;
@@ -21,13 +23,13 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -39,7 +41,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.material.navigation.NavigationView;
 
@@ -72,22 +73,26 @@ public class MainActivity extends AppCompatActivity
     String[] REQUIRED_PERMISSIONS = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION};
     private static final int PERMISSIONS_REQUEST_CODE = 100;
 
-    TextView tv_toolbar_cur_date, tv_google_name, tv_sidebar_cur_time, tv_timesection_cur_time;
+    TextView tv_toolbar_cur_date, tv_google_name, tv_sidebar_cur_time, tv_timesection_cur_time,
+            tv_timesection_click_time;
     ImageButton ibtn_calendar, ibtn_day_prev, ibtn_day_next, ibtn_month_prev, ibtn_month_next,
             ibtn_side_menu, ibtn_add_section, ibtn_sidebar_memo, ibtn_sidebar_activity,
             ibtn_timesection_ok, ibtn_timesection_cancel, ibtn_timesection_palette;
     DrawerLayout drawerLayout;
     ConstraintLayout timeBarLayout, layout_dialog_section,
                     layout_sidebar_total_time, layout_sidebar_cur_time, layout_sidebar_remain_time,
-                    layout_time_section, layout_timesection_cur_time;
-    ImageView iv_google_photo;
+                    layout_time_section, layout_timesection_cur_time, layout_timesection_remain_time;
+    ImageView iv_google_photo, iv_timesection_ctrl;
     Button btn_dialog_section_ok, btn_dialog_section_cancel;
     EditText dialog_section_et_memo;
 
     NavigationView navigationView;
     View headerView;
 
-    int set_year, set_month, set_day;
+    int set_year, set_month, set_day, total_time_len, cur_time_len;
+    int tv_time_margin_gap = 15;
+    int layout_side_gap = 5;
+    boolean is_timesection_touched = false;
     Calendar calendar;
     CalendarView calendarView;
 
@@ -264,8 +269,80 @@ public class MainActivity extends AppCompatActivity
         layout_dialog_section = (ConstraintLayout)findViewById(R.id.main_dialog_make_section);
         layout_dialog_section.setVisibility(View.GONE);
 
+        tv_timesection_click_time = (TextView)findViewById(R.id.main_timesection_tv_click_time);
+        tv_timesection_click_time.setVisibility(View.GONE);
+
+        iv_timesection_ctrl = (ImageView)findViewById(R.id.main_timesection_iv_ctrl);
+        @SuppressLint("ResourceType")
+        String timesection_color = getResources().getString(R.color.pink);
+        iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+        iv_timesection_ctrl.setVisibility(View.INVISIBLE);
+
         layout_time_section = (ConstraintLayout)findViewById(R.id.main_layout_timesection);
         layout_time_section.setVisibility(View.GONE);
+
+        layout_timesection_remain_time = (ConstraintLayout)findViewById(R.id.main_timesection_layout_remain_time);
+        layout_timesection_remain_time.setBackgroundResource(R.drawable.border_all_dir_pink);
+        layout_timesection_remain_time.setVisibility(View.GONE);
+
+        layout_time_section.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                int touch_action = motionEvent.getAction();
+                float touch_y = motionEvent.getY();
+
+                if((touch_action == motionEvent.ACTION_DOWN) || (touch_action == motionEvent.ACTION_MOVE)) {
+                    int touch_calced_y = (int)(touch_y - layout_time_section.getY()
+                                                + layout_timesection_cur_time.getY());
+                    double time_rate = (double)touch_calced_y / (double)total_time_len;
+
+                    if ((touch_calced_y >= 0) && (touch_calced_y <= cur_time_len)) {
+                        is_timesection_touched = true;
+                        int touch_time = (int)(time_rate * 24 * 60);
+                        String touch_hour = String.format("%02d", touch_time / 60);
+                        String touch_min = String.format("%02d", touch_time % 60);
+                        String touch_show_time = touch_hour + ":" + touch_min;
+
+                        ConstraintLayout.LayoutParams layoutParams
+                                = (ConstraintLayout.LayoutParams) tv_timesection_click_time.getLayoutParams();
+                        layoutParams.topMargin = touch_calced_y - tv_time_margin_gap;
+                        tv_timesection_click_time.setLayoutParams(layoutParams);
+                        tv_timesection_click_time.setVisibility(View.VISIBLE);
+                        tv_timesection_click_time.setText(touch_show_time);
+
+                        iv_timesection_ctrl.setVisibility(View.VISIBLE);
+                        layout_timesection_remain_time.setVisibility(View.VISIBLE);
+
+                        if (touch_time == 0) {
+                            iv_timesection_ctrl.setImageResource(R.drawable.builday_icon_timesection_down);
+
+                            layoutParams = (ConstraintLayout.LayoutParams) layout_timesection_remain_time.getLayoutParams();
+                            layoutParams.height = cur_time_len;
+                            layoutParams.topMargin = 0;
+                            layout_timesection_remain_time.setLayoutParams(layoutParams);
+
+                        }
+                        else if (touch_time == cur_time_len) {
+                            iv_timesection_ctrl.setImageResource(R.drawable.builday_icon_timesection_up);
+                        }
+                        else {
+                            iv_timesection_ctrl.setImageResource(R.drawable.builday_icon_timesection_updown);
+
+                            layoutParams = (ConstraintLayout.LayoutParams) layout_timesection_cur_time.getLayoutParams();
+                            layoutParams.height = touch_calced_y;
+                            layout_timesection_cur_time.setLayoutParams(layoutParams);
+
+                            layoutParams = (ConstraintLayout.LayoutParams) layout_timesection_remain_time.getLayoutParams();
+                            layoutParams.height = cur_time_len - touch_calced_y - layout_side_gap;
+                            layoutParams.topMargin = touch_calced_y + layout_side_gap;
+                            layout_timesection_remain_time.setLayoutParams(layoutParams);
+                        }
+                    }
+                }
+
+                return true;
+            }
+        });
 
         ibtn_add_section = (ImageButton)findViewById(R.id.main_timebar_ibtn_add_section);
         @SuppressLint("ResourceType")
@@ -382,7 +459,8 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onGlobalLayout() {
                     layout_sidebar_total_time.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    update_time(layout_sidebar_total_time.getHeight());
+                    total_time_len = layout_sidebar_total_time.getHeight();
+                    update_time();
                 }
             });
         }
@@ -413,52 +491,46 @@ public class MainActivity extends AppCompatActivity
         return cur_time;
     }
 
-    public void update_time(int total_time_len) {
+    public void update_time() {
         final Handler handler = new Handler() {
             @Override
             public void handleMessage(Message message) {
                 String cur_time = get_time();
                 tv_sidebar_cur_time.setText(cur_time);
                 tv_timesection_cur_time.setText(cur_time);
-//                Log.e(TAG, "handleMessage " + cur_time);
 
                 int cur_hour = Integer.parseInt(cur_time.split(":")[0]);
                 int cur_min = Integer.parseInt(cur_time.split(":")[1]);
                 double time_rate = (cur_hour * 60 + cur_min) / (24 * 60.0);
-                int cur_time_len = (int)(time_rate * total_time_len);
-//                Log.e(TAG, "time_rate " + time_rate);
-//                Log.e(TAG, "total_time_len " + total_time_len);
-//                Log.e(TAG, "cur_time_len " + cur_time_len);
+
+                /* ***************** TIME DEBUG ****************** */
+//                cur_time_len = (int)(time_rate * total_time_len);
+                cur_time_len = (int)(0.6 * total_time_len);
+                /***************************************************/
 
                 ConstraintLayout.LayoutParams layoutParams
                         = (ConstraintLayout.LayoutParams) tv_sidebar_cur_time.getLayoutParams();
-                int time_margin_gap = 15;
-                layoutParams.topMargin = cur_time_len - time_margin_gap;
+                layoutParams.topMargin = cur_time_len - tv_time_margin_gap;
                 tv_sidebar_cur_time.setLayoutParams(layoutParams);
-//                Log.e(TAG, "layoutParams.topMargin " + layoutParams.topMargin);
 
                 layoutParams = (ConstraintLayout.LayoutParams) tv_timesection_cur_time.getLayoutParams();
-                layoutParams.topMargin = cur_time_len - time_margin_gap;
+                layoutParams.topMargin = cur_time_len - tv_time_margin_gap;
                 tv_timesection_cur_time.setLayoutParams(layoutParams);
-//                Log.e(TAG, "layoutParams.topMargin " + layoutParams.topMargin);
 
                 layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
                 layoutParams.height = cur_time_len;
                 layout_sidebar_cur_time.setLayoutParams(layoutParams);
 
-                layoutParams = (ConstraintLayout.LayoutParams) layout_timesection_cur_time.getLayoutParams();
-                layoutParams.height = cur_time_len;
-                layout_timesection_cur_time.setLayoutParams(layoutParams);
-                layout_timesection_cur_time.setLayoutParams(layoutParams);
-
                 layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_remain_time.getLayoutParams();
-                int layout_side_gap = 5;
                 layoutParams.topMargin = cur_time_len + layout_side_gap;
                 layoutParams.height = total_time_len - cur_time_len - layout_side_gap;
                 layout_sidebar_remain_time.setLayoutParams(layoutParams);
-//                Log.e(TAG, "layoutParams.height " + layoutParams.height);
-//                Log.e(TAG, "layoutParams.topMargin - cur_time_len" + layoutParams.topMargin);
-//                Log.e(TAG, "-------------------");
+
+                if (!is_timesection_touched) {
+                    layoutParams = (ConstraintLayout.LayoutParams) layout_timesection_cur_time.getLayoutParams();
+                    layoutParams.height = cur_time_len;
+                    layout_timesection_cur_time.setLayoutParams(layoutParams);
+                }
             }
         };
 

@@ -313,7 +313,7 @@
             android:layout_width="9.5dp"
             android:layout_height="0dp"
             android:layout_marginBottom="40dp"
-            android:background="@drawable/border_all_dir"
+            android:background="@drawable/border_all_dir_default"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.858"
@@ -353,6 +353,16 @@
         app:layout_constraintTop_toBottomOf="@+id/main_top_toolbar"
         tools:visibility="visible">
 
+        <ImageView
+            android:id="@+id/main_timesection_iv_ctrl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/main_timesection_tv_click_time"
+            app:layout_constraintEnd_toStartOf="@+id/main_timesection_tv_click_time"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/main_timesection_tv_click_time"
+            android:src="@drawable/builday_icon_timesection_updown" />
+
         <TextView
             android:id="@+id/textView2_timesection"
             android:layout_width="wrap_content"
@@ -371,6 +381,20 @@
 
         <TextView
             android:id="@+id/main_timesection_tv_cur_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="nn:nn"
+            android:textColor="@color/red"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/main_timesection_layout_total_time"
+            app:layout_constraintEnd_toEndOf="@+id/textView2_timesection"
+            app:layout_constraintStart_toStartOf="@+id/textView2_timesection"
+            app:layout_constraintTop_toTopOf="@+id/main_timesection_layout_total_time"
+            app:layout_constraintVertical_bias="0" />
+
+        <TextView
+            android:id="@+id/main_timesection_tv_click_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="nn:nn"
@@ -411,8 +435,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/main_timesection_layout_total_time"
             app:layout_constraintVertical_bias="0.0">
-
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main_timesection_layout_remain_time"
+            android:layout_width="9.5dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="40dp"
+            android:background="@drawable/border_all_dir_pink"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.858"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/main_timesection_layout_total_time"
+            app:layout_constraintVertical_bias="0.0"></androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageButton
             android:id="@+id/main_timesection_ibtn_palette"
