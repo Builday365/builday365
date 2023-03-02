@@ -62,14 +62,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import android.util.Log;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity
-        implements OnMapReadyCallback,
-        GoogleMap.OnMapLongClickListener,
-        ActivityCompat.OnRequestPermissionsResultCallback {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    String[] REQUIRED_PERMISSIONS = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION};
-    private static final int PERMISSIONS_REQUEST_CODE = 100;
 
     TextView tv_toolbar_cur_date, tv_google_name, tv_sidebar_cur_time, tv_timesection_cur_time,
             tv_timesection_click_time;
@@ -94,11 +89,6 @@ public class MainActivity extends AppCompatActivity
     boolean is_timesection_touched = false;
     Calendar calendar;
     CalendarView calendarView;
-
-    private GoogleMap mGoogleMap;
-    private LatLng mHomeLocation;
-    private Marker mHomeMarker;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -462,10 +452,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
         layout_sidebar_total_time = (ConstraintLayout)findViewById(R.id.main_sidebar_layout_total_time);
         layout_sidebar_cur_time = (ConstraintLayout)findViewById(R.id.main_sidebar_layout_cur_time);
         layout_timesection_cur_time = (ConstraintLayout)findViewById(R.id.main_timesection_layout_cur_time);
@@ -570,158 +556,5 @@ public class MainActivity extends AppCompatActivity
 
         Thread thread = new Thread(task);
         thread.start();
-    }
-
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        Log.d(TAG, "[onMapReady]");
-        mGoogleMap = googleMap;
-        mGoogleMap.getUiSettings().setZoomGesturesEnabled(true);
-        mGoogleMap.setOnMapLongClickListener(this);
-
-        LatLng lastLatLng = getLastLocation();
-        if (lastLatLng == null) {
-            Log.d(TAG, "[onMapReady] request permission");
-            ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE);
-            return;
-        }
-        setLastLocationMarker(lastLatLng);
-        setHomeLocationMarker();
-    }
-
-    @Override
-    public void onMapLongClick(@NonNull LatLng latLng) {
-        Log.d(TAG, "[onMapLongClick] " + latLng.toString());
-
-        String address = getAddress(latLng.latitude, latLng.longitude);
-        if (address.isEmpty()) {
-            Log.d(TAG, "[onMapLongClick] not found address");
-            return;
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add Home");
-        builder.setMessage("Is your home here?\n" + address);
-        builder.setCancelable(true);
-        builder.setPositiveButton("Yes",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        mHomeLocation = latLng;
-                        setHomeLocationMarker();
-                    }
-                });
-
-        builder.setNegativeButton("No",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // Nothing
-                    }
-                });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int permsRequestCode, @NonNull String[] permissions, @NonNull int[] grandResults) {
-        super.onRequestPermissionsResult(permsRequestCode, permissions, grandResults);
-        Log.d(TAG, "[onRequestPermissionsResult]");
-
-        if (permsRequestCode == PERMISSIONS_REQUEST_CODE && grandResults.length == REQUIRED_PERMISSIONS.length) {
-            for (int result : grandResults) {
-                if (result != PackageManager.PERMISSION_GRANTED) {
-                    Log.d(TAG, "[onRequestPermissionsResult] permission is denied");
-                    return;
-                }
-            }
-            LatLng lastLatLng = getLastLocation();
-            if (lastLatLng != null) {
-                setLastLocationMarker(lastLatLng);
-            }
-        }
-    }
-
-    private LatLng getLastLocation() {
-        Log.d(TAG, "[getLastLocation]");
-        // permission check
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "[getLastLocation] permission denied");
-            return null;
-        }
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Location lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        if (lastLocation == null) {
-            Log.d(TAG, "[getLastLocation] the last location info is not exist");
-            return null;
-        }
-        double lastLatitude = lastLocation.getLatitude();
-        double lastLongtitude  = lastLocation.getLongitude();
-
-        LatLng lastLocationLatLng = new LatLng(lastLatitude, lastLongtitude);
-        return lastLocationLatLng;
-    }
-
-    private void setLastLocationMarker(LatLng location) {
-        Log.d(TAG, "[setLastLocationMarker] " + location.toString());
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(location);
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-        mGoogleMap.addMarker(markerOptions);
-
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(location, 15);
-        mGoogleMap.moveCamera(cameraUpdate);
-    }
-
-    private void setHomeLocationMarker() {
-        if (mHomeLocation == null) {
-            Log.d(TAG, "[setHomeLocationMarker] there is no home location");
-            return;
-        }
-        if (mHomeMarker != null) {
-            mHomeMarker.remove();
-        }
-        Log.d(TAG, "[setHomeLocationMarker] " + mHomeLocation.toString());
-        View markerView = LayoutInflater.from(this).inflate(R.layout.layout_marker, null);
-
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(mHomeLocation);
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(this, markerView)));
-        mHomeMarker = mGoogleMap.addMarker(markerOptions);
-    }
-    private Bitmap createDrawableFromView(Context context, View view) {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        view.measure(displayMetrics.widthPixels, displayMetrics.heightPixels);
-        view.layout(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels);
-        view.buildDrawingCache();
-        Bitmap bitmap = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-
-        Canvas canvas = new Canvas(bitmap);
-        view.draw(canvas);
-
-        return bitmap;
-    }
-
-    public String getAddress( double latitude, double longitude) {
-        Log.d(TAG, "[getAddress]");
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        List<Address> addresses = null;
-
-        try {
-            addresses = geocoder.getFromLocation(latitude, longitude, 7);
-        } catch (IOException ioException) {
-            Toast.makeText(this, "Cannot use geocoder service", Toast.LENGTH_LONG).show();
-        } catch (IllegalArgumentException illegalArgumentException) {
-            Toast.makeText(this, "Invalid location", Toast.LENGTH_LONG).show();
-        }
-
-        if (addresses.isEmpty()) {
-            Toast.makeText(this, "Cannot find the address", Toast.LENGTH_LONG).show();
-            return "";
-        }
-        Address address = addresses.get(0);
-        return address.getAddressLine(0).toString()+"\n";
     }
 }
