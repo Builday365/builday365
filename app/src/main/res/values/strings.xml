@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Builday365</string>
+    <string name="contentDescription_img">Image</string>
 </resources>

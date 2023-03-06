@@ -17,18 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.276"
-        app:srcCompat="@drawable/login_main_pic" />
-
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/login_btn_login"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="108dp"
-        app:layout_constraintWidth_percent="0.55"
-        app:layout_constraintHeight_percent="0.06"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/splash_img" />
+        app:srcCompat="@drawable/splash_logo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
