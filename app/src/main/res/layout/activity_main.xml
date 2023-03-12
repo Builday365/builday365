@@ -361,7 +361,7 @@
             app:layout_constraintTop_toTopOf="@+id/main_timesection_tv_click_time" />
 
         <TextView
-            android:id="@+id/textView2_timesection"
+            android:id="@+id/main_timesection_tv_start_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="-5dp"
@@ -385,8 +385,8 @@
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/main_timesection_layout_total_time"
-            app:layout_constraintEnd_toEndOf="@+id/textView2_timesection"
-            app:layout_constraintStart_toStartOf="@+id/textView2_timesection"
+            app:layout_constraintEnd_toEndOf="@+id/main_timesection_tv_start_time"
+            app:layout_constraintStart_toStartOf="@+id/main_timesection_tv_start_time"
             app:layout_constraintTop_toTopOf="@+id/main_timesection_layout_total_time"
             app:layout_constraintVertical_bias="0" />
 
@@ -399,8 +399,8 @@
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/main_timesection_layout_total_time"
-            app:layout_constraintEnd_toEndOf="@+id/textView2_timesection"
-            app:layout_constraintStart_toStartOf="@+id/textView2_timesection"
+            app:layout_constraintEnd_toEndOf="@+id/main_timesection_tv_start_time"
+            app:layout_constraintStart_toStartOf="@+id/main_timesection_tv_start_time"
             app:layout_constraintTop_toTopOf="@+id/main_timesection_layout_total_time"
             app:layout_constraintVertical_bias="0" />
 
@@ -498,7 +498,8 @@
         app:layout_constraintHorizontal_bias="0.42"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/main_top_toolbar"
-        app:layout_constraintVertical_bias="0.56">
+        app:layout_constraintVertical_bias="0.56"
+        tools:visibility="gone">
 
         <include
             layout="@layout/palette_view"
