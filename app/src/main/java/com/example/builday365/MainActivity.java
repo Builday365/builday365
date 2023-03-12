@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity
             ibtn_side_menu, ibtn_add_section, ibtn_sidebar_memo, ibtn_sidebar_activity,
             ibtn_timesection_ok, ibtn_timesection_cancel, ibtn_timesection_palette;
     DrawerLayout drawerLayout;
-    ConstraintLayout timeBarLayout, layout_dialog_section,
+    ConstraintLayout layout_timebar, layout_dialog_section,
                     layout_sidebar_total_time, layout_sidebar_cur_time, layout_sidebar_remain_time,
                     layout_time_section, layout_timesection_cur_time, layout_timesection_remain_time,
                     layout_palette;
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
-                    timeBarLayout.setVisibility(View.VISIBLE);
+                    layout_timebar.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity
         calendar = Calendar.getInstance();
         set_date(new Date(calendar.getTimeInMillis()));
 
-        timeBarLayout = (ConstraintLayout)findViewById(R.id.main_layout_timebar);
+        layout_timebar = (ConstraintLayout)findViewById(R.id.main_layout_timebar);
         ibtn_calendar = (ImageButton)findViewById(R.id.main_toolbar_ibtn_calendar);
         calendarView = (CalendarView)findViewById(R.id.main_calendarview);
         calendarView.setVisibility(View.GONE);
@@ -136,9 +136,9 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 int cur_visibilty = calendarView.getVisibility();
                 calendarView.setVisibility((cur_visibilty==View.VISIBLE)? View.GONE : View.VISIBLE);
-                timeBarLayout.setVisibility((cur_visibilty==View.VISIBLE)? View.VISIBLE : View.GONE);
-                layout_time_section.setVisibility((cur_visibilty==View.VISIBLE)? View.VISIBLE : View.GONE);
+                layout_timebar.setVisibility((cur_visibilty==View.VISIBLE)? View.VISIBLE : View.GONE);
                 layout_dialog_section.setVisibility(View.GONE);
+                layout_time_section.setVisibility(View.GONE);
 
                 if (drawerLayout.isDrawerOpen(Gravity.LEFT)){
                     drawerLayout.closeDrawers();
@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 calendarView.setVisibility(View.GONE);
-                timeBarLayout.setVisibility(View.VISIBLE);
+                layout_timebar.setVisibility(View.VISIBLE);
             }
         });
 
@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
-                    timeBarLayout.setVisibility(View.VISIBLE);
+                    layout_timebar.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
-                    timeBarLayout.setVisibility(View.VISIBLE);
+                    layout_timebar.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
-                    timeBarLayout.setVisibility(View.VISIBLE);
+                    layout_timebar.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
-                    timeBarLayout.setVisibility(View.VISIBLE);
+                    layout_timebar.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity
                 if (!drawerLayout.isDrawerOpen(Gravity.LEFT)){
                     drawerLayout.openDrawer(Gravity.LEFT);
                     calendarView.setVisibility(View.GONE);
-                    timeBarLayout.setVisibility(View.GONE);
+                    layout_timebar.setVisibility(View.GONE);
                     layout_time_section.setVisibility(View.GONE);
                     layout_dialog_section.setVisibility(View.GONE);
                     drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
@@ -254,8 +254,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 else {
                     drawerLayout.closeDrawers();
-                    timeBarLayout.setVisibility(View.VISIBLE);
-                    layout_time_section.setVisibility(View.VISIBLE);
+                    layout_timebar.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -696,8 +695,8 @@ public class MainActivity extends AppCompatActivity
                 double time_rate = (cur_hour * 60 + cur_min) / (24 * 60.0);
 
                 /* ***************** TIME DEBUG ****************** */
-//                cur_time_len = (int)(time_rate * total_time_len);
-                cur_time_len = (int)(0.6 * total_time_len);
+                cur_time_len = (int)(time_rate * total_time_len);
+//                cur_time_len = (int)(0.6 * total_time_len);
                 /***************************************************/
 
                 ConstraintLayout.LayoutParams layoutParams
