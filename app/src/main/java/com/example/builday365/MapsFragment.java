@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -38,6 +39,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
@@ -87,11 +89,13 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "[onCreateView]");
         return inflater.inflate(R.layout.fragment_maps, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "[onViewCreated]");
         super.onViewCreated(view, savedInstanceState);
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
@@ -153,14 +157,27 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
         }
     }
     private void setLastLocationMarker(LatLng location) {
-        Log.d(TAG, "[setLastLocationMarker] " + location.toString());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(location);
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+        int catList[] = {
+                R.drawable.builday_icon_cat,
+                R.drawable.builday_logo_cat,
+                R.drawable.builday_current_marker1,
+                R.drawable.builday_current_marker2
+        };
+        Random random = new Random();
+        int catId = catList[random.nextInt(4)];
+
+        Log.d(TAG, "[setLastLocationMarker] catId=" + catId);
+        BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(catId);
+        Bitmap catMarker = Bitmap.createScaledBitmap(bitmapdraw.getBitmap(), 300, 300, false);
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(catMarker));
         mGoogleMap.addMarker(markerOptions);
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(location, 15);
-        mGoogleMap.moveCamera(cameraUpdate);
+        mGoogleMap.animateCamera(cameraUpdate);
+        //mGoogleMap.moveCamera(cameraUpdate);
     }
 
     private void setHomeLocationMarker() {
