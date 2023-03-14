@@ -17,6 +17,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -67,16 +68,18 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     TextView tv_toolbar_cur_date, tv_google_name, tv_sidebar_cur_time, tv_timesection_cur_time,
-            tv_timesection_click_time;
+            tv_timesection_click_time, tv_timesection_start_time;
     ImageButton ibtn_calendar, ibtn_day_prev, ibtn_day_next, ibtn_month_prev, ibtn_month_next,
             ibtn_side_menu, ibtn_add_section, ibtn_sidebar_memo, ibtn_sidebar_activity,
             ibtn_timesection_ok, ibtn_timesection_cancel, ibtn_timesection_palette;
     DrawerLayout drawerLayout;
-    ConstraintLayout timeBarLayout, layout_dialog_section,
+    ConstraintLayout layout_timebar, layout_dialog_section,
                     layout_sidebar_total_time, layout_sidebar_cur_time, layout_sidebar_remain_time,
                     layout_time_section, layout_timesection_cur_time, layout_timesection_remain_time,
                     layout_palette;
-    ImageView iv_google_photo, iv_timesection_ctrl;
+    ImageView iv_google_photo, iv_timesection_ctrl, iv_palette_blue, iv_palette_red, iv_palette_green,
+            iv_palette_black, iv_palette_yellow, iv_palette_purple, iv_palette_skyBlue, iv_palette_brown,
+            iv_palette_pink, iv_palette_lightGreen;
     Button btn_dialog_section_ok, btn_dialog_section_cancel, btn_palette_ok, btn_palette_cancel;
     EditText dialog_section_et_memo;
 
@@ -89,6 +92,10 @@ public class MainActivity extends AppCompatActivity {
     boolean is_timesection_touched = false;
     Calendar calendar;
     CalendarView calendarView;
+    int palette_selected_color, palette_prev_palette_selected_color;
+    String timesection_color;
+
+    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
-                    timeBarLayout.setVisibility(View.VISIBLE);
+                    layout_timebar.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -111,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         calendar = Calendar.getInstance();
         set_date(new Date(calendar.getTimeInMillis()));
 
-        timeBarLayout = (ConstraintLayout)findViewById(R.id.main_layout_timebar);
+        layout_timebar = (ConstraintLayout)findViewById(R.id.main_layout_timebar);
         ibtn_calendar = (ImageButton)findViewById(R.id.main_toolbar_ibtn_calendar);
         calendarView = (CalendarView)findViewById(R.id.main_calendarview);
         calendarView.setVisibility(View.GONE);
@@ -120,9 +127,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 int cur_visibilty = calendarView.getVisibility();
                 calendarView.setVisibility((cur_visibilty==View.VISIBLE)? View.GONE : View.VISIBLE);
-                timeBarLayout.setVisibility((cur_visibilty==View.VISIBLE)? View.VISIBLE : View.GONE);
-                layout_time_section.setVisibility((cur_visibilty==View.VISIBLE)? View.VISIBLE : View.GONE);
+                layout_timebar.setVisibility((cur_visibilty==View.VISIBLE)? View.VISIBLE : View.GONE);
                 layout_dialog_section.setVisibility(View.GONE);
+                layout_time_section.setVisibility(View.GONE);
 
                 if (drawerLayout.isDrawerOpen(Gravity.LEFT)){
                     drawerLayout.closeDrawers();
@@ -160,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 calendarView.setVisibility(View.GONE);
-                timeBarLayout.setVisibility(View.VISIBLE);
+                layout_timebar.setVisibility(View.VISIBLE);
             }
         });
 
@@ -173,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
-                    timeBarLayout.setVisibility(View.VISIBLE);
+                    layout_timebar.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -187,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
-                    timeBarLayout.setVisibility(View.VISIBLE);
+                    layout_timebar.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -201,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
-                    timeBarLayout.setVisibility(View.VISIBLE);
+                    layout_timebar.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -215,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
-                    timeBarLayout.setVisibility(View.VISIBLE);
+                    layout_timebar.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -229,15 +236,16 @@ public class MainActivity extends AppCompatActivity {
                 if (!drawerLayout.isDrawerOpen(Gravity.LEFT)){
                     drawerLayout.openDrawer(Gravity.LEFT);
                     calendarView.setVisibility(View.GONE);
-                    timeBarLayout.setVisibility(View.GONE);
+                    layout_timebar.setVisibility(View.GONE);
                     layout_time_section.setVisibility(View.GONE);
                     layout_dialog_section.setVisibility(View.GONE);
                     drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+                    layout_palette.setVisibility(View.GONE);
+                    palette_prev_palette_selected_color = palette_selected_color;
                 }
                 else {
                     drawerLayout.closeDrawers();
-                    timeBarLayout.setVisibility(View.VISIBLE);
-                    layout_time_section.setVisibility(View.VISIBLE);
+                    layout_timebar.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -258,12 +266,15 @@ public class MainActivity extends AppCompatActivity {
         layout_dialog_section = (ConstraintLayout)findViewById(R.id.main_dialog_make_section);
         layout_dialog_section.setVisibility(View.GONE);
 
+        tv_timesection_start_time = (TextView)findViewById(R.id.main_timesection_tv_start_time);
         tv_timesection_click_time = (TextView)findViewById(R.id.main_timesection_tv_click_time);
         tv_timesection_click_time.setVisibility(View.GONE);
 
         iv_timesection_ctrl = (ImageView)findViewById(R.id.main_timesection_iv_ctrl);
-        @SuppressLint("ResourceType")
-        String timesection_color = getResources().getString(R.color.pink);
+        palette_selected_color = R.color.red;
+        palette_prev_palette_selected_color = palette_selected_color;
+        tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+        timesection_color = getResources().getString(palette_selected_color);
         iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
         iv_timesection_ctrl.setVisibility(View.INVISIBLE);
 
@@ -271,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
         layout_time_section.setVisibility(View.GONE);
 
         layout_timesection_remain_time = (ConstraintLayout)findViewById(R.id.main_timesection_layout_remain_time);
-        layout_timesection_remain_time.setBackgroundResource(R.drawable.border_all_dir_red);
+        layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
         layout_timesection_remain_time.setVisibility(View.GONE);
 
         layout_time_section.setOnTouchListener(new View.OnTouchListener() {
@@ -279,6 +290,8 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 int touch_action = motionEvent.getAction();
                 float touch_y = motionEvent.getY();
+                layout_palette.setVisibility(View.GONE);
+                palette_prev_palette_selected_color = palette_selected_color;
 
                 if((touch_action == motionEvent.ACTION_DOWN) || (touch_action == motionEvent.ACTION_MOVE)) {
                     int touch_calced_y = (int)(touch_y - layout_time_section.getY()
@@ -436,10 +449,162 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        iv_palette_blue = (ImageView)findViewById(R.id.palette_iv_blue);
+        iv_palette_blue.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint({"ResourceAsColor", "ResourceType"})
+            @Override
+            public void onClick(View view) {
+                palette_selected_color = R.color.blue;
+                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+                timesection_color = getResources().getString(palette_selected_color);
+                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+            }
+        });
+        iv_palette_red = (ImageView)findViewById(R.id.palette_iv_red);
+        iv_palette_red.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint({"ResourceAsColor", "ResourceType"})
+            @Override
+            public void onClick(View view) {
+                palette_selected_color = R.color.red;
+                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+                timesection_color = getResources().getString(palette_selected_color);
+                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+            }
+        });
+        iv_palette_green = (ImageView)findViewById(R.id.palette_iv_green);
+        iv_palette_green.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View view) {
+                palette_selected_color = R.color.green;
+                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+                timesection_color = getResources().getString(palette_selected_color);
+                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+            }
+        });
+        iv_palette_black = (ImageView)findViewById(R.id.palette_iv_black);
+        iv_palette_black.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View view) {
+                palette_selected_color = R.color.black;
+                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+                timesection_color = getResources().getString(palette_selected_color);
+                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+            }
+        });
+        iv_palette_yellow = (ImageView)findViewById(R.id.palette_iv_yellow);
+        iv_palette_yellow.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View view) {
+                palette_selected_color = R.color.yellow;
+                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+                timesection_color = getResources().getString(palette_selected_color);
+                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+            }
+        });
+        iv_palette_purple = (ImageView)findViewById(R.id.palette_iv_purple);
+        iv_palette_purple.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View view) {
+                palette_selected_color = R.color.purple;
+                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+                timesection_color = getResources().getString(palette_selected_color);
+                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+            }
+        });
+        iv_palette_skyBlue = (ImageView)findViewById(R.id.palette_iv_skyBlue);
+        iv_palette_skyBlue.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View view) {
+                palette_selected_color = R.color.sky_blue;
+                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+                timesection_color = getResources().getString(palette_selected_color);
+                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+            }
+        });
+        iv_palette_brown = (ImageView)findViewById(R.id.palette_iv_brown);
+        iv_palette_brown.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View view) {
+                palette_selected_color = R.color.brown;
+                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+                timesection_color = getResources().getString(palette_selected_color);
+                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+            }
+        });
+        iv_palette_pink = (ImageView)findViewById(R.id.palette_iv_pink);
+        iv_palette_pink.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View view) {
+                palette_selected_color = R.color.pink;
+                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+                timesection_color = getResources().getString(palette_selected_color);
+                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+            }
+        });
+        iv_palette_lightGreen = (ImageView)findViewById(R.id.palette_iv_lightGreen);
+        iv_palette_lightGreen.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View view) {
+                palette_selected_color = R.color.light_green;
+                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+                timesection_color = getResources().getString(palette_selected_color);
+                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+            }
+        });
+
         btn_palette_ok = (Button)findViewById(R.id.palette_btn_ok);
         btn_palette_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                palette_prev_palette_selected_color = palette_selected_color;
                 layout_palette.setVisibility(View.GONE);
             }
         });
@@ -448,6 +613,15 @@ public class MainActivity extends AppCompatActivity {
         btn_palette_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                palette_selected_color = palette_prev_palette_selected_color;
+                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+                timesection_color = getResources().getString(palette_selected_color);
+                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+
                 layout_palette.setVisibility(View.GONE);
             }
         });
@@ -556,5 +730,38 @@ public class MainActivity extends AppCompatActivity {
 
         Thread thread = new Thread(task);
         thread.start();
+    }
+
+    public int get_border_color(int color) {
+        if (color == R.color.blue) {
+            return R.drawable.border_all_dir_blue;
+        }
+        else if (color == R.color.red) {
+            return R.drawable.border_all_dir_red;
+        }
+        else if (color == R.color.green) {
+            return R.drawable.border_all_dir_green;
+        }
+        else if (color == R.color.black) {
+            return R.drawable.border_all_dir_black;
+        }
+        else if (color == R.color.yellow) {
+            return R.drawable.border_all_dir_yellow;
+        }
+        else if (color == R.color.purple) {
+            return R.drawable.border_all_dir_purple;
+        }
+        else if (color == R.color.sky_blue) {
+            return R.drawable.border_all_dir_sky_blue;
+        }
+        else if (color == R.color.brown) {
+            return R.drawable.border_all_dir_brown;
+        }
+        else if (color == R.color.pink) {
+            return R.drawable.border_all_dir_pink;
+        }
+        else {
+            return R.drawable.border_all_dir_light_green;
+        }
     }
 }
