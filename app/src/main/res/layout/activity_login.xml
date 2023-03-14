@@ -16,8 +16,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.276"
-        app:srcCompat="@drawable/login_main_pic" />
+        app:layout_constraintVertical_bias="0.276"/>
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/login_btn_login"
