@@ -30,6 +30,10 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB7XcltZx-Ik-WC1mqj95ypjk86ZyrYPq0" />
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id"/>
+
     </application>
 
 </manifest>
