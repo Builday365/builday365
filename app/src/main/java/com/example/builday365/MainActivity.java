@@ -301,13 +301,16 @@ public class MainActivity extends AppCompatActivity {
                             iv_timesection_ctrl.setImageResource(R.drawable.builday_icon_timesection_updown);
 
                             layoutParams = (ConstraintLayout.LayoutParams) layout_timesection_cur_time.getLayoutParams();
-                            layoutParams.height = touch_calced_y;
+                            layoutParams.height = Math.min(touch_calced_y, total_time_len);
                             layout_timesection_cur_time.setLayoutParams(layoutParams);
 
                             layoutParams = (ConstraintLayout.LayoutParams) layout_timesection_remain_time.getLayoutParams();
-                            layoutParams.height = cur_time_len - touch_calced_y - layout_side_gap;
-                            layoutParams.topMargin = touch_calced_y + layout_side_gap;
+                            layoutParams.height = Math.max(cur_time_len - touch_calced_y - layout_side_gap, 1);
+                            layoutParams.topMargin = Math.min(touch_calced_y + layout_side_gap, total_time_len);
                             layout_timesection_remain_time.setLayoutParams(layoutParams);
+
+                            Log.e("layoutParams height", String.valueOf(layoutParams.height));
+                            Log.e("layoutParams topMargin", String.valueOf(layoutParams.topMargin));
                         }
                     }
                 }

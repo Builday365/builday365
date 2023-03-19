@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout_timesection"
+    android:layout_width="105dp"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_sidebar" >
+
+    <ImageView
+        android:id="@+id/main_timesection_iv_ctrl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/builday_icon_timesection_updown"
+        app:layout_constraintBottom_toBottomOf="@+id/main_timesection_tv_click_time"
+        app:layout_constraintEnd_toStartOf="@+id/main_timesection_tv_click_time"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/main_timesection_tv_click_time" />
+
+    <TextView
+        android:id="@+id/main_timesection_tv_start_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-5dp"
+        android:text="00:00"
+        android:textColor="@color/red"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/main_timesection_layout_total_time"
+        app:layout_constraintHorizontal_bias="0.88"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/main_timesection_layout_total_time"
+        app:layout_constraintVertical_bias="0" />
+
+    <TextView
+        android:id="@+id/main_timesection_tv_cur_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="nn:nn"
+        android:textColor="@color/red"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/main_timesection_layout_total_time"
+        app:layout_constraintEnd_toEndOf="@+id/main_timesection_tv_start_time"
+        app:layout_constraintStart_toStartOf="@+id/main_timesection_tv_start_time"
+        app:layout_constraintTop_toTopOf="@+id/main_timesection_layout_total_time"
+        app:layout_constraintVertical_bias="0" />
+
+    <TextView
+        android:id="@+id/main_timesection_tv_click_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="nn:nn"
+        android:textColor="@color/red"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/main_timesection_layout_total_time"
+        app:layout_constraintEnd_toEndOf="@+id/main_timesection_tv_start_time"
+        app:layout_constraintStart_toStartOf="@+id/main_timesection_tv_start_time"
+        app:layout_constraintTop_toTopOf="@+id/main_timesection_layout_total_time"
+        app:layout_constraintVertical_bias="0" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_timesection_layout_total_time"
+        android:layout_width="8dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp"
+        android:background="@color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.85"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_timesection_layout_cur_time"
+        android:layout_width="8dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="40dp"
+        android:background="@color/red"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.85"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/main_timesection_layout_total_time"
+        app:layout_constraintVertical_bias="0.0"></androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_timesection_layout_remain_time"
+        android:layout_width="9.5dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/border_all_dir_red"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.858"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/main_timesection_layout_total_time"
+        app:layout_constraintVertical_bias="0.0"></androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageButton
+        android:id="@+id/main_timesection_ibtn_palette"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="#00FFFFFF"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/main_timesection_layout_total_time"
+        app:layout_constraintStart_toStartOf="@+id/main_timesection_layout_total_time"
+        app:layout_constraintTop_toBottomOf="@+id/main_timesection_layout_total_time"
+        app:srcCompat="@drawable/builday_icon_palette"
+        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+    <ImageButton
+        android:id="@+id/main_timesection_ibtn_cancel"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="#00FFFFFF"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/main_timesection_ibtn_palette"
+        app:layout_constraintStart_toEndOf="@+id/main_timesection_ibtn_ok"
+        app:layout_constraintTop_toBottomOf="@+id/main_timesection_layout_total_time"
+        app:srcCompat="@drawable/builday_icon_cancel"
+        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+    <ImageButton
+        android:id="@+id/main_timesection_ibtn_ok"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="#00FFFFFF"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/main_timesection_ibtn_palette"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_timesection_layout_total_time"
+        app:srcCompat="@drawable/builday_icon_ok"
+        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
