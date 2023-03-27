@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_layout_timebar"
+    android:id="@+id/fragment_layout_timebar"
     android:layout_width="105dp"
     android:layout_height="match_parent"
     android:background="@drawable/background_sidebar" >
@@ -16,15 +16,12 @@
         android:textColor="@color/default_color"
         android:textSize="12sp"
         android:textStyle="bold"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/main_sidebar_layout_total_time"
         app:layout_constraintEnd_toEndOf="@+id/main_sidebar_layout_total_time"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.43" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/main_sidebar_ibtn_activity"
@@ -32,10 +29,10 @@
         android:layout_height="0dp"
         android:background="#00FFFFFF"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="@+id/textView2"
-        app:layout_constraintEnd_toStartOf="@+id/textView2"
+        app:layout_constraintBottom_toBottomOf="@+id/main_sidebar_tv_start_time"
+        app:layout_constraintEnd_toStartOf="@+id/main_sidebar_tv_start_time"
         app:layout_constraintStart_toEndOf="@+id/main_sidebar_ibtn_memo"
-        app:layout_constraintTop_toTopOf="@+id/textView2"
+        app:layout_constraintTop_toTopOf="@+id/main_sidebar_tv_start_time"
         app:srcCompat="@drawable/builday_icon_activity"
         tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
@@ -45,42 +42,43 @@
         android:layout_height="0dp"
         android:background="#00FFFFFF"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="@+id/textView2"
-        app:layout_constraintEnd_toStartOf="@+id/textView2"
+        app:layout_constraintBottom_toBottomOf="@+id/main_sidebar_tv_start_time"
+        app:layout_constraintEnd_toStartOf="@+id/main_sidebar_tv_start_time"
         app:layout_constraintHorizontal_bias="0.25"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView2"
+        app:layout_constraintTop_toTopOf="@+id/main_sidebar_tv_start_time"
         app:srcCompat="@drawable/builday_icon_memo"
         tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/main_sidebar_tv_start_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@+id/main_sidebar_layout_total_time"
-        app:layout_constraintHorizontal_bias="0.88"
-        app:layout_constraintVertical_bias="0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/main_sidebar_layout_total_time"
+        android:layout_marginTop="35dp"
         android:text="00:00"
         android:textColor="@color/blue"
         android:textSize="12sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/main_sidebar_layout_total_time"
+        app:layout_constraintHorizontal_bias="0.88"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0" />
 
     <TextView
         android:id="@+id/main_sidebar_tv_cur_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/textView5"
-        app:layout_constraintVertical_bias="0"
-        app:layout_constraintEnd_toEndOf="@+id/textView2"
-        app:layout_constraintStart_toStartOf="@+id/textView2"
-        app:layout_constraintTop_toTopOf="@+id/main_sidebar_layout_total_time"
         android:text="nn:nn"
         android:textColor="@color/blue"
         android:textSize="12sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/main_sidebar_layout_cur_time"
+        app:layout_constraintEnd_toEndOf="@+id/main_sidebar_tv_start_time"
+        app:layout_constraintStart_toStartOf="@+id/main_sidebar_tv_start_time"
+        app:layout_constraintTop_toTopOf="@+id/main_sidebar_tv_start_time"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/textView5"
@@ -92,10 +90,10 @@
         android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/main_sidebar_layout_total_time"
-        app:layout_constraintEnd_toEndOf="@+id/textView2"
+        app:layout_constraintEnd_toEndOf="@+id/main_sidebar_tv_start_time"
         app:layout_constraintHorizontal_bias="0.85"
         app:layout_constraintStart_toEndOf="@+id/main_sidebar_ibtn_activity"
-        app:layout_constraintTop_toTopOf="@+id/main_sidebar_layout_total_time"
+        app:layout_constraintTop_toBottomOf="@+id/main_sidebar_layout_total_time"
         app:layout_constraintVertical_bias="1.0" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -118,13 +116,12 @@
         android:layout_width="8dp"
         android:layout_height="0dp"
         android:layout_marginBottom="40dp"
-        app:layout_constraintHorizontal_bias="0.85"
-        app:layout_constraintVertical_bias="0.0"
+        android:background="@color/blue"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/main_sidebar_layout_total_time"
+        app:layout_constraintStart_toStartOf="@+id/main_sidebar_layout_total_time"
         app:layout_constraintTop_toTopOf="@+id/main_sidebar_layout_total_time"
-        android:background="@color/blue" >
+        app:layout_constraintVertical_bias="0.0">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -133,13 +130,12 @@
         android:layout_width="9.5dp"
         android:layout_height="0dp"
         android:layout_marginBottom="40dp"
-        app:layout_constraintHorizontal_bias="0.858"
-        app:layout_constraintVertical_bias="1.0"
+        android:background="@drawable/border_all_dir_default"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/main_sidebar_layout_total_time"
+        app:layout_constraintStart_toStartOf="@+id/main_sidebar_layout_total_time"
         app:layout_constraintTop_toTopOf="@+id/main_sidebar_layout_total_time"
-        android:background="@drawable/border_all_dir_default" >
+        app:layout_constraintVertical_bias="0.0">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

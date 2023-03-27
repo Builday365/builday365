@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_layout_timesection"
+    android:id="@+id/fragment_layout_timesection"
     android:layout_width="105dp"
     android:layout_height="match_parent"
     android:background="@drawable/background_sidebar" >
@@ -22,7 +22,7 @@
         android:id="@+id/main_timesection_tv_start_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-5dp"
+        android:layout_marginTop="35dp"
         android:text="00:00"
         android:textColor="@color/red"
         android:textSize="12sp"
@@ -31,7 +31,7 @@
         app:layout_constraintEnd_toStartOf="@+id/main_timesection_layout_total_time"
         app:layout_constraintHorizontal_bias="0.88"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/main_timesection_layout_total_time"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0" />
 
     <TextView
@@ -42,11 +42,11 @@
         android:textColor="@color/red"
         android:textSize="12sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/main_timesection_layout_total_time"
+        app:layout_constraintBottom_toBottomOf="@id/main_timesection_layout_total_time"
         app:layout_constraintEnd_toEndOf="@+id/main_timesection_tv_start_time"
         app:layout_constraintStart_toStartOf="@+id/main_timesection_tv_start_time"
-        app:layout_constraintTop_toTopOf="@+id/main_timesection_layout_total_time"
-        app:layout_constraintVertical_bias="0" />
+        app:layout_constraintTop_toTopOf="@+id/main_timesection_tv_start_time"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/main_timesection_tv_click_time"
@@ -56,11 +56,11 @@
         android:textColor="@color/red"
         android:textSize="12sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/main_timesection_layout_total_time"
+        app:layout_constraintBottom_toBottomOf="@id/main_timesection_layout_total_time"
         app:layout_constraintEnd_toEndOf="@+id/main_timesection_tv_start_time"
         app:layout_constraintStart_toStartOf="@+id/main_timesection_tv_start_time"
-        app:layout_constraintTop_toTopOf="@+id/main_timesection_layout_total_time"
-        app:layout_constraintVertical_bias="0" />
+        app:layout_constraintTop_toTopOf="@+id/main_timesection_tv_start_time"
+        app:layout_constraintVertical_bias="0.0" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -75,7 +75,6 @@
         app:layout_constraintHorizontal_bias="0.85"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -85,9 +84,8 @@
         android:layout_marginBottom="40dp"
         android:background="@color/red"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.85"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/main_timesection_layout_total_time"
+        app:layout_constraintStart_toStartOf="@+id/main_timesection_layout_total_time"
         app:layout_constraintTop_toTopOf="@+id/main_timesection_layout_total_time"
         app:layout_constraintVertical_bias="0.0"></androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -98,9 +96,8 @@
         android:layout_marginBottom="40dp"
         android:background="@drawable/border_all_dir_red"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.858"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/main_timesection_layout_total_time"
+        app:layout_constraintStart_toStartOf="@+id/main_timesection_layout_total_time"
         app:layout_constraintTop_toTopOf="@+id/main_timesection_layout_total_time"
         app:layout_constraintVertical_bias="0.0"></androidx.constraintlayout.widget.ConstraintLayout>
 
