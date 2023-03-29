@@ -32,7 +32,7 @@ public class AdMobManager {
 
         mAdView = new AdView(context);
         mAdView.setAdUnitId(context.getString(R.string.admob_ad_id));
-        mAdView.setAdSize(AdSize.BANNER);
+        mAdView.setAdSize(AdSize.SMART_BANNER);
         adContainer.addView(mAdView);
 
         AdRequest adRequest = new AdRequest.Builder().build();
