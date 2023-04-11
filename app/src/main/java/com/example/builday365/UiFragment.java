@@ -1,6 +1,7 @@
 package com.example.builday365;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
@@ -65,6 +67,15 @@ public class UiFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ui, container, false);
+
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                hideKeyboard();
+                return false;
+            }
+        });
 
         tv_toolbar_cur_date = (TextView)view.findViewById(R.id.main_toolbar_tv_cur_date);
         tv_toolbar_cur_date.setOnClickListener(new View.OnClickListener() {
@@ -390,6 +401,7 @@ public class UiFragment extends Fragment {
         btn_dialog_section_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideKeyboard();
                 layout_dialog_section.setVisibility(View.GONE);
             }
         });
@@ -398,6 +410,7 @@ public class UiFragment extends Fragment {
         btn_dialog_section_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideKeyboard();
                 layout_dialog_section.setVisibility(View.GONE);
             }
         });
@@ -735,6 +748,13 @@ public class UiFragment extends Fragment {
 
         Thread thread = new Thread(task);
         thread.start();
+    }
+
+    private void hideKeyboard() {
+        if (getActivity() != null && getActivity().getCurrentFocus() != null) {
+            InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     public int get_border_color(int color) {
