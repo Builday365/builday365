@@ -9,6 +9,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -51,9 +52,6 @@ public class UiFragment extends Fragment {
     Button btn_dialog_section_ok, btn_dialog_section_cancel, btn_palette_ok, btn_palette_cancel;
     EditText dialog_section_et_memo;
 
-    NavigationView navigationView;
-    View headerView;
-
     int set_year, set_month, set_day, total_time_len, cur_time_len;
     int tv_time_margin_gap = 15;
     int layout_side_gap = 5;
@@ -61,7 +59,7 @@ public class UiFragment extends Fragment {
     Calendar calendar;
     CalendarView calendarView;
     int palette_selected_color, palette_prev_palette_selected_color;
-    String timesection_color;
+    String timesection_color, timesection_touch_time;
 
     @Nullable
     @Override
@@ -254,6 +252,8 @@ public class UiFragment extends Fragment {
         layout_timesection_remain_time.setVisibility(View.GONE);
 
         layout_time_section.setOnTouchListener(new View.OnTouchListener() {
+            private VelocityTracker velocityTracker;
+
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 int touch_action = motionEvent.getAction();
@@ -261,24 +261,45 @@ public class UiFragment extends Fragment {
                 layout_palette.setVisibility(View.GONE);
                 palette_prev_palette_selected_color = palette_selected_color;
 
-                if((touch_action == motionEvent.ACTION_DOWN) || (touch_action == motionEvent.ACTION_MOVE)) {
+                if (velocityTracker == null) {
+                    velocityTracker = VelocityTracker.obtain();
+                }
+                velocityTracker.addMovement(motionEvent);
+
+                if(touch_action == motionEvent.ACTION_MOVE) {
                     int touch_calced_y = (int)(touch_y - layout_time_section.getY()
                             + layout_timesection_cur_time.getY());
                     double time_rate = (double)touch_calced_y / (double)total_time_len;
+                    velocityTracker.computeCurrentVelocity(1);
+                    float touch_velocity = Math.abs(velocityTracker.getYVelocity());
 
                     if ((touch_calced_y >= 0) && (touch_calced_y <= cur_time_len)) {
                         is_timesection_touched = true;
                         int touch_time = (int)(time_rate * 24 * 60);
+
+                        if (touch_velocity > 0.3) {
+                            touch_time = (touch_time + 30) / 60 * 60;
+                            touch_calced_y = (touch_time + 30) / 60 * 60;
+                        }
+
+                        else if (touch_velocity <= 0.3 && touch_velocity > 0.05) {
+                            touch_time = (touch_time + 5) / 10 * 10;
+                            touch_calced_y = (touch_time + 5) / 10 * 10;
+                        }
+
+                        touch_calced_y = Math.min(touch_calced_y, cur_time_len);
+                        touch_time = Math.min(touch_time, (1 * 24 * 60));
+
                         String touch_hour = String.format("%02d", touch_time / 60);
                         String touch_min = String.format("%02d", touch_time % 60);
-                        String touch_show_time = touch_hour + ":" + touch_min;
+                        timesection_touch_time = touch_hour + ":" + touch_min;
 
                         ConstraintLayout.LayoutParams layoutParams
                                 = (ConstraintLayout.LayoutParams) tv_timesection_click_time.getLayoutParams();
                         layoutParams.topMargin = touch_calced_y - tv_time_margin_gap;
                         tv_timesection_click_time.setLayoutParams(layoutParams);
                         tv_timesection_click_time.setVisibility(View.VISIBLE);
-                        tv_timesection_click_time.setText(touch_show_time);
+                        tv_timesection_click_time.setText(timesection_touch_time);
 
                         iv_timesection_ctrl.setVisibility(View.VISIBLE);
                         layout_timesection_remain_time.setVisibility(View.VISIBLE);
@@ -290,7 +311,6 @@ public class UiFragment extends Fragment {
                             layoutParams.height = cur_time_len;
                             layoutParams.topMargin = 0;
                             layout_timesection_remain_time.setLayoutParams(layoutParams);
-
                         }
                         else if (touch_time == cur_time_len) {
                             iv_timesection_ctrl.setImageResource(R.drawable.builday_icon_timesection_up);
@@ -306,10 +326,15 @@ public class UiFragment extends Fragment {
                             layoutParams.height = Math.max(cur_time_len - touch_calced_y - layout_side_gap, 1);
                             layoutParams.topMargin = Math.min(touch_calced_y + layout_side_gap, total_time_len);
                             layout_timesection_remain_time.setLayoutParams(layoutParams);
-//
-//                            Log.e("layoutParams height", String.valueOf(layoutParams.height));
-//                            Log.e("layoutParams topMargin", String.valueOf(layoutParams.topMargin));
                         }
+                    }
+                }
+
+
+                if (touch_action == motionEvent.ACTION_UP) {
+                    if (velocityTracker != null) {
+                        velocityTracker.recycle();
+                        velocityTracker = null;
                     }
                 }
 
@@ -377,6 +402,7 @@ public class UiFragment extends Fragment {
             }
         });
 
+        ConstraintLayout timebarView = (ConstraintLayout)view.findViewById(R.id.fragment_layout_timebar);
         ibtn_timesection_ok = (ImageButton) view.findViewById(R.id.main_timesection_ibtn_ok);
         ibtn_timesection_ok.setOnClickListener(new View.OnClickListener() {
             @Override
