@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -416,11 +417,79 @@ public class UiFragment extends Fragment {
         });
 
         ConstraintLayout timebarView = (ConstraintLayout)view.findViewById(R.id.fragment_layout_timebar);
+        TextView tv_sidebar_start_time = (TextView) view.findViewById(R.id.main_sidebar_tv_start_time);
         ibtn_timesection_ok = (ImageButton) view.findViewById(R.id.main_timesection_ibtn_ok);
         ibtn_timesection_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 layout_time_section.setVisibility(View.GONE);
+
+                TextView tv_sidebar_new_section = new TextView(timebarView.getContext());
+                ConstraintLayout.LayoutParams layoutParams
+                        = (ConstraintLayout.LayoutParams) tv_timesection_click_time.getLayoutParams();
+                int tv_new_top_margin = layoutParams.topMargin;
+                Log.e(TAG, "tv_new_top_margin: " + tv_new_top_margin);
+
+                layoutParams = (ConstraintLayout.LayoutParams) tv_sidebar_start_time.getLayoutParams();
+
+                int bottom2bottom = layoutParams.bottomToBottom;
+                int bottom2top = layoutParams.bottomToTop;
+                int end2start = layoutParams.endToStart;
+                int end2end = layoutParams.endToEnd;
+                int start2start = layoutParams.startToStart;
+                int start2end = layoutParams.startToEnd;
+                int top2top = layoutParams.topToTop;
+                int top2bottom = layoutParams.topToBottom;
+                float horBias = layoutParams.horizontalBias;
+                float vertBias = layoutParams.verticalBias;
+                int topMargin = layoutParams.topMargin;
+
+                Log.e(TAG, "tv_sidebar_cur_time");
+                Log.e(TAG, "layoutParams.topMargin: " + layoutParams.topMargin);
+                Log.e(TAG, "layoutParams.bottomToBottom: " + layoutParams.bottomToBottom);
+                Log.e(TAG, "layoutParams.startToStart: " + layoutParams.startToStart);
+                Log.e(TAG, "layoutParams.topToTop: " + layoutParams.topToTop);
+                Log.e(TAG, "layoutParams.horizontalBias: " + layoutParams.horizontalBias);
+                Log.e(TAG, "layoutParams.verticalBias: " + layoutParams.verticalBias);
+
+
+//                tv_sidebar_new_section.setLayoutParams(prev_layoutParams);
+//                layoutParams = (ConstraintLayout.LayoutParams) tv_sidebar_new_section.getLayoutParams();
+//                layoutParams.topMargin += tv_new_top_margin;
+//                tv_sidebar_new_section.setLayoutParams(layoutParams);
+
+                layoutParams = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT,
+                                    ConstraintLayout.LayoutParams.WRAP_CONTENT);
+
+                layoutParams.bottomToBottom = bottom2bottom;
+                layoutParams.endToStart = end2start;
+                layoutParams.startToStart = start2start;
+                layoutParams.topToTop = top2top;
+                layoutParams.horizontalBias = horBias;
+                layoutParams.verticalBias = vertBias;
+                layoutParams.topMargin = tv_new_top_margin + topMargin;
+
+                tv_sidebar_new_section.setText(timesection_touch_time);
+                tv_sidebar_new_section.setTextSize(12);
+                tv_sidebar_new_section.setTypeface(null, Typeface.BOLD);
+
+                Log.e(TAG, "tv_sidebar_new_section");
+                Log.e(TAG, "layoutParams.topMargin: " + layoutParams.topMargin);
+                Log.e(TAG, "layoutParams.bottomToBottom: " + layoutParams.bottomToBottom);
+                Log.e(TAG, "layoutParams.startToStart: " + layoutParams.startToStart);
+                Log.e(TAG, "layoutParams.topToTop: " + layoutParams.topToTop);
+                Log.e(TAG, "layoutParams.horizontalBias: " + layoutParams.horizontalBias);
+                Log.e(TAG, "layoutParams.verticalBias: " + layoutParams.verticalBias);
+
+//                app:layout_constraintBottom_toBottomOf="parent"
+//                app:layout_constraintEnd_toStartOf="@+id/main_sidebar_layout_total_time"
+//                app:layout_constraintHorizontal_bias="0.88"
+//                app:layout_constraintStart_toStartOf="parent"
+//                app:layout_constraintTop_toTopOf="parent"
+
+                tv_sidebar_new_section.setLayoutParams(layoutParams);
+                tv_sidebar_new_section.setTextColor(getResources().getColor(palette_selected_color));
+                timebarView.addView(tv_sidebar_new_section);
 
                 @SuppressLint("ResourceType")
                 String icon_able_color = getResources().getString(R.color.blue);
@@ -698,19 +767,21 @@ public class UiFragment extends Fragment {
                 int cur_hour = Integer.parseInt(cur_time.split(":")[0]);
                 int cur_min = Integer.parseInt(cur_time.split(":")[1]);
                 double time_rate = (cur_hour * 60 + cur_min) / (24 * 60.0);
-                cur_time_len = (int)(time_rate * total_time_len);
+//                cur_time_len = (int)(time_rate * total_time_len);
 
 //                /* ***************** TIME DEBUG ****************** */
-//                cur_time_len = (int)(0.6 * total_time_len);
+                cur_time_len = (int)(0.6 * total_time_len);
 //                /***************************************************/
 
                 ConstraintLayout.LayoutParams layoutParams
                         = (ConstraintLayout.LayoutParams) tv_sidebar_cur_time.getLayoutParams();
-                layoutParams.topMargin = Math.max(tv_time_margin_gap * 2, cur_time_len - tv_time_margin_gap);
+                layoutParams.topMargin = Math.min(total_time_len - tv_time_margin_gap * 2,
+                                Math.max(tv_time_margin_gap * 2, cur_time_len - tv_time_margin_gap));
                 tv_sidebar_cur_time.setLayoutParams(layoutParams);
 
                 layoutParams = (ConstraintLayout.LayoutParams) tv_timesection_cur_time.getLayoutParams();
-                layoutParams.topMargin = Math.max(tv_time_margin_gap * 2, cur_time_len - tv_time_margin_gap);
+                layoutParams.topMargin = Math.min(total_time_len - tv_time_margin_gap * 2,
+                                Math.max(tv_time_margin_gap * 2, cur_time_len - tv_time_margin_gap));
                 tv_timesection_cur_time.setLayoutParams(layoutParams);
 
                 layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
