@@ -307,7 +307,7 @@ public class UiFragment extends Fragment {
 
                         ConstraintLayout.LayoutParams layoutParams
                                 = (ConstraintLayout.LayoutParams) tv_timesection_click_time.getLayoutParams();
-                        layoutParams.topMargin = touch_calced_y - tv_time_margin_gap;
+                        layoutParams.topMargin = Math.max(tv_time_margin_gap * 2, touch_calced_y - tv_time_margin_gap);
                         tv_timesection_click_time.setLayoutParams(layoutParams);
                         tv_timesection_click_time.setVisibility(View.VISIBLE);
                         tv_timesection_click_time.setText(timesection_touch_time);
@@ -698,19 +698,19 @@ public class UiFragment extends Fragment {
                 int cur_hour = Integer.parseInt(cur_time.split(":")[0]);
                 int cur_min = Integer.parseInt(cur_time.split(":")[1]);
                 double time_rate = (cur_hour * 60 + cur_min) / (24 * 60.0);
-
-                /* ***************** TIME DEBUG ****************** */
                 cur_time_len = (int)(time_rate * total_time_len);
-                cur_time_len = (int)(0.6 * total_time_len);
-                /***************************************************/
+
+//                /* ***************** TIME DEBUG ****************** */
+//                cur_time_len = (int)(0.6 * total_time_len);
+//                /***************************************************/
 
                 ConstraintLayout.LayoutParams layoutParams
                         = (ConstraintLayout.LayoutParams) tv_sidebar_cur_time.getLayoutParams();
-                layoutParams.topMargin = cur_time_len - tv_time_margin_gap;
+                layoutParams.topMargin = Math.max(tv_time_margin_gap * 2, cur_time_len - tv_time_margin_gap);
                 tv_sidebar_cur_time.setLayoutParams(layoutParams);
 
                 layoutParams = (ConstraintLayout.LayoutParams) tv_timesection_cur_time.getLayoutParams();
-                layoutParams.topMargin = cur_time_len - tv_time_margin_gap;
+                layoutParams.topMargin = Math.max(tv_time_margin_gap * 2, cur_time_len - tv_time_margin_gap);
                 tv_timesection_cur_time.setLayoutParams(layoutParams);
 
                 layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
@@ -718,8 +718,8 @@ public class UiFragment extends Fragment {
                 layout_sidebar_cur_time.setLayoutParams(layoutParams);
 
                 layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_remain_time.getLayoutParams();
-                layoutParams.topMargin = cur_time_len + layout_side_gap;
-                layoutParams.height = total_time_len - cur_time_len - layout_side_gap;
+                layoutParams.topMargin = Math.min(total_time_len, cur_time_len + layout_side_gap);
+                layoutParams.height = Math.max(0, total_time_len - cur_time_len - layout_side_gap);
                 layout_sidebar_remain_time.setLayoutParams(layoutParams);
 
                 if (!is_timesection_touched) {
