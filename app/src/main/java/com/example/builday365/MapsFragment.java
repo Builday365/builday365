@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 import java.util.List;
@@ -52,6 +53,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
 
     private GoogleMap mGoogleMap;
     private LatLng mHomeLocation;
+    private LatLng mLastLocation;
     private Marker mHomeMarker;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -72,14 +74,15 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
             mGoogleMap.getUiSettings().setZoomGesturesEnabled(true);
             mGoogleMap.setOnMapLongClickListener(MapsFragment.this);
 
-            LatLng lastLatLng = getLastLocation();
-            if (lastLatLng == null) {
+            mLastLocation = getLastLocation();
+            if (mLastLocation == null) {
                 Log.d(TAG, "[onMapReady] request permission");
                 ActivityCompat.requestPermissions(getActivity(), REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE);
                 return;
             }
-            setLastLocationMarker(lastLatLng);
+            setLastLocationMarker(mLastLocation);
             setHomeLocationMarker();
+            setFabListener();
         }
     };
 
@@ -251,5 +254,16 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
         }
         Address address = addresses.get(0);
         return address.getAddressLine(0).toString()+"\n";
+    }
+
+    private void setFabListener() {
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mLastLocation, 15);
+                mGoogleMap.animateCamera(cameraUpdate);
+            }
+        });
     }
 }
