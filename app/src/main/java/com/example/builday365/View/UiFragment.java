@@ -1,4 +1,4 @@
-package com.example.builday365;
+package com.example.builday365.View;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -28,7 +28,11 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
 
+import com.example.builday365.Model.DatabaseManager;
+import com.example.builday365.R;
+import com.example.builday365.ViewModel.MainViewModel;
 import com.google.android.material.navigation.NavigationView;
 
 import java.text.ParseException;
@@ -38,6 +42,7 @@ import java.util.Date;
 
 public class UiFragment extends Fragment {
     private static final String TAG = "UiFragment";
+    MainViewModel vm;
 
     TextView tv_toolbar_cur_date, tv_google_name, tv_sidebar_cur_time, tv_timesection_cur_time,
             tv_timesection_click_time, tv_timesection_start_time;
@@ -404,6 +409,9 @@ public class UiFragment extends Fragment {
             public void onClick(View view) {
                 hideKeyboard();
                 layout_dialog_section.setVisibility(View.GONE);
+
+                vm.addMemo( new Date(System.currentTimeMillis()),dialog_section_et_memo.getText().toString());
+
             }
         });
 
@@ -728,6 +736,13 @@ public class UiFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         calendarView = (CalendarView)view.findViewById(R.id.fragment_calendarview);
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        Log.d(TAG,"onStart is called");
+        vm = new MainViewModel(DatabaseManager.getInstance());
+        super.onStart();
     }
 
     public void set_date(Date date) {

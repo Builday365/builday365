@@ -16,7 +16,7 @@
         android:largeHeap="true">
 
         <activity
-            android:name=".SplashActivity"
+            android:name=".View.SplashActivity"
             android:theme="@style/Theme.Builday365"
             android:exported="true">
             <intent-filter>
@@ -24,8 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity"/>
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".View.LoginActivity"/>
+        <activity android:name=".View.MainActivity"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
