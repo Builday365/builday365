@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickListener,
+public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickListener, GoogleMap.OnCameraMoveStartedListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
     private static final String TAG = "MapsFragment";
 
@@ -55,6 +55,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
     private LatLng mHomeLocation;
     private LatLng mLastLocation;
     private Marker mHomeMarker;
+    FloatingActionButton mFab;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -73,6 +74,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
             mGoogleMap = googleMap;
             mGoogleMap.getUiSettings().setZoomGesturesEnabled(true);
             mGoogleMap.setOnMapLongClickListener(MapsFragment.this);
+            mGoogleMap.setOnCameraMoveStartedListener(MapsFragment.this);
 
             mLastLocation = getLastLocation();
             if (mLastLocation == null) {
@@ -257,13 +259,26 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
     }
 
     private void setFabListener() {
-        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab = getActivity().findViewById(R.id.fab);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mFab.setImageResource(R.drawable.builday_icon_currentlocation1);
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mLastLocation, 15);
                 mGoogleMap.animateCamera(cameraUpdate);
             }
         });
+    }
+
+    @Override
+    public void onCameraMoveStarted(int i) {
+        if (mFab == null) {
+            Log.w(TAG, "[onCameraMoveStarted] invalide operation");
+            return;
+        }
+        Log.d(TAG, "[onCameraMoveStarted] " + i);
+        if (i == REASON_GESTURE) {
+            mFab.setImageResource(R.drawable.builday_icon_currentlocation2);
+        }
     }
 }
