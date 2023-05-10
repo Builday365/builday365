@@ -210,7 +210,7 @@ public class UiFragment extends Fragment {
             }
         });
 
-        ibtn_side_menu = (ImageButton)view.findViewById(R.id.main_toolbar_ibtn_side_menu);
+//        ibtn_side_menu = (ImageButton)view.findViewById(R.id.main_toolbar_ibtn_side_menu);
 //        drawerLayout = (DrawerLayout)view.findViewById(R.id.main_drawer);
 //        drawerLayout.closeDrawers();
 //        ibtn_side_menu.setOnClickListener(new View.OnClickListener() {
@@ -245,477 +245,477 @@ public class UiFragment extends Fragment {
 //
 //        tv_google_name = headerView.findViewById(R.id.drawer_header_tv_google_name);
 //        tv_google_name.setText(google_name);
-
-        layout_dialog_section = (ConstraintLayout)view.findViewById(R.id.fragment_dialog_make_section);
-        layout_dialog_section.setVisibility(View.GONE);
-
-        tv_timesection_start_time = (TextView)view.findViewById(R.id.main_timesection_tv_start_time);
-        tv_timesection_click_time = (TextView)view.findViewById(R.id.main_timesection_tv_click_time);
-        tv_timesection_click_time.setVisibility(View.GONE);
-
-        iv_timesection_ctrl = (ImageView)view.findViewById(R.id.main_timesection_iv_ctrl);
-        palette_selected_color = R.color.red;
-        palette_prev_palette_selected_color = palette_selected_color;
-        tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
-        timesection_color = getResources().getString(palette_selected_color);
-        iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-        iv_timesection_ctrl.setVisibility(View.INVISIBLE);
-
-        layout_time_section = (ConstraintLayout)view.findViewById(R.id.fragment_layout_timesection);
-        layout_time_section.setVisibility(View.GONE);
-
-        layout_timesection_remain_time = (ConstraintLayout)view.findViewById(R.id.main_timesection_layout_remain_time);
-        layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
-        layout_timesection_remain_time.setVisibility(View.GONE);
-
-        layout_time_section.setOnTouchListener(new View.OnTouchListener() {
-            private VelocityTracker velocityTracker;
-
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                int touch_action = motionEvent.getAction();
-                float touch_y = motionEvent.getY();
-                layout_palette.setVisibility(View.GONE);
-                palette_prev_palette_selected_color = palette_selected_color;
-
-                if (velocityTracker == null) {
-                    velocityTracker = VelocityTracker.obtain();
-                }
-                velocityTracker.addMovement(motionEvent);
-
-                if(touch_action == motionEvent.ACTION_MOVE) {
-                    int touch_calced_y = (int)(touch_y - layout_time_section.getY()
-                            + layout_timesection_cur_time.getY());
-                    double time_rate = (double)touch_calced_y / (double)total_time_len;
-                    velocityTracker.computeCurrentVelocity(1);
-                    float touch_velocity = Math.abs(velocityTracker.getYVelocity());
-
-                    if ((touch_calced_y >= 0) && (touch_calced_y <= cur_time_len)) {
-                        is_timesection_touched = true;
-                        int touch_time = (int)(time_rate * 24 * 60);
-
-                        if (touch_velocity > 0.3) {
-                            touch_time = (touch_time + 30) / 60 * 60;
-                            touch_calced_y = (touch_time + 30) / 60 * 60;
-                        }
-
-                        else if (touch_velocity <= 0.3 && touch_velocity > 0.05) {
-                            touch_time = (touch_time + 5) / 10 * 10;
-                            touch_calced_y = (touch_time + 5) / 10 * 10;
-                        }
-
-                        touch_calced_y = Math.min(touch_calced_y, cur_time_len);
-                        touch_time = Math.min(touch_time, (1 * 24 * 60));
-
-                        String touch_hour = String.format("%02d", touch_time / 60);
-                        String touch_min = String.format("%02d", touch_time % 60);
-                        timesection_touch_time = touch_hour + ":" + touch_min;
-
-                        ConstraintLayout.LayoutParams layoutParams
-                                = (ConstraintLayout.LayoutParams) tv_timesection_click_time.getLayoutParams();
-                        layoutParams.topMargin = Math.max(tv_time_margin_gap * 2, touch_calced_y - tv_time_margin_gap);
-                        tv_timesection_click_time.setLayoutParams(layoutParams);
-                        tv_timesection_click_time.setVisibility(View.VISIBLE);
-                        tv_timesection_click_time.setText(timesection_touch_time);
-
-                        iv_timesection_ctrl.setVisibility(View.VISIBLE);
-                        layout_timesection_remain_time.setVisibility(View.VISIBLE);
-
-                        if (touch_time == 0) {
-                            iv_timesection_ctrl.setImageResource(R.drawable.builday_icon_timesection_down);
-
-                            layoutParams = (ConstraintLayout.LayoutParams) layout_timesection_remain_time.getLayoutParams();
-                            layoutParams.height = cur_time_len;
-                            layoutParams.topMargin = 0;
-                            layout_timesection_remain_time.setLayoutParams(layoutParams);
-                        }
-                        else if (touch_time == cur_time_len) {
-                            iv_timesection_ctrl.setImageResource(R.drawable.builday_icon_timesection_up);
-                        }
-                        else {
-                            iv_timesection_ctrl.setImageResource(R.drawable.builday_icon_timesection_updown);
-
-                            layoutParams = (ConstraintLayout.LayoutParams) layout_timesection_cur_time.getLayoutParams();
-                            layoutParams.height = Math.min(touch_calced_y, total_time_len);
-                            layout_timesection_cur_time.setLayoutParams(layoutParams);
-
-                            layoutParams = (ConstraintLayout.LayoutParams) layout_timesection_remain_time.getLayoutParams();
-                            layoutParams.height = Math.max(cur_time_len - touch_calced_y - layout_side_gap, 1);
-                            layoutParams.topMargin = Math.min(touch_calced_y + layout_side_gap, total_time_len);
-                            layout_timesection_remain_time.setLayoutParams(layoutParams);
-                        }
-                    }
-                }
-
-
-                if (touch_action == motionEvent.ACTION_UP) {
-                    if (velocityTracker != null) {
-                        velocityTracker.recycle();
-                        velocityTracker = null;
-                    }
-                }
-
-                return true;
-            }
-        });
-
-        ibtn_add_section = (ImageButton)view.findViewById(R.id.main_timebar_ibtn_add_section);
-        @SuppressLint("ResourceType")
-        String ibtn_add_section_color = getResources().getString(R.color.default_color);
-        ibtn_add_section.setImageTintList(ColorStateList.valueOf(Color.parseColor(ibtn_add_section_color)));
-        ibtn_add_section.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                layout_time_section.setVisibility(View.VISIBLE);
-
-                @SuppressLint("ResourceType")
-                String icon_disable_color = getResources().getString(R.color.disable_blue);
-                ibtn_sidebar_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(icon_disable_color)));
-                ibtn_sidebar_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(icon_disable_color)));
-
-                ibtn_sidebar_memo.setEnabled(false);
-                ibtn_sidebar_activity.setEnabled(false);
-            }
-        });
-
-        @SuppressLint("ResourceType")
-        String select_color = getResources().getString(R.color.blue);
-        tv_sidebar_cur_time = (TextView)view.findViewById(R.id.main_sidebar_tv_cur_time);
-        tv_timesection_cur_time = (TextView)view.findViewById(R.id.main_timesection_tv_cur_time);
-
-        ibtn_sidebar_memo = (ImageButton)view.findViewById(R.id.main_sidebar_ibtn_memo);
-        ibtn_sidebar_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(select_color)));
-        ibtn_sidebar_memo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                layout_dialog_section.setVisibility(View.VISIBLE);
-            }
-        });
-
-        ibtn_sidebar_activity = (ImageButton)view.findViewById(R.id.main_sidebar_ibtn_activity);
-        ibtn_sidebar_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(select_color)));
-        ibtn_sidebar_activity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                layout_dialog_section.setVisibility(View.VISIBLE);
-            }
-        });
-
-        dialog_section_et_memo = (EditText)view.findViewById(R.id.dialog_section_et_memo);
-
-        btn_dialog_section_ok = (Button)view.findViewById(R.id.dialog_section_btn_ok);
-        btn_dialog_section_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hideKeyboard();
-                layout_dialog_section.setVisibility(View.GONE);
-
-                vm.addMemo( new Date(System.currentTimeMillis()),dialog_section_et_memo.getText().toString());
-
-            }
-        });
-
-        btn_dialog_section_cancel = (Button)view.findViewById(R.id.dialog_section_btn_cancel);
-        btn_dialog_section_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hideKeyboard();
-                layout_dialog_section.setVisibility(View.GONE);
-            }
-        });
-
-        ConstraintLayout timebarView = (ConstraintLayout)view.findViewById(R.id.fragment_layout_timebar);
-        TextView tv_sidebar_start_time = (TextView) view.findViewById(R.id.main_sidebar_tv_start_time);
-        ibtn_timesection_ok = (ImageButton) view.findViewById(R.id.main_timesection_ibtn_ok);
-        ibtn_timesection_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                layout_time_section.setVisibility(View.GONE);
-
-                TextView tv_sidebar_new_section = new TextView(timebarView.getContext());
-                ConstraintLayout.LayoutParams layoutParams
-                        = (ConstraintLayout.LayoutParams) tv_timesection_click_time.getLayoutParams();
-                int tv_new_top_margin = layoutParams.topMargin;
-                Log.e(TAG, "tv_new_top_margin: " + tv_new_top_margin);
-
-                layoutParams = (ConstraintLayout.LayoutParams) tv_sidebar_start_time.getLayoutParams();
-
-                int bottom2bottom = layoutParams.bottomToBottom;
-                int bottom2top = layoutParams.bottomToTop;
-                int end2start = layoutParams.endToStart;
-                int end2end = layoutParams.endToEnd;
-                int start2start = layoutParams.startToStart;
-                int start2end = layoutParams.startToEnd;
-                int top2top = layoutParams.topToTop;
-                int top2bottom = layoutParams.topToBottom;
-                float horBias = layoutParams.horizontalBias;
-                float vertBias = layoutParams.verticalBias;
-                int topMargin = layoutParams.topMargin;
-
-                Log.e(TAG, "tv_sidebar_cur_time");
-                Log.e(TAG, "layoutParams.topMargin: " + layoutParams.topMargin);
-                Log.e(TAG, "layoutParams.bottomToBottom: " + layoutParams.bottomToBottom);
-                Log.e(TAG, "layoutParams.startToStart: " + layoutParams.startToStart);
-                Log.e(TAG, "layoutParams.topToTop: " + layoutParams.topToTop);
-                Log.e(TAG, "layoutParams.horizontalBias: " + layoutParams.horizontalBias);
-                Log.e(TAG, "layoutParams.verticalBias: " + layoutParams.verticalBias);
-
-
-//                tv_sidebar_new_section.setLayoutParams(prev_layoutParams);
-//                layoutParams = (ConstraintLayout.LayoutParams) tv_sidebar_new_section.getLayoutParams();
-//                layoutParams.topMargin += tv_new_top_margin;
+//
+//        layout_dialog_section = (ConstraintLayout)view.findViewById(R.id.fragment_dialog_make_section);
+//        layout_dialog_section.setVisibility(View.GONE);
+//
+//        tv_timesection_start_time = (TextView)view.findViewById(R.id.main_timesection_tv_start_time);
+//        tv_timesection_click_time = (TextView)view.findViewById(R.id.main_timesection_tv_click_time);
+//        tv_timesection_click_time.setVisibility(View.GONE);
+//
+//        iv_timesection_ctrl = (ImageView)view.findViewById(R.id.main_timesection_iv_ctrl);
+//        palette_selected_color = R.color.red;
+//        palette_prev_palette_selected_color = palette_selected_color;
+//        tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+//        timesection_color = getResources().getString(palette_selected_color);
+//        iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//        iv_timesection_ctrl.setVisibility(View.INVISIBLE);
+//
+//        layout_time_section = (ConstraintLayout)view.findViewById(R.id.fragment_layout_timesection);
+//        layout_time_section.setVisibility(View.GONE);
+//
+//        layout_timesection_remain_time = (ConstraintLayout)view.findViewById(R.id.main_timesection_layout_remain_time);
+//        layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+//        layout_timesection_remain_time.setVisibility(View.GONE);
+//
+//        layout_time_section.setOnTouchListener(new View.OnTouchListener() {
+//            private VelocityTracker velocityTracker;
+//
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                int touch_action = motionEvent.getAction();
+//                float touch_y = motionEvent.getY();
+//                layout_palette.setVisibility(View.GONE);
+//                palette_prev_palette_selected_color = palette_selected_color;
+//
+//                if (velocityTracker == null) {
+//                    velocityTracker = VelocityTracker.obtain();
+//                }
+//                velocityTracker.addMovement(motionEvent);
+//
+//                if(touch_action == motionEvent.ACTION_MOVE) {
+//                    int touch_calced_y = (int)(touch_y - layout_time_section.getY()
+//                            + layout_timesection_cur_time.getY());
+//                    double time_rate = (double)touch_calced_y / (double)total_time_len;
+//                    velocityTracker.computeCurrentVelocity(1);
+//                    float touch_velocity = Math.abs(velocityTracker.getYVelocity());
+//
+//                    if ((touch_calced_y >= 0) && (touch_calced_y <= cur_time_len)) {
+//                        is_timesection_touched = true;
+//                        int touch_time = (int)(time_rate * 24 * 60);
+//
+//                        if (touch_velocity > 0.3) {
+//                            touch_time = (touch_time + 30) / 60 * 60;
+//                            touch_calced_y = (touch_time + 30) / 60 * 60;
+//                        }
+//
+//                        else if (touch_velocity <= 0.3 && touch_velocity > 0.05) {
+//                            touch_time = (touch_time + 5) / 10 * 10;
+//                            touch_calced_y = (touch_time + 5) / 10 * 10;
+//                        }
+//
+//                        touch_calced_y = Math.min(touch_calced_y, cur_time_len);
+//                        touch_time = Math.min(touch_time, (1 * 24 * 60));
+//
+//                        String touch_hour = String.format("%02d", touch_time / 60);
+//                        String touch_min = String.format("%02d", touch_time % 60);
+//                        timesection_touch_time = touch_hour + ":" + touch_min;
+//
+//                        ConstraintLayout.LayoutParams layoutParams
+//                                = (ConstraintLayout.LayoutParams) tv_timesection_click_time.getLayoutParams();
+//                        layoutParams.topMargin = Math.max(tv_time_margin_gap * 2, touch_calced_y - tv_time_margin_gap);
+//                        tv_timesection_click_time.setLayoutParams(layoutParams);
+//                        tv_timesection_click_time.setVisibility(View.VISIBLE);
+//                        tv_timesection_click_time.setText(timesection_touch_time);
+//
+//                        iv_timesection_ctrl.setVisibility(View.VISIBLE);
+//                        layout_timesection_remain_time.setVisibility(View.VISIBLE);
+//
+//                        if (touch_time == 0) {
+//                            iv_timesection_ctrl.setImageResource(R.drawable.builday_icon_timesection_down);
+//
+//                            layoutParams = (ConstraintLayout.LayoutParams) layout_timesection_remain_time.getLayoutParams();
+//                            layoutParams.height = cur_time_len;
+//                            layoutParams.topMargin = 0;
+//                            layout_timesection_remain_time.setLayoutParams(layoutParams);
+//                        }
+//                        else if (touch_time == cur_time_len) {
+//                            iv_timesection_ctrl.setImageResource(R.drawable.builday_icon_timesection_up);
+//                        }
+//                        else {
+//                            iv_timesection_ctrl.setImageResource(R.drawable.builday_icon_timesection_updown);
+//
+//                            layoutParams = (ConstraintLayout.LayoutParams) layout_timesection_cur_time.getLayoutParams();
+//                            layoutParams.height = Math.min(touch_calced_y, total_time_len);
+//                            layout_timesection_cur_time.setLayoutParams(layoutParams);
+//
+//                            layoutParams = (ConstraintLayout.LayoutParams) layout_timesection_remain_time.getLayoutParams();
+//                            layoutParams.height = Math.max(cur_time_len - touch_calced_y - layout_side_gap, 1);
+//                            layoutParams.topMargin = Math.min(touch_calced_y + layout_side_gap, total_time_len);
+//                            layout_timesection_remain_time.setLayoutParams(layoutParams);
+//                        }
+//                    }
+//                }
+//
+//
+//                if (touch_action == motionEvent.ACTION_UP) {
+//                    if (velocityTracker != null) {
+//                        velocityTracker.recycle();
+//                        velocityTracker = null;
+//                    }
+//                }
+//
+//                return true;
+//            }
+//        });
+//
+//        ibtn_add_section = (ImageButton)view.findViewById(R.id.main_timebar_ibtn_add_section);
+//        @SuppressLint("ResourceType")
+//        String ibtn_add_section_color = getResources().getString(R.color.default_color);
+//        ibtn_add_section.setImageTintList(ColorStateList.valueOf(Color.parseColor(ibtn_add_section_color)));
+//        ibtn_add_section.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                layout_time_section.setVisibility(View.VISIBLE);
+//
+//                @SuppressLint("ResourceType")
+//                String icon_disable_color = getResources().getString(R.color.disable_blue);
+//                ibtn_sidebar_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(icon_disable_color)));
+//                ibtn_sidebar_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(icon_disable_color)));
+//
+//                ibtn_sidebar_memo.setEnabled(false);
+//                ibtn_sidebar_activity.setEnabled(false);
+//            }
+//        });
+//
+//        @SuppressLint("ResourceType")
+//        String select_color = getResources().getString(R.color.blue);
+//        tv_sidebar_cur_time = (TextView)view.findViewById(R.id.main_sidebar_tv_cur_time);
+//        tv_timesection_cur_time = (TextView)view.findViewById(R.id.main_timesection_tv_cur_time);
+//
+//        ibtn_sidebar_memo = (ImageButton)view.findViewById(R.id.main_sidebar_ibtn_memo);
+//        ibtn_sidebar_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(select_color)));
+//        ibtn_sidebar_memo.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                layout_dialog_section.setVisibility(View.VISIBLE);
+//            }
+//        });
+//
+//        ibtn_sidebar_activity = (ImageButton)view.findViewById(R.id.main_sidebar_ibtn_activity);
+//        ibtn_sidebar_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(select_color)));
+//        ibtn_sidebar_activity.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                layout_dialog_section.setVisibility(View.VISIBLE);
+//            }
+//        });
+//
+//        dialog_section_et_memo = (EditText)view.findViewById(R.id.dialog_section_et_memo);
+//
+//        btn_dialog_section_ok = (Button)view.findViewById(R.id.dialog_section_btn_ok);
+//        btn_dialog_section_ok.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                hideKeyboard();
+//                layout_dialog_section.setVisibility(View.GONE);
+//
+//                vm.addMemo( new Date(System.currentTimeMillis()),dialog_section_et_memo.getText().toString());
+//
+//            }
+//        });
+//
+//        btn_dialog_section_cancel = (Button)view.findViewById(R.id.dialog_section_btn_cancel);
+//        btn_dialog_section_cancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                hideKeyboard();
+//                layout_dialog_section.setVisibility(View.GONE);
+//            }
+//        });
+//
+//        ConstraintLayout timebarView = (ConstraintLayout)view.findViewById(R.id.fragment_layout_timebar);
+//        TextView tv_sidebar_start_time = (TextView) view.findViewById(R.id.main_sidebar_tv_start_time);
+//        ibtn_timesection_ok = (ImageButton) view.findViewById(R.id.main_timesection_ibtn_ok);
+//        ibtn_timesection_ok.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                layout_time_section.setVisibility(View.GONE);
+//
+//                TextView tv_sidebar_new_section = new TextView(timebarView.getContext());
+//                ConstraintLayout.LayoutParams layoutParams
+//                        = (ConstraintLayout.LayoutParams) tv_timesection_click_time.getLayoutParams();
+//                int tv_new_top_margin = layoutParams.topMargin;
+//                Log.e(TAG, "tv_new_top_margin: " + tv_new_top_margin);
+//
+//                layoutParams = (ConstraintLayout.LayoutParams) tv_sidebar_start_time.getLayoutParams();
+//
+//                int bottom2bottom = layoutParams.bottomToBottom;
+//                int bottom2top = layoutParams.bottomToTop;
+//                int end2start = layoutParams.endToStart;
+//                int end2end = layoutParams.endToEnd;
+//                int start2start = layoutParams.startToStart;
+//                int start2end = layoutParams.startToEnd;
+//                int top2top = layoutParams.topToTop;
+//                int top2bottom = layoutParams.topToBottom;
+//                float horBias = layoutParams.horizontalBias;
+//                float vertBias = layoutParams.verticalBias;
+//                int topMargin = layoutParams.topMargin;
+//
+//                Log.e(TAG, "tv_sidebar_cur_time");
+//                Log.e(TAG, "layoutParams.topMargin: " + layoutParams.topMargin);
+//                Log.e(TAG, "layoutParams.bottomToBottom: " + layoutParams.bottomToBottom);
+//                Log.e(TAG, "layoutParams.startToStart: " + layoutParams.startToStart);
+//                Log.e(TAG, "layoutParams.topToTop: " + layoutParams.topToTop);
+//                Log.e(TAG, "layoutParams.horizontalBias: " + layoutParams.horizontalBias);
+//                Log.e(TAG, "layoutParams.verticalBias: " + layoutParams.verticalBias);
+//
+//
+////                tv_sidebar_new_section.setLayoutParams(prev_layoutParams);
+////                layoutParams = (ConstraintLayout.LayoutParams) tv_sidebar_new_section.getLayoutParams();
+////                layoutParams.topMargin += tv_new_top_margin;
+////                tv_sidebar_new_section.setLayoutParams(layoutParams);
+//
+//                layoutParams = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT,
+//                                    ConstraintLayout.LayoutParams.WRAP_CONTENT);
+//
+//                layoutParams.bottomToBottom = bottom2bottom;
+//                layoutParams.endToStart = end2start;
+//                layoutParams.startToStart = start2start;
+//                layoutParams.topToTop = top2top;
+//                layoutParams.horizontalBias = horBias;
+//                layoutParams.verticalBias = vertBias;
+//                layoutParams.topMargin = tv_new_top_margin + topMargin;
+//
+//                tv_sidebar_new_section.setText(timesection_touch_time);
+//                tv_sidebar_new_section.setTextSize(12);
+//                tv_sidebar_new_section.setTypeface(null, Typeface.BOLD);
+//
+//                Log.e(TAG, "tv_sidebar_new_section");
+//                Log.e(TAG, "layoutParams.topMargin: " + layoutParams.topMargin);
+//                Log.e(TAG, "layoutParams.bottomToBottom: " + layoutParams.bottomToBottom);
+//                Log.e(TAG, "layoutParams.startToStart: " + layoutParams.startToStart);
+//                Log.e(TAG, "layoutParams.topToTop: " + layoutParams.topToTop);
+//                Log.e(TAG, "layoutParams.horizontalBias: " + layoutParams.horizontalBias);
+//                Log.e(TAG, "layoutParams.verticalBias: " + layoutParams.verticalBias);
+//
+////                app:layout_constraintBottom_toBottomOf="parent"
+////                app:layout_constraintEnd_toStartOf="@+id/main_sidebar_layout_total_time"
+////                app:layout_constraintHorizontal_bias="0.88"
+////                app:layout_constraintStart_toStartOf="parent"
+////                app:layout_constraintTop_toTopOf="parent"
+//
 //                tv_sidebar_new_section.setLayoutParams(layoutParams);
-
-                layoutParams = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT,
-                                    ConstraintLayout.LayoutParams.WRAP_CONTENT);
-
-                layoutParams.bottomToBottom = bottom2bottom;
-                layoutParams.endToStart = end2start;
-                layoutParams.startToStart = start2start;
-                layoutParams.topToTop = top2top;
-                layoutParams.horizontalBias = horBias;
-                layoutParams.verticalBias = vertBias;
-                layoutParams.topMargin = tv_new_top_margin + topMargin;
-
-                tv_sidebar_new_section.setText(timesection_touch_time);
-                tv_sidebar_new_section.setTextSize(12);
-                tv_sidebar_new_section.setTypeface(null, Typeface.BOLD);
-
-                Log.e(TAG, "tv_sidebar_new_section");
-                Log.e(TAG, "layoutParams.topMargin: " + layoutParams.topMargin);
-                Log.e(TAG, "layoutParams.bottomToBottom: " + layoutParams.bottomToBottom);
-                Log.e(TAG, "layoutParams.startToStart: " + layoutParams.startToStart);
-                Log.e(TAG, "layoutParams.topToTop: " + layoutParams.topToTop);
-                Log.e(TAG, "layoutParams.horizontalBias: " + layoutParams.horizontalBias);
-                Log.e(TAG, "layoutParams.verticalBias: " + layoutParams.verticalBias);
-
-//                app:layout_constraintBottom_toBottomOf="parent"
-//                app:layout_constraintEnd_toStartOf="@+id/main_sidebar_layout_total_time"
-//                app:layout_constraintHorizontal_bias="0.88"
-//                app:layout_constraintStart_toStartOf="parent"
-//                app:layout_constraintTop_toTopOf="parent"
-
-                tv_sidebar_new_section.setLayoutParams(layoutParams);
-                tv_sidebar_new_section.setTextColor(getResources().getColor(palette_selected_color));
-                timebarView.addView(tv_sidebar_new_section);
-
-                @SuppressLint("ResourceType")
-                String icon_able_color = getResources().getString(R.color.blue);
-                ibtn_sidebar_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(icon_able_color)));
-                ibtn_sidebar_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(icon_able_color)));
-
-                ibtn_sidebar_memo.setEnabled(true);
-                ibtn_sidebar_activity.setEnabled(true);
-            }
-        });
-
-        ibtn_timesection_cancel = (ImageButton)view.findViewById(R.id.main_timesection_ibtn_cancel);
-        ibtn_timesection_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                layout_time_section.setVisibility(View.GONE);
-
-                @SuppressLint("ResourceType")
-                String icon_able_color = getResources().getString(R.color.blue);
-                ibtn_sidebar_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(icon_able_color)));
-                ibtn_sidebar_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(icon_able_color)));
-
-                ibtn_sidebar_memo.setEnabled(true);
-                ibtn_sidebar_activity.setEnabled(true);
-            }
-        });
-
-        layout_palette = (ConstraintLayout)view.findViewById(R.id.fragment_layout_palette);
-        layout_palette.setVisibility(View.GONE);
-
-        ibtn_timesection_palette = (ImageButton)view.findViewById(R.id.main_timesection_ibtn_palette);
-        ibtn_timesection_palette.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                layout_palette.setVisibility(View.VISIBLE);
-            }
-        });
-
-        iv_palette_blue = (ImageView)view.findViewById(R.id.palette_iv_blue);
-        iv_palette_blue.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint({"ResourceAsColor", "ResourceType"})
-            @Override
-            public void onClick(View view) {
-                palette_selected_color = R.color.blue;
-                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
-                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
-                timesection_color = getResources().getString(palette_selected_color);
-                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-            }
-        });
-        iv_palette_red = (ImageView)view.findViewById(R.id.palette_iv_red);
-        iv_palette_red.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint({"ResourceAsColor", "ResourceType"})
-            @Override
-            public void onClick(View view) {
-                palette_selected_color = R.color.red;
-                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
-                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
-                timesection_color = getResources().getString(palette_selected_color);
-                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-            }
-        });
-        iv_palette_green = (ImageView)view.findViewById(R.id.palette_iv_green);
-        iv_palette_green.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View view) {
-                palette_selected_color = R.color.green;
-                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
-                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
-                timesection_color = getResources().getString(palette_selected_color);
-                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-            }
-        });
-        iv_palette_black = (ImageView)view.findViewById(R.id.palette_iv_black);
-        iv_palette_black.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View view) {
-                palette_selected_color = R.color.black;
-                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
-                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
-                timesection_color = getResources().getString(palette_selected_color);
-                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-            }
-        });
-        iv_palette_yellow = (ImageView)view.findViewById(R.id.palette_iv_yellow);
-        iv_palette_yellow.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View view) {
-                palette_selected_color = R.color.yellow;
-                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
-                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
-                timesection_color = getResources().getString(palette_selected_color);
-                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-            }
-        });
-        iv_palette_purple = (ImageView)view.findViewById(R.id.palette_iv_purple);
-        iv_palette_purple.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View view) {
-                palette_selected_color = R.color.purple;
-                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
-                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
-                timesection_color = getResources().getString(palette_selected_color);
-                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-            }
-        });
-        iv_palette_skyBlue = (ImageView)view.findViewById(R.id.palette_iv_skyBlue);
-        iv_palette_skyBlue.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View view) {
-                palette_selected_color = R.color.sky_blue;
-                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
-                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
-                timesection_color = getResources().getString(palette_selected_color);
-                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-            }
-        });
-        iv_palette_brown = (ImageView)view.findViewById(R.id.palette_iv_brown);
-        iv_palette_brown.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View view) {
-                palette_selected_color = R.color.brown;
-                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
-                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
-                timesection_color = getResources().getString(palette_selected_color);
-                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-            }
-        });
-        iv_palette_pink = (ImageView)view.findViewById(R.id.palette_iv_pink);
-        iv_palette_pink.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View view) {
-                palette_selected_color = R.color.pink;
-                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
-                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
-                timesection_color = getResources().getString(palette_selected_color);
-                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-            }
-        });
-        iv_palette_lightGreen = (ImageView)view.findViewById(R.id.palette_iv_lightGreen);
-        iv_palette_lightGreen.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View view) {
-                palette_selected_color = R.color.light_green;
-                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
-                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
-                timesection_color = getResources().getString(palette_selected_color);
-                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-            }
-        });
-
-        btn_palette_ok = (Button)view.findViewById(R.id.palette_btn_ok);
-        btn_palette_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                palette_prev_palette_selected_color = palette_selected_color;
-                layout_palette.setVisibility(View.GONE);
-            }
-        });
-
-        btn_palette_cancel= (Button)view.findViewById(R.id.palette_btn_cancel);
-        btn_palette_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                palette_selected_color = palette_prev_palette_selected_color;
-                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
-                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
-                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
-                timesection_color = getResources().getString(palette_selected_color);
-                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
-
-                layout_palette.setVisibility(View.GONE);
-            }
-        });
+//                tv_sidebar_new_section.setTextColor(getResources().getColor(palette_selected_color));
+//                timebarView.addView(tv_sidebar_new_section);
+//
+//                @SuppressLint("ResourceType")
+//                String icon_able_color = getResources().getString(R.color.blue);
+//                ibtn_sidebar_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(icon_able_color)));
+//                ibtn_sidebar_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(icon_able_color)));
+//
+//                ibtn_sidebar_memo.setEnabled(true);
+//                ibtn_sidebar_activity.setEnabled(true);
+//            }
+//        });
+//
+//        ibtn_timesection_cancel = (ImageButton)view.findViewById(R.id.main_timesection_ibtn_cancel);
+//        ibtn_timesection_cancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                layout_time_section.setVisibility(View.GONE);
+//
+//                @SuppressLint("ResourceType")
+//                String icon_able_color = getResources().getString(R.color.blue);
+//                ibtn_sidebar_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(icon_able_color)));
+//                ibtn_sidebar_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(icon_able_color)));
+//
+//                ibtn_sidebar_memo.setEnabled(true);
+//                ibtn_sidebar_activity.setEnabled(true);
+//            }
+//        });
+//
+//        layout_palette = (ConstraintLayout)view.findViewById(R.id.fragment_layout_palette);
+//        layout_palette.setVisibility(View.GONE);
+//
+//        ibtn_timesection_palette = (ImageButton)view.findViewById(R.id.main_timesection_ibtn_palette);
+//        ibtn_timesection_palette.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                layout_palette.setVisibility(View.VISIBLE);
+//            }
+//        });
+//
+//        iv_palette_blue = (ImageView)view.findViewById(R.id.palette_iv_blue);
+//        iv_palette_blue.setOnClickListener(new View.OnClickListener() {
+//            @SuppressLint({"ResourceAsColor", "ResourceType"})
+//            @Override
+//            public void onClick(View view) {
+//                palette_selected_color = R.color.blue;
+//                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+//                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+//                timesection_color = getResources().getString(palette_selected_color);
+//                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//            }
+//        });
+//        iv_palette_red = (ImageView)view.findViewById(R.id.palette_iv_red);
+//        iv_palette_red.setOnClickListener(new View.OnClickListener() {
+//            @SuppressLint({"ResourceAsColor", "ResourceType"})
+//            @Override
+//            public void onClick(View view) {
+//                palette_selected_color = R.color.red;
+//                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+//                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+//                timesection_color = getResources().getString(palette_selected_color);
+//                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//            }
+//        });
+//        iv_palette_green = (ImageView)view.findViewById(R.id.palette_iv_green);
+//        iv_palette_green.setOnClickListener(new View.OnClickListener() {
+//            @SuppressLint("ResourceAsColor")
+//            @Override
+//            public void onClick(View view) {
+//                palette_selected_color = R.color.green;
+//                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+//                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+//                timesection_color = getResources().getString(palette_selected_color);
+//                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//            }
+//        });
+//        iv_palette_black = (ImageView)view.findViewById(R.id.palette_iv_black);
+//        iv_palette_black.setOnClickListener(new View.OnClickListener() {
+//            @SuppressLint("ResourceAsColor")
+//            @Override
+//            public void onClick(View view) {
+//                palette_selected_color = R.color.black;
+//                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+//                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+//                timesection_color = getResources().getString(palette_selected_color);
+//                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//            }
+//        });
+//        iv_palette_yellow = (ImageView)view.findViewById(R.id.palette_iv_yellow);
+//        iv_palette_yellow.setOnClickListener(new View.OnClickListener() {
+//            @SuppressLint("ResourceAsColor")
+//            @Override
+//            public void onClick(View view) {
+//                palette_selected_color = R.color.yellow;
+//                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+//                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+//                timesection_color = getResources().getString(palette_selected_color);
+//                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//            }
+//        });
+//        iv_palette_purple = (ImageView)view.findViewById(R.id.palette_iv_purple);
+//        iv_palette_purple.setOnClickListener(new View.OnClickListener() {
+//            @SuppressLint("ResourceAsColor")
+//            @Override
+//            public void onClick(View view) {
+//                palette_selected_color = R.color.purple;
+//                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+//                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+//                timesection_color = getResources().getString(palette_selected_color);
+//                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//            }
+//        });
+//        iv_palette_skyBlue = (ImageView)view.findViewById(R.id.palette_iv_skyBlue);
+//        iv_palette_skyBlue.setOnClickListener(new View.OnClickListener() {
+//            @SuppressLint("ResourceAsColor")
+//            @Override
+//            public void onClick(View view) {
+//                palette_selected_color = R.color.sky_blue;
+//                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+//                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+//                timesection_color = getResources().getString(palette_selected_color);
+//                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//            }
+//        });
+//        iv_palette_brown = (ImageView)view.findViewById(R.id.palette_iv_brown);
+//        iv_palette_brown.setOnClickListener(new View.OnClickListener() {
+//            @SuppressLint("ResourceAsColor")
+//            @Override
+//            public void onClick(View view) {
+//                palette_selected_color = R.color.brown;
+//                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+//                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+//                timesection_color = getResources().getString(palette_selected_color);
+//                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//            }
+//        });
+//        iv_palette_pink = (ImageView)view.findViewById(R.id.palette_iv_pink);
+//        iv_palette_pink.setOnClickListener(new View.OnClickListener() {
+//            @SuppressLint("ResourceAsColor")
+//            @Override
+//            public void onClick(View view) {
+//                palette_selected_color = R.color.pink;
+//                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+//                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+//                timesection_color = getResources().getString(palette_selected_color);
+//                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//            }
+//        });
+//        iv_palette_lightGreen = (ImageView)view.findViewById(R.id.palette_iv_lightGreen);
+//        iv_palette_lightGreen.setOnClickListener(new View.OnClickListener() {
+//            @SuppressLint("ResourceAsColor")
+//            @Override
+//            public void onClick(View view) {
+//                palette_selected_color = R.color.light_green;
+//                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+//                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+//                timesection_color = getResources().getString(palette_selected_color);
+//                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//            }
+//        });
+//
+//        btn_palette_ok = (Button)view.findViewById(R.id.palette_btn_ok);
+//        btn_palette_ok.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                palette_prev_palette_selected_color = palette_selected_color;
+//                layout_palette.setVisibility(View.GONE);
+//            }
+//        });
+//
+//        btn_palette_cancel= (Button)view.findViewById(R.id.palette_btn_cancel);
+//        btn_palette_cancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                palette_selected_color = palette_prev_palette_selected_color;
+//                layout_timesection_remain_time.setBackgroundResource(get_border_color(palette_selected_color));
+//                tv_timesection_click_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_cur_time.setTextColor(getResources().getColor(palette_selected_color));
+//                tv_timesection_start_time.setTextColor(getResources().getColor(palette_selected_color));
+//                timesection_color = getResources().getString(palette_selected_color);
+//                iv_timesection_ctrl.setImageTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//                layout_timesection_cur_time.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(timesection_color)));
+//
+//                layout_palette.setVisibility(View.GONE);
+//            }
+//        });
 
         layout_sidebar_total_time = (ConstraintLayout)view.findViewById(R.id.main_sidebar_layout_total_time);
         layout_sidebar_cur_time = (ConstraintLayout)view.findViewById(R.id.main_sidebar_layout_cur_time);
-        layout_timesection_cur_time = (ConstraintLayout)view.findViewById(R.id.main_timesection_layout_cur_time);
+//        layout_timesection_cur_time = (ConstraintLayout)view.findViewById(R.id.main_timesection_layout_cur_time);
         layout_sidebar_remain_time = (ConstraintLayout)view.findViewById(R.id.main_sidebar_layout_remain_time);
         ViewTreeObserver viewTreeObserver = layout_sidebar_total_time.getViewTreeObserver();
 
@@ -765,7 +765,6 @@ public class UiFragment extends Fragment {
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
         String cur_time = simpleDateFormat.format(date);
-//        Log.e(TAG, "get_time() " + cur_time);
 
         return cur_time;
     }
@@ -775,44 +774,45 @@ public class UiFragment extends Fragment {
             @Override
             public void handleMessage(Message message) {
                 String cur_time = get_time();
-                tv_sidebar_cur_time.setText(cur_time);
-                tv_timesection_cur_time.setText(cur_time);
+//                tv_sidebar_cur_time.setText(cur_time);
+//                tv_timesection_cur_time.setText(cur_time);
                 total_time_len = layout_sidebar_total_time.getHeight();
 
                 int cur_hour = Integer.parseInt(cur_time.split(":")[0]);
                 int cur_min = Integer.parseInt(cur_time.split(":")[1]);
                 double time_rate = (cur_hour * 60 + cur_min) / (24 * 60.0);
-//                cur_time_len = (int)(time_rate * total_time_len);
+                cur_time_len = (int)(time_rate * total_time_len);
 
 //                /* ***************** TIME DEBUG ****************** */
-                cur_time_len = (int)(0.6 * total_time_len);
+//                cur_time_len = (int)(0.6 * total_time_len);
 //                /***************************************************/
 
+//                ConstraintLayout.LayoutParams layoutParams
+//                        = (ConstraintLayout.LayoutParams) tv_sidebar_cur_time.getLayoutParams();
+//                layoutParams.topMargin = Math.min(total_time_len - tv_time_margin_gap * 2,
+//                                Math.max(tv_time_margin_gap * 2, cur_time_len - tv_time_margin_gap));
+//                tv_sidebar_cur_time.setLayoutParams(layoutParams);
+//
+//                layoutParams = (ConstraintLayout.LayoutParams) tv_timesection_cur_time.getLayoutParams();
+//                layoutParams.topMargin = Math.min(total_time_len - tv_time_margin_gap * 2,
+//                                Math.max(tv_time_margin_gap * 2, cur_time_len - tv_time_margin_gap));
+//                tv_timesection_cur_time.setLayoutParams(layoutParams);
+
                 ConstraintLayout.LayoutParams layoutParams
-                        = (ConstraintLayout.LayoutParams) tv_sidebar_cur_time.getLayoutParams();
-                layoutParams.topMargin = Math.min(total_time_len - tv_time_margin_gap * 2,
-                                Math.max(tv_time_margin_gap * 2, cur_time_len - tv_time_margin_gap));
-                tv_sidebar_cur_time.setLayoutParams(layoutParams);
-
-                layoutParams = (ConstraintLayout.LayoutParams) tv_timesection_cur_time.getLayoutParams();
-                layoutParams.topMargin = Math.min(total_time_len - tv_time_margin_gap * 2,
-                                Math.max(tv_time_margin_gap * 2, cur_time_len - tv_time_margin_gap));
-                tv_timesection_cur_time.setLayoutParams(layoutParams);
-
-                layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
+                        = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
                 layoutParams.height = cur_time_len;
                 layout_sidebar_cur_time.setLayoutParams(layoutParams);
+//
+//                layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_remain_time.getLayoutParams();
+//                layoutParams.topMargin = Math.min(total_time_len, cur_time_len + layout_side_gap);
+//                layoutParams.height = Math.max(0, total_time_len - cur_time_len - layout_side_gap);
+//                layout_sidebar_remain_time.setLayoutParams(layoutParams);
 
-                layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_remain_time.getLayoutParams();
-                layoutParams.topMargin = Math.min(total_time_len, cur_time_len + layout_side_gap);
-                layoutParams.height = Math.max(0, total_time_len - cur_time_len - layout_side_gap);
-                layout_sidebar_remain_time.setLayoutParams(layoutParams);
-
-                if (!is_timesection_touched) {
-                    layoutParams = (ConstraintLayout.LayoutParams) layout_timesection_cur_time.getLayoutParams();
-                    layoutParams.height = cur_time_len;
-                    layout_timesection_cur_time.setLayoutParams(layoutParams);
-                }
+//                if (!is_timesection_touched) {
+//                    layoutParams = (ConstraintLayout.LayoutParams) layout_timesection_cur_time.getLayoutParams();
+//                    layoutParams.height = cur_time_len;
+//                    layout_timesection_cur_time.setLayoutParams(layoutParams);
+//                }
             }
         };
 
