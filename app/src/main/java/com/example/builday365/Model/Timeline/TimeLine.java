@@ -1,4 +1,4 @@
-package com.example.builday365.UserDataManager.UserData.TimeLine;
+package com.example.builday365.Model.Timeline;
 
 import java.util.Date;
 import java.util.HashMap;

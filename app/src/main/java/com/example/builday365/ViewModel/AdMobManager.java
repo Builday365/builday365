@@ -1,9 +1,10 @@
-package com.example.builday365;
+package com.example.builday365.ViewModel;
 
 import android.content.Context;
 import android.util.Log;
 import android.view.ViewGroup;
 
+import com.example.builday365.R;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;

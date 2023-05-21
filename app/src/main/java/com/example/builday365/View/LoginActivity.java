@@ -1,4 +1,4 @@
-package com.example.builday365;
+package com.example.builday365.View;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.builday365.R;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
