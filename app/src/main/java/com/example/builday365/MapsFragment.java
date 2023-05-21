@@ -80,6 +80,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
             if (mLastLocation == null) {
                 Log.d(TAG, "[onMapReady] request permission");
                 ActivityCompat.requestPermissions(getActivity(), REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE);
+                permissionDialog();
                 return;
             }
             setLastLocationMarker(mLastLocation);
@@ -141,11 +142,10 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
         dialog.show();
     }
 
-
     @Override
     public void onRequestPermissionsResult(int permsRequestCode, @NonNull String[] permissions, @NonNull int[] grandResults) {
         super.onRequestPermissionsResult(permsRequestCode, permissions, grandResults);
-        Log.d(TAG, "[onRequestPermissionsResult]");
+        Log.d(TAG, "[onRequestPermissionsResult] " + permsRequestCode);
 
         if (permsRequestCode == PERMISSIONS_REQUEST_CODE && grandResults.length == REQUIRED_PERMISSIONS.length) {
             for (int result : grandResults) {
@@ -160,6 +160,33 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
             }
         }
     }
+
+    private void permissionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("백그라운드 위치 권한을 위해 항상 허용으로 설정해주세요.");
+
+        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        backgroundPermission();
+                        break;
+                }
+            }
+        };
+        builder.setPositiveButton("네", listener);
+        builder.setNegativeButton("아니오", null);
+
+        builder.show();
+    }
+
+    private void backgroundPermission() {
+        ActivityCompat.requestPermissions(
+                requireActivity(),
+                new String[]{android.Manifest.permission.ACCESS_BACKGROUND_LOCATION},2);
+    }
+
     private void setLastLocationMarker(LatLng location) {
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(location);
