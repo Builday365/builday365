@@ -1,17 +1,12 @@
 package com.example.builday365.View;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -28,12 +23,8 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
 
-import com.example.builday365.Model.DatabaseManager;
 import com.example.builday365.R;
-import com.example.builday365.ViewModel.MainViewModel;
-import com.google.android.material.navigation.NavigationView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,7 +33,6 @@ import java.util.Date;
 
 public class UiFragment extends Fragment {
     private static final String TAG = "UiFragment";
-    MainViewModel vm;
 
     TextView tv_toolbar_cur_date, tv_google_name, tv_sidebar_cur_time, tv_timesection_cur_time,
             tv_timesection_click_time, tv_timesection_start_time;
@@ -741,7 +731,6 @@ public class UiFragment extends Fragment {
     @Override
     public void onStart() {
         Log.d(TAG,"onStart is called");
-        vm = new MainViewModel(DatabaseManager.getInstance());
         super.onStart();
     }
 

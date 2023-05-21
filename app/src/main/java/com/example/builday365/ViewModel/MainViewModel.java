@@ -1,39 +1,35 @@
 package com.example.builday365.ViewModel;
 
+import android.app.Application;
 import android.util.Log;
 
-import com.example.builday365.Model.DatabaseManager;
-import com.example.builday365.Model.Timeline.Memo;
+import androidx.lifecycle.ViewModel;
+import androidx.room.Room;
 
-import java.util.Date;
+import com.example.builday365.Model.RoomDb;
 
-public class MainViewModel {
+public class MainViewModel extends ViewModel {
 
     private final String TAG = "MainViewModel";
+    private final Application Mainapplication;
 
-    private DatabaseManager db;
 
-
-    public MainViewModel(DatabaseManager database)
+    public MainViewModel(Application application)
     {
-        this.db = database;
-    }
+        Log.d(TAG, "MainViewModel constructor");
 
-    public void addMemo(Date timeStamp, String memoContent)
-    {
-        if(db != null)
-        {
-            db.timeLine.addMemo(timeStamp, memoContent);
+        
+        RoomDb db = Room.databaseBuilder(application.getApplicationContext(), RoomDb.class, "timeline-db").build();
+        backgroundThread.start();
+        Mainapplication = application;
+    }
+    Thread backgroundThread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            Log.d(TAG, "backgroundThread runs");
+
+            RoomDb db = Room.databaseBuilder(Mainapplication.getApplicationContext(), RoomDb.class, "timeline-db").build();
         }
-    }
-
-    public void getMemoForTimeStamp(Date timeStamp){
-        if(db != null)
-        {
-            Memo m = db.timeLine.getMemoForTimeStamp(timeStamp);
-            Log.d(TAG, "memo : " + m.getMemoContent());
-
-        }
-    }
+    });
 
 }

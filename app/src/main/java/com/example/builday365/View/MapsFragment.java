@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -43,7 +42,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickListener, GoogleMap.OnCameraMoveStartedListener,
+public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
     private static final String TAG = "MapsFragment";
 
@@ -57,7 +56,6 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
     private LatLng mHomeLocation;
     private LatLng mLastLocation;
     private Marker mHomeMarker;
-    FloatingActionButton mFab;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -76,18 +74,14 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
             mGoogleMap = googleMap;
             mGoogleMap.getUiSettings().setZoomGesturesEnabled(true);
             mGoogleMap.setOnMapLongClickListener(MapsFragment.this);
-            mGoogleMap.setOnCameraMoveStartedListener(MapsFragment.this);
 
             mLastLocation = getLastLocation();
             if (mLastLocation == null) {
                 Log.d(TAG, "[onMapReady] request permission");
                 ActivityCompat.requestPermissions(getActivity(), REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE);
-            } else {
-                setLastLocationMarker(mLastLocation);
+                return;
             }
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                permissionDialog();
-            }
+            setLastLocationMarker(mLastLocation);
             setHomeLocationMarker();
             setFabListener();
         }
@@ -110,18 +104,6 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mLastLocation == null && mGoogleMap != null) {
-            mLastLocation = getLastLocation();
-            if (mLastLocation != null) {
-                Log.d(TAG, "[onResume] " + mLastLocation);
-                setLastLocationMarker(mLastLocation);
-            }
         }
     }
 
@@ -158,10 +140,11 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
         dialog.show();
     }
 
+
     @Override
     public void onRequestPermissionsResult(int permsRequestCode, @NonNull String[] permissions, @NonNull int[] grandResults) {
         super.onRequestPermissionsResult(permsRequestCode, permissions, grandResults);
-        Log.d(TAG, "[onRequestPermissionsResult] " + permsRequestCode);
+        Log.d(TAG, "[onRequestPermissionsResult]");
 
         if (permsRequestCode == PERMISSIONS_REQUEST_CODE && grandResults.length == REQUIRED_PERMISSIONS.length) {
             for (int result : grandResults) {
@@ -176,34 +159,6 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
             }
         }
     }
-
-    private void permissionDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("백그라운드 위치 권한 설정");
-        builder.setMessage("백그라운드 위치 권한을 위해 항상 허용으로 설정해주세요.");
-
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        backgroundPermission();
-                        break;
-                }
-            }
-        };
-        builder.setPositiveButton("네", listener);
-        builder.setNegativeButton("아니오", null);
-
-        builder.show();
-    }
-
-    private void backgroundPermission() {
-        ActivityCompat.requestPermissions(
-                requireActivity(),
-                new String[]{android.Manifest.permission.ACCESS_BACKGROUND_LOCATION},2);
-    }
-
     private void setLastLocationMarker(LatLng location) {
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(location);
@@ -303,26 +258,13 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
     }
 
     private void setFabListener() {
-        mFab = getActivity().findViewById(R.id.fab);
-        mFab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mFab.setImageResource(R.drawable.builday_icon_currentlocation1);
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mLastLocation, 15);
                 mGoogleMap.animateCamera(cameraUpdate);
             }
         });
-    }
-
-    @Override
-    public void onCameraMoveStarted(int i) {
-        if (mFab == null) {
-            Log.w(TAG, "[onCameraMoveStarted] invalide operation");
-            return;
-        }
-        Log.d(TAG, "[onCameraMoveStarted] " + i);
-        if (i == REASON_GESTURE) {
-            mFab.setImageResource(R.drawable.builday_icon_currentlocation2);
-        }
     }
 }

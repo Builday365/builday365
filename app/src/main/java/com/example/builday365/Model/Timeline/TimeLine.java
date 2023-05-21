@@ -1,31 +1,55 @@
 package com.example.builday365.Model.Timeline;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
+@Entity
 public class TimeLine {
-    private HashMap<Date, Memo> memoMap;
 
-    public TimeLine() {
-        memoMap = new HashMap<>();
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+    private DateTime curTime;
+    private List<Memo> curMemos;
+
+    public TimeLine(DateTime curTime, List<Memo> curMemos) {
+        this.curTime = curTime;
+        this.curMemos = curMemos;
     }
 
-    public void addMemo(Date timeStamp, String memoContent) {
-        Memo memo = new Memo(timeStamp, memoContent);
-        memoMap.put(timeStamp, memo);
+    public int getId() {
+        return id;
     }
 
-    public Memo getMemoForTimeStamp(Date timeStamp) {
-        return memoMap.get(timeStamp);
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void removeMemo(Date timeStamp) {
-        memoMap.remove(timeStamp);
+    public DateTime getCurTime() {
+        return curTime;
     }
 
-    public Map<Date, Memo> getAllMemos() {
-        return new HashMap<>(memoMap);
+    public void setCurTime(DateTime curTime) {
+        this.curTime = curTime;
     }
 
+    public List<Memo> getCurMemos() {
+        return curMemos;
+    }
+
+    public void setCurMemos(List<Memo> curMemos) {
+        this.curMemos = curMemos;
+    }
+
+    @Override
+    public String toString() {
+        return "TimeLine{" +
+                "id=" + id +
+                ", curTime=" + curTime +
+                ", curMemos=" + curMemos +
+                '}';
+    }
 }
