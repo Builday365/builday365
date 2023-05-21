@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -80,10 +81,12 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
             if (mLastLocation == null) {
                 Log.d(TAG, "[onMapReady] request permission");
                 ActivityCompat.requestPermissions(getActivity(), REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE);
-                permissionDialog();
-                return;
+            } else {
+                setLastLocationMarker(mLastLocation);
             }
-            setLastLocationMarker(mLastLocation);
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                permissionDialog();
+            }
             setHomeLocationMarker();
             setFabListener();
         }
@@ -106,6 +109,18 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mLastLocation == null && mGoogleMap != null) {
+            mLastLocation = getLastLocation();
+            if (mLastLocation != null) {
+                Log.d(TAG, "[onResume] " + mLastLocation);
+                setLastLocationMarker(mLastLocation);
+            }
         }
     }
 
@@ -163,7 +178,8 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
 
     private void permissionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("백그라운드 위치 권한을 위해 항상 허용으로 설정해주세요.");
+        builder.setTitle("백그라운드 위치 권한 설정");
+        builder.setMessage("백그라운드 위치 권한을 위해 항상 허용으로 설정해주세요.");
 
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
