@@ -74,8 +74,8 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="wrap_content"
+            android:id="@+id/sidebar_layout_time_list"
+            android:layout_width="40dp"
             android:layout_height="0dp"
             android:layout_marginTop="-10dp"
             android:layout_marginBottom="-10dp"
@@ -387,7 +387,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageButton
-                    android:id="@+id/sidebar_ctrl_ib_activity"
+                    android:id="@+id/sidebar_ctrl_ibtn_activity"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -398,7 +398,7 @@
                     tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
                 <ImageButton
-                    android:id="@+id/sidebar_ctrl_ib_memo"
+                    android:id="@+id/sidebar_ctrl_ibtn_memo"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -410,7 +410,7 @@
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/sidebar_ctrl_bar"
+                android:id="@+id/sidebar_ctrl_layout_bar"
                 android:layout_width="0dp"
                 android:layout_height="4dp"
                 android:background="@color/gray"
@@ -420,13 +420,13 @@
                 app:layout_constraintTop_toTopOf="parent"></androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/sidebar_ctrl_bar_mid"
+                android:id="@+id/sidebar_ctrl_layout_bar_mid"
                 android:layout_width="20dp"
                 android:layout_height="4dp"
                 android:layout_marginStart="7dp"
                 android:background="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/sidebar_ctrl_bar"
+                app:layout_constraintEnd_toEndOf="@+id/sidebar_ctrl_layout_bar"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/sidebar_ctrl_layout_ui_btn"
                 app:layout_constraintTop_toTopOf="parent"></androidx.constraintlayout.widget.ConstraintLayout>
