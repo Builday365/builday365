@@ -48,7 +48,7 @@ public class UiFragment extends Fragment {
     DrawerLayout drawerLayout;
     ConstraintLayout layout_timebar, layout_dialog_section,
             layout_sidebar_total_time,layout_sidebar_cur_time, layout_sidebar_remain_time,
-            layout_time_section, layout_sidebar_ctrl, layout_sidebar_ctrl_bar;
+            layout_time_section, layout_sidebar_ctrl, layout_sidebar_ctrl_bar, layout_sidebar_blank;
     LinearLayout layout_sidebar_ctrl_cur_time_tv, layout_sidebar_time_list, layout_sidebar_ctrl_ui_btn;
     ImageView iv_google_photo, iv_timesection_ctrl, iv_palette_blue, iv_palette_red, iv_palette_green,
             iv_palette_black, iv_palette_yellow, iv_palette_purple, iv_palette_skyBlue, iv_palette_brown,
@@ -61,6 +61,7 @@ public class UiFragment extends Fragment {
     Calendar calendar;
     CalendarView calendarView;
     int sidebar_touch_time = 0;
+    long sidebar_delay = 0;
 
     String App_Section_Color, App_Activity, App_Memo;
 
@@ -84,6 +85,9 @@ public class UiFragment extends Fragment {
             public void onClick(View view) {
                 calendar = Calendar.getInstance();
                 set_date(new Date(calendar.getTimeInMillis()));
+
+                is_timesection_touched = false;
+                update_time();
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
@@ -223,6 +227,15 @@ public class UiFragment extends Fragment {
         ibtn_sidebar_ctrl_activity = (ImageButton)view.findViewById(R.id.sidebar_ctrl_ibtn_activity);
         ibtn_sidebar_ctrl_memo = (ImageButton)view.findViewById(R.id.sidebar_ctrl_ibtn_memo);
         layout_sidebar_ctrl_bar = (ConstraintLayout)view.findViewById(R.id.sidebar_ctrl_layout_bar);
+        layout_sidebar_blank = (ConstraintLayout)view.findViewById(R.id.sidebar_layout_blank);
+        layout_sidebar_blank.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                is_timesection_touched = false;
+                update_time();
+                return false;
+            }
+        });
 
         layout_sidebar_ctrl_cur_time_tv.setOnTouchListener(new View.OnTouchListener() {
             @SuppressLint("ResourceType")
@@ -283,25 +296,8 @@ public class UiFragment extends Fragment {
                 }
 
                 else if (touch_calced_y >= total_time_len) {
-                    touch_calced_y = total_time_len;
-                    tv_sidebar_ctrl_cur_time_hr.setText("24");
-                    tv_sidebar_ctrl_cur_time_min.setText("00");
-
-                    ConstraintLayout.LayoutParams layoutParams
-                            = (ConstraintLayout.LayoutParams) layout_sidebar_ctrl.getLayoutParams();
-                    layoutParams.topMargin = touch_calced_y - (layout_sidebar_ctrl.getHeight() / 2);
-                    layout_sidebar_ctrl.setLayoutParams(layoutParams);
-
-                    layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
-                    layoutParams.height = touch_calced_y;
-                    layout_sidebar_cur_time.setLayoutParams(layoutParams);
-
-                    App_Section_Color = getResources().getString(R.color.gray);
-                    layout_sidebar_ctrl_ui_btn.setBackgroundResource(R.drawable.border_button_gray);
-                    ibtn_sidebar_ctrl_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
-                    ibtn_sidebar_ctrl_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
-                    layout_sidebar_ctrl_bar.setBackgroundResource(R.color.gray);
-                    layout_sidebar_ctrl_cur_time_tv.setBackgroundResource(R.drawable.border_button_fill_gray);
+                    is_timesection_touched = false;
+                    update_time();
                 }
 
             return true;
@@ -378,6 +374,17 @@ public class UiFragment extends Fragment {
                     layout_sidebar_ctrl_cur_time_tv.setBackgroundResource(R.drawable.border_button_fill_blue);
                 }
 
+                else {
+                    if (System.currentTimeMillis() <= sidebar_delay) {
+                        is_timesection_touched = false;
+                        update_time();
+                    }
+                    else {
+                        sidebar_delay = System.currentTimeMillis() + 200;
+                    }
+
+
+                    }
                 return false;
             }
         });
@@ -439,6 +446,7 @@ public class UiFragment extends Fragment {
 
     public void update_time() {
         final Handler handler = new Handler() {
+            @SuppressLint("ResourceType")
             @Override
             public void handleMessage(Message message) {
 //                layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_remain_time.getLayoutParams();
@@ -471,6 +479,13 @@ public class UiFragment extends Fragment {
                     layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
                     layoutParams.height = cur_time_len;
                     layout_sidebar_cur_time.setLayoutParams(layoutParams);
+
+                    App_Section_Color = getResources().getString(R.color.gray);
+                    layout_sidebar_ctrl_ui_btn.setBackgroundResource(R.drawable.border_button_gray);
+                    ibtn_sidebar_ctrl_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
+                    ibtn_sidebar_ctrl_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
+                    layout_sidebar_ctrl_bar.setBackgroundResource(R.color.gray);
+                    layout_sidebar_ctrl_cur_time_tv.setBackgroundResource(R.drawable.border_button_fill_gray);
                 }
             }
         };

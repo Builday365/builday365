@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout2"
+            android:id="@+id/sidebar_layout_blank"
             android:layout_width="86dp"
             android:layout_height="match_parent"
             android:background="@drawable/background_sidebar"
@@ -37,9 +37,9 @@
             android:layout_marginBottom="60dp"
             android:background="@color/transparent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
+            app:layout_constraintEnd_toEndOf="@+id/sidebar_layout_blank"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
+            app:layout_constraintStart_toStartOf="@+id/sidebar_layout_blank"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0">
 
