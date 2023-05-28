@@ -417,19 +417,22 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/sidebar_ctrl_layout_cur_time_tv"
                 app:layout_constraintStart_toEndOf="@+id/sidebar_ctrl_layout_ui_btn"
-                app:layout_constraintTop_toTopOf="parent"></androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/sidebar_ctrl_layout_bar_mid"
-                android:layout_width="20dp"
-                android:layout_height="4dp"
-                android:layout_marginStart="7dp"
-                android:background="@color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/sidebar_ctrl_layout_bar"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/sidebar_ctrl_layout_ui_btn"
-                app:layout_constraintTop_toTopOf="parent"></androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/sidebar_ctrl_layout_bar_mid"
+                    android:layout_width="20dp"
+                    android:layout_height="4dp"
+                    android:background="@color/white"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"></androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <LinearLayout
                 android:id="@+id/sidebar_ctrl_layout_cur_time_tv"
@@ -467,6 +470,82 @@
                     android:textSize="18sp"
                     app:fontFamily="@font/baloo_bhai_2_semibold" />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/sidebar_ctrl_layout_memo_start_time_tv"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="45dp"
+                android:background="@drawable/border_button_fill_gray"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/sidebar_ctrl_tv_memo_start_time_hr"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="-5dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="nn"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    app:fontFamily="@font/baloo_bhai_2_semibold" />
+
+                <TextView
+                    android:id="@+id/sidebar_ctrl_tv_memo_start_time_min"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="-5dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="nn"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    app:fontFamily="@font/baloo_bhai_2_semibold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/sidebar_ctrl_layout_memo_end_time_tv"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/border_button_fill_gray"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.97"
+                app:layout_constraintStart_toEndOf="@+id/sidebar_ctrl_layout_memo_start_time_tv"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/sidebar_ctrl_tv_memo_end_time_hr"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="-5dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="nn"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    app:fontFamily="@font/baloo_bhai_2_semibold" />
+
+                <TextView
+                    android:id="@+id/sidebar_ctrl_tv_memo_end_time_min"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="-5dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="nn"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    app:fontFamily="@font/baloo_bhai_2_semibold" />
+            </LinearLayout>
+
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
