@@ -50,8 +50,10 @@ public class UiFragment extends Fragment {
     DrawerLayout drawerLayout;
     ConstraintLayout layout_timebar, layout_dialog_section,
             layout_sidebar_total_time,layout_sidebar_cur_time, layout_sidebar_remain_time,
-            layout_time_section, layout_sidebar_ctrl, layout_sidebar_ctrl_bar, layout_sidebar_blank
-            ,layout_diaglog_box;
+            layout_time_section,
+            layout_sidebar_ctrl, layout_sidebar_startTime_ctrl, layout_sidebar_endTime_ctrl,
+
+            layout_sidebar_ctrl_bar, layout_sidebar_blank, layout_diaglog_box;
     LinearLayout layout_sidebar_ctrl_cur_time_tv, layout_sidebar_time_list, layout_sidebar_ctrl_ui_btn,
                  layout_sidebar_ctrl_layout_memo_start_time_tv, layout_sidebar_ctrl_layout_memo_end_time_tv;
     ImageView iv_google_photo, iv_timesection_ctrl, iv_palette_blue, iv_palette_red, iv_palette_green,
@@ -224,6 +226,11 @@ public class UiFragment extends Fragment {
         layout_sidebar_remain_time = (ConstraintLayout)view.findViewById(R.id.sidebar_layout_remain_time);
 
         layout_sidebar_ctrl = (ConstraintLayout) view.findViewById(R.id.sidebar_ctrl_layout);
+        layout_sidebar_startTime_ctrl = (ConstraintLayout) view.findViewById(R.id.sidebar_startTime_ctrl_layout);
+        layout_sidebar_endTime_ctrl = (ConstraintLayout) view.findViewById(R.id.sidebar_endTime_ctrl_layout);
+        layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
+        layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
+
         tv_sidebar_ctrl_cur_time_hr = (TextView)view.findViewById(R.id.sidebar_ctrl_tv_cur_time_hr);
         tv_sidebar_ctrl_cur_time_min = (TextView)view.findViewById(R.id.sidebar_ctrl_tv_cur_time_min);
         ViewTreeObserver viewTreeObserver = layout_sidebar_total_time.getViewTreeObserver();
@@ -238,30 +245,16 @@ public class UiFragment extends Fragment {
         btn_dialog_section_ok = (Button)view.findViewById((R.id.dialog_section_btn_ok));
         btn_dialog_section_cancel = (Button)view.findViewById((R.id.dialog_section_btn_cancel));
 
-        layout_sidebar_ctrl_layout_memo_start_time_tv = (LinearLayout)view.findViewById(R.id.sidebar_ctrl_layout_memo_start_time_tv);
-        layout_sidebar_ctrl_layout_memo_end_time_tv = (LinearLayout)view.findViewById(R.id.sidebar_ctrl_layout_memo_end_time_tv);
-        layout_sidebar_ctrl_layout_memo_start_time_tv.setVisibility(View.GONE);
-        layout_sidebar_ctrl_layout_memo_end_time_tv.setVisibility(View.GONE);
-
 
         ibtn_sidebar_ctrl_memo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                layout_sidebar_ctrl_ui_btn.setVisibility(View.GONE);
-                layout_sidebar_ctrl_cur_time_tv.setVisibility(View.GONE);
-                layout_sidebar_ctrl_layout_memo_start_time_tv.setVisibility(View.VISIBLE);
-                layout_sidebar_ctrl_layout_memo_end_time_tv.setVisibility(View.VISIBLE);
 
+                layout_sidebar_ctrl.setVisibility(View.GONE);
+//                layout_sidebar_startTime_ctrl.setVisibility(View.VISIBLE);
+//                layout_sidebar_endTime_ctrl.setVisibility(View.VISIBLE);
 
-                ConstraintLayout.LayoutParams layoutParams
-                        = (ConstraintLayout.LayoutParams) layout_sidebar_ctrl_bar.getLayoutParams();
-
-                layoutParams.endToStart = R.id.sidebar_ctrl_layout_memo_end_time_tv;
-                layoutParams.startToEnd = R.id.sidebar_ctrl_layout_memo_start_time_tv;
-                layout_sidebar_ctrl_bar.setLayoutParams(layoutParams);
-
-                int diaglog_visibilty = layout_diaglog_box.getVisibility();
-                layout_diaglog_box.setVisibility((diaglog_visibilty==View.VISIBLE)? View.GONE : View.VISIBLE);
+                layout_diaglog_box.setVisibility(View.VISIBLE);
 
             }
         });
@@ -270,20 +263,9 @@ public class UiFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                layout_sidebar_ctrl_ui_btn.setVisibility(View.VISIBLE);
-                layout_sidebar_ctrl_cur_time_tv.setVisibility(View.VISIBLE);
-                layout_sidebar_ctrl_layout_memo_start_time_tv.setVisibility(View.GONE);
-                layout_sidebar_ctrl_layout_memo_end_time_tv.setVisibility(View.GONE);
-
-
-                ConstraintLayout.LayoutParams layoutParams
-                        = (ConstraintLayout.LayoutParams) layout_sidebar_ctrl_bar.getLayoutParams();
-
-
-                layoutParams.endToStart = R.id.sidebar_ctrl_layout_cur_time_tv;
-                layoutParams.startToEnd = R.id.sidebar_ctrl_layout_ui_btn;
-                layout_sidebar_ctrl_bar.setLayoutParams(layoutParams);
-
+                layout_sidebar_ctrl.setVisibility(View.VISIBLE);
+                layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
+                layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
                 layout_diaglog_box.setVisibility(View.GONE);
 
             }
@@ -292,24 +274,13 @@ public class UiFragment extends Fragment {
         btn_dialog_section_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                layout_sidebar_ctrl_ui_btn.setVisibility(View.VISIBLE);
-                layout_sidebar_ctrl_cur_time_tv.setVisibility(View.VISIBLE);
-                layout_sidebar_ctrl_layout_memo_start_time_tv.setVisibility(View.GONE);
-                layout_sidebar_ctrl_layout_memo_end_time_tv.setVisibility(View.GONE);
-
-                ConstraintLayout.LayoutParams layoutParams
-                        = (ConstraintLayout.LayoutParams) layout_sidebar_ctrl_bar.getLayoutParams();
-
-                layoutParams.endToStart = R.id.sidebar_ctrl_layout_cur_time_tv;
-                layoutParams.startToEnd = R.id.sidebar_ctrl_layout_ui_btn;
-                layout_sidebar_ctrl_bar.setLayoutParams(layoutParams);
+                layout_sidebar_ctrl.setVisibility(View.VISIBLE);
+                layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
+                layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
 
                 layout_diaglog_box.setVisibility(View.GONE);
             }
         });
-
-
-
 
 
         layout_sidebar_ctrl_bar = (ConstraintLayout)view.findViewById(R.id.sidebar_ctrl_layout_bar);
@@ -329,6 +300,8 @@ public class UiFragment extends Fragment {
             @SuppressLint("ResourceType")
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                Log.d("sideBar","layout_sidebar_ctrl_cur_time_tv touch event !!");
                 int[] touch_location = new int[2];
                 layout_sidebar_total_time.getLocationOnScreen(touch_location);
                 int touch_calced_y = (int) (motionEvent.getRawY() - touch_location[1]);
@@ -396,6 +369,9 @@ public class UiFragment extends Fragment {
             @SuppressLint({"ResourceAsColor", "ResourceType"})
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                Log.d("sideBar","layout_sidebar_time_list touch event !!");
+
                 int[] touch_location = new int[2];
                 layout_sidebar_total_time.getLocationOnScreen(touch_location);
 
