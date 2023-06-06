@@ -305,8 +305,9 @@ public class UiFragment extends Fragment {
                 total_time_len = layout_sidebar_total_time.getHeight();
                 double time_rate = Math.max(0, Math.min(1, (double) touch_calced_y / (double) total_time_len));
                 sidebar_touch_time = (int) (time_rate * 24 * 60);
+                int total_len_buffer = 40;
 
-                if ((touch_calced_y > 0) && (touch_calced_y < total_time_len)) {
+                if ((touch_calced_y > 0) && (touch_calced_y < total_time_len + total_len_buffer)) {
                     is_timesection_touched = true;
 
                     touch_calced_y = Math.max(0, Math.min(touch_calced_y, total_time_len));
@@ -348,7 +349,7 @@ public class UiFragment extends Fragment {
                     ibtn_sidebar_ctrl_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
                     layout_sidebar_ctrl_bar.setBackgroundResource(R.color.gray);
                     layout_sidebar_ctrl_cur_time_tv.setBackgroundResource(R.drawable.border_button_fill_gray);
-                } else if (touch_calced_y >= total_time_len) {
+                } else if (touch_calced_y >= total_time_len + total_len_buffer) {
                     is_timesection_touched = false;
                     update_time();
                 }
@@ -361,7 +362,6 @@ public class UiFragment extends Fragment {
             @SuppressLint({"ResourceAsColor", "ResourceType"})
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-
                 Log.d("sideBar", "layout_sidebar_time_list touch event !!");
 
                 int[] touch_location = new int[2];
@@ -372,8 +372,9 @@ public class UiFragment extends Fragment {
                 total_time_len = layout_sidebar_total_time.getHeight();
                 double time_rate = Math.max(0, Math.min(1, (double) touch_calced_y / (double) total_time_len));
                 sidebar_touch_time = (int) (time_rate * 24 * 60);
+                int total_len_buffer = 40;
 
-                if ((touch_calced_y > 0) && (touch_calced_y < total_time_len)) {
+                if ((touch_calced_y > 0) && (touch_calced_y < total_time_len + total_len_buffer)) {
                     is_timesection_touched = true;
                     sidebar_touch_time = (sidebar_touch_time + 30) / 30 * 30;
 
@@ -386,6 +387,14 @@ public class UiFragment extends Fragment {
                     layoutParams.topMargin = touch_calced_y - (layout_sidebar_ctrl.getHeight() / 2);
                     layout_sidebar_ctrl.setLayoutParams(layoutParams);
 
+                    layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
+                    layoutParams.height = touch_calced_y;
+                    layout_sidebar_cur_time.setLayoutParams(layoutParams);
+
+                    layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
+                    layoutParams.height = touch_calced_y;
+                    layout_sidebar_cur_time.setLayoutParams(layoutParams);
+
                     App_Section_Color = getResources().getString(R.color.blue);
                     layout_sidebar_ctrl_ui_btn.setBackgroundResource(R.drawable.border_button_blue);
                     ibtn_sidebar_ctrl_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
@@ -393,6 +402,7 @@ public class UiFragment extends Fragment {
                     layout_sidebar_ctrl_bar.setBackgroundResource(R.color.blue);
                     layout_sidebar_ctrl_cur_time_tv.setBackgroundResource(R.drawable.border_button_fill_blue);
                 } else if (touch_calced_y <= 0) {
+                    is_timesection_touched = true;
                     touch_calced_y = 1;
                     tv_sidebar_ctrl_cur_time_hr.setText("00");
                     tv_sidebar_ctrl_cur_time_min.setText("00");
@@ -408,7 +418,8 @@ public class UiFragment extends Fragment {
                     ibtn_sidebar_ctrl_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
                     layout_sidebar_ctrl_bar.setBackgroundResource(R.color.blue);
                     layout_sidebar_ctrl_cur_time_tv.setBackgroundResource(R.drawable.border_button_fill_blue);
-                } else if (touch_calced_y >= total_time_len) {
+                } else if (touch_calced_y >= total_time_len + total_len_buffer) {
+                    is_timesection_touched = true;
                     touch_calced_y = total_time_len;
                     tv_sidebar_ctrl_cur_time_hr.setText("24");
                     tv_sidebar_ctrl_cur_time_min.setText("00");
@@ -418,23 +429,18 @@ public class UiFragment extends Fragment {
                     layoutParams.topMargin = touch_calced_y - (layout_sidebar_ctrl.getHeight() / 2);
                     layout_sidebar_ctrl.setLayoutParams(layoutParams);
 
+                    layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
+                    layoutParams.height = touch_calced_y;
+                    layout_sidebar_cur_time.setLayoutParams(layoutParams);
+
                     App_Section_Color = getResources().getString(R.color.blue);
                     layout_sidebar_ctrl_ui_btn.setBackgroundResource(R.drawable.border_button_blue);
                     ibtn_sidebar_ctrl_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
                     ibtn_sidebar_ctrl_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
                     layout_sidebar_ctrl_bar.setBackgroundResource(R.color.blue);
                     layout_sidebar_ctrl_cur_time_tv.setBackgroundResource(R.drawable.border_button_fill_blue);
-                } else {
-                    if (System.currentTimeMillis() <= sidebar_delay) {
-                        is_timesection_touched = false;
-                        update_time();
-                    } else {
-                        sidebar_delay = System.currentTimeMillis() + 200;
-                    }
-
-
                 }
-                return false;
+                return true;
             }
         });
 
