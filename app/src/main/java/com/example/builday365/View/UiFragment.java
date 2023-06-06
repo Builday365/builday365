@@ -251,7 +251,7 @@ public class UiFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                layout_sidebar_ctrl.setVisibility(View.GONE);
+                layout_sidebar_ctrl.setVisibility(View.INVISIBLE);
 //                layout_sidebar_startTime_ctrl.setVisibility(View.VISIBLE);
 //                layout_sidebar_endTime_ctrl.setVisibility(View.VISIBLE);
 
