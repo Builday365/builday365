@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:contentInsetStart="0dp"
-    android:contentInsetLeft="0dp">
+    android:background="@color/white">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -25,10 +23,8 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:background="@color/transparent"
-            android:padding="10dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/builday_icon_side_menu"
-            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+            android:src="@drawable/ic_ui_toolbar_menu" />
 
         <ImageButton
             android:id="@+id/main_toolbar_ibtn_month_prev"
@@ -36,10 +32,8 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:background="@color/transparent"
-            android:padding="10dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/builday_icon_month_prev"
-            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+            android:src="@drawable/ic_ui_toolbar_left_double" />
 
         <ImageButton
             android:id="@+id/main_toolbar_ibtn_day_prev"
@@ -47,10 +41,8 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:background="@color/transparent"
-            android:padding="10dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/builday_icon_day_prev"
-            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+            android:src="@drawable/ic_ui_toolbar_left" />
 
         <TextView
             android:id="@+id/main_toolbar_tv_cur_date"
@@ -60,7 +52,7 @@
             android:gravity="center"
             android:text="cur date"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="@color/gray"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -70,10 +62,8 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:background="@color/transparent"
-            android:padding="10dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/builday_icon_day_next"
-            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+            android:src="@drawable/ic_ui_toolbar_right" />
 
         <ImageButton
             android:id="@+id/main_toolbar_ibtn_month_next"
@@ -81,10 +71,8 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:background="@color/transparent"
-            android:padding="10dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/builday_icon_month_next"
-            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+            android:src="@drawable/ic_ui_toolbar_right_double" />
 
         <ImageButton
             android:id="@+id/main_toolbar_ibtn_calendar"
@@ -92,11 +80,7 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:background="@color/transparent"
-            android:padding="10dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/builday_icon_calendar"
-            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+            android:src="@drawable/ic_ui_toolbar_cal_0" />
     </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

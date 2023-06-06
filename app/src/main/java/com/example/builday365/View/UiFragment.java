@@ -39,7 +39,8 @@ import java.util.Date;
 public class UiFragment extends Fragment {
     private static final String TAG = "UiFragment";
     private UiFragmentListener uiFragmentListener;
-    public interface UiFragmentListener{
+
+    public interface UiFragmentListener {
         void onInputBSent(CharSequence input);
     }
 
@@ -71,7 +72,6 @@ public class UiFragment extends Fragment {
     Calendar calendar;
     CalendarView calendarView;
     int sidebar_touch_time = 0;
-    long sidebar_delay = 0;
 
     String App_Section_Color, App_Activity, App_Memo;
 
@@ -106,12 +106,22 @@ public class UiFragment extends Fragment {
         });
 
         calendar = Calendar.getInstance();
-        set_date(new Date(calendar.getTimeInMillis()));
 
         layout_timebar = (ConstraintLayout) view.findViewById(R.id.fragment_layout_sidebar_ctrl);
         ibtn_calendar = (ImageButton) view.findViewById(R.id.main_toolbar_ibtn_calendar);
         calendarView = (CalendarView) view.findViewById(R.id.fragment_calendarview);
         calendarView.setVisibility(View.GONE);
+
+        ViewTreeObserver ibtn_calendar_viewTreeObserver = ibtn_calendar.getViewTreeObserver();
+        if (ibtn_calendar_viewTreeObserver.isAlive()) {
+            ibtn_calendar_viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    ibtn_calendar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    set_date(new Date(calendar.getTimeInMillis()));
+                }
+            });
+        }
 
         ibtn_calendar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,12 +129,7 @@ public class UiFragment extends Fragment {
                 int cur_visibilty = calendarView.getVisibility();
                 calendarView.setVisibility((cur_visibilty == View.VISIBLE) ? View.GONE : View.VISIBLE);
                 layout_timebar.setVisibility((cur_visibilty == View.VISIBLE) ? View.VISIBLE : View.GONE);
-                layout_dialog_section.setVisibility(View.GONE);
                 layout_time_section.setVisibility(View.GONE);
-
-//                if (drawerLayout.isDrawerOpen(Gravity.LEFT)){
-//                    drawerLayout.closeDrawers();
-//                }
 
                 String date_str = String.format("%d-%d-%d", set_year, set_month, set_day);
                 SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -153,6 +158,7 @@ public class UiFragment extends Fragment {
                 try {
                     Date date = transFormat.parse(date_str);
                     calendar.setTime(date);
+                    setCalendarDay(calendar.get(Calendar.DAY_OF_WEEK));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -236,7 +242,7 @@ public class UiFragment extends Fragment {
 
         tv_sidebar_ctrl_cur_time_hr = (TextView) view.findViewById(R.id.sidebar_ctrl_tv_cur_time_hr);
         tv_sidebar_ctrl_cur_time_min = (TextView) view.findViewById(R.id.sidebar_ctrl_tv_cur_time_min);
-        ViewTreeObserver viewTreeObserver = layout_sidebar_total_time.getViewTreeObserver();
+        ViewTreeObserver layout_sidebar_viewTreeObserver = layout_sidebar_total_time.getViewTreeObserver();
 
 
         ibtn_sidebar_ctrl_activity = (ImageButton) view.findViewById(R.id.sidebar_ctrl_ibtn_activity);
@@ -448,8 +454,8 @@ public class UiFragment extends Fragment {
             }
         });
 
-        if (viewTreeObserver.isAlive()) {
-            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        if (layout_sidebar_viewTreeObserver.isAlive()) {
+            layout_sidebar_viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
                     layout_sidebar_total_time.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -501,6 +507,8 @@ public class UiFragment extends Fragment {
 
     public void set_date(Date date) {
         String getCurDate = new SimpleDateFormat("yyyy.MM.dd").format(date);
+        calendar.setTime(date);
+        setCalendarDay(calendar.get(Calendar.DAY_OF_WEEK));
 
         if ((getCurDate.split("\\.")).length == 3) {
             set_year = Integer.parseInt(getCurDate.split("\\.")[0]);
@@ -593,27 +601,34 @@ public class UiFragment extends Fragment {
         }
     }
 
-    public int get_border_color(int color) {
-        if (color == R.color.blue) {
-            return R.drawable.border_all_dir_blue;
-        } else if (color == R.color.red) {
-            return R.drawable.border_all_dir_red;
-        } else if (color == R.color.green) {
-            return R.drawable.border_all_dir_green;
-        } else if (color == R.color.black) {
-            return R.drawable.border_all_dir_black;
-        } else if (color == R.color.yellow) {
-            return R.drawable.border_all_dir_yellow;
-        } else if (color == R.color.purple) {
-            return R.drawable.border_all_dir_purple;
-        } else if (color == R.color.sky_blue) {
-            return R.drawable.border_all_dir_sky_blue;
-        } else if (color == R.color.brown) {
-            return R.drawable.border_all_dir_brown;
-        } else if (color == R.color.pink) {
-            return R.drawable.border_all_dir_pink;
-        } else {
-            return R.drawable.border_all_dir_light_green;
+    private void setCalendarDay(int dayWeek) {
+        int cal_res_id = 0;
+        dayWeek = (dayWeek + 5) % 7;
+
+        switch (dayWeek) {
+            case 0:
+                cal_res_id = R.drawable.ic_ui_toolbar_cal_0;
+                break;
+            case 1:
+                cal_res_id = R.drawable.ic_ui_toolbar_cal_1;
+                break;
+            case 2:
+                cal_res_id = R.drawable.ic_ui_toolbar_cal_2;
+                break;
+            case 3:
+                cal_res_id = R.drawable.ic_ui_toolbar_cal_3;
+                break;
+            case 4:
+                cal_res_id = R.drawable.ic_ui_toolbar_cal_4;
+                break;
+            case 5:
+                cal_res_id = R.drawable.ic_ui_toolbar_cal_5;
+                break;
+            case 6:
+                cal_res_id = R.drawable.ic_ui_toolbar_cal_6;
+                break;
         }
+
+        ibtn_calendar.setImageResource(cal_res_id);
     }
 }
