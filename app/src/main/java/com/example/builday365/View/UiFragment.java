@@ -38,6 +38,10 @@ import java.util.Date;
 
 public class UiFragment extends Fragment {
     private static final String TAG = "UiFragment";
+    private UiFragmentListener uiFragmentListener;
+    public interface UiFragmentListener{
+        void onInputBSent(CharSequence input);
+    }
 
     TextView tv_toolbar_cur_date, tv_google_name, tv_sidebar_cur_time, tv_timesection_cur_time,
             tv_timesection_click_time, tv_timesection_start_time,
@@ -457,6 +461,11 @@ public class UiFragment extends Fragment {
         return view;
     }
 
+    public void map_cur_location_click_listener() {
+        is_timesection_touched = false;
+        update_time();
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         calendarView = (CalendarView) view.findViewById(R.id.fragment_calendarview);
@@ -467,6 +476,21 @@ public class UiFragment extends Fragment {
     public void onStart() {
         Log.d(TAG, "onStart is called");
         super.onStart();
+    }
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if(context instanceof UiFragmentListener){
+            uiFragmentListener = (UiFragmentListener)context;
+        } else{
+            throw new RuntimeException(context.toString() + " must implement FragmentListner");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        uiFragmentListener = null;
     }
 
     public static Point getLocationOnScreen(View view) {

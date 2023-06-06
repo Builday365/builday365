@@ -13,9 +13,13 @@ import com.example.builday365.Model.RoomDb;
 import com.example.builday365.ViewModel.*;
 import com.example.builday365.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements MapsFragment.MapsFragmentListener, UiFragment.UiFragmentListener {
     private static final String TAG = "MainActivity";
     private AdMobManager mAdMobManager;
+
+    private MapsFragment mapsFragment;
+    private UiFragment uiFragment;
 
     @SuppressLint("ResourceType")
     @Override
@@ -30,6 +34,22 @@ public class MainActivity extends AppCompatActivity {
 
         MainViewModel mv = new MainViewModel(getApplication());
 
+        mapsFragment = new MapsFragment();
+        uiFragment = new UiFragment();
 
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.map, mapsFragment)
+                .replace(R.id.ui, uiFragment)
+                .commit();
     }
+
+    @Override
+    public void onInputASent(CharSequence input) {
+        if (input == "true") {
+            uiFragment.map_cur_location_click_listener();
+        }
+    }
+
+    @Override
+    public void onInputBSent(CharSequence input) {}
 }

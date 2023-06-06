@@ -60,6 +60,12 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
     private Marker mHomeMarker;
     FloatingActionButton mFab;
 
+    private MapsFragmentListener mapsFragmentListener;
+
+    public interface MapsFragmentListener{
+        void onInputASent(CharSequence input);
+    }
+
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         /**
@@ -315,6 +321,8 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
 
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mLastLocation, 15);
                 mGoogleMap.animateCamera(cameraUpdate);
+
+                mapsFragmentListener.onInputASent("true");
             }
         });
     }
@@ -329,5 +337,21 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
         if (i == REASON_GESTURE) {
             mFab.setImageResource(R.drawable.builday_icon_currentlocation2);
         }
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if(context instanceof MapsFragmentListener){
+            mapsFragmentListener = (MapsFragmentListener)context;
+        } else{
+            throw new RuntimeException(context.toString() + " must implement FragmentListner");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mapsFragmentListener = null;
     }
 }
