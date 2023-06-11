@@ -57,17 +57,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fragment_top_toolbar">
 
-            <include
-                layout="@layout/sidebar_view"
+            <fragment
+                android:id="@+id/sidebar"
+                android:name="com.example.builday365.View.SideBarFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout="@layout/fragment_sidebar"
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/fragment_dialog_box"
             android:layout_width="300dp"
             android:layout_height="230dp"
             android:layout_marginTop="10dp"
@@ -79,14 +83,18 @@
             app:layout_constraintTop_toBottomOf="@+id/fragment_top_toolbar"
             app:layout_constraintVertical_bias="0.3">
 
-            <include
-                layout="@layout/dialog_make_section"
+            <fragment
+                android:id="@+id/memo"
+                android:name="com.example.builday365.View.MemoFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout="@layout/fragment_memo"
+                />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

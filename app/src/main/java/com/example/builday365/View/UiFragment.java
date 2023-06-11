@@ -39,6 +39,8 @@ import java.util.Date;
 public class UiFragment extends Fragment {
     private static final String TAG = "UiFragment";
     private UiFragmentListener uiFragmentListener;
+    private SideBarFragment sideBarFragment;
+    private MemoFragment memoFragment;
 
     public interface UiFragmentListener {
         void onInputBSent(CharSequence input);
@@ -46,39 +48,44 @@ public class UiFragment extends Fragment {
 
     TextView tv_toolbar_cur_date, tv_google_name, tv_sidebar_cur_time, tv_timesection_cur_time,
             tv_timesection_click_time, tv_timesection_start_time,
-            tv_sidebar_ctrl_cur_time_hr, tv_sidebar_ctrl_cur_time_min,
             tv_sidebar_ctrl_memo_start_time_hr, tv_sidebar_ctrl_memo_start_time_min,
             tv_sidebar_ctrl_memo_end_time_hr, tv_sidebar_ctrl_memo_end_time_min;
     ImageButton ibtn_calendar, ibtn_day_prev, ibtn_day_next, ibtn_month_prev, ibtn_month_next,
-            ibtn_sidebar_ctrl_activity, ibtn_sidebar_ctrl_memo, ibtn_sidebar_memo, ibtn_sidebar_activity,
+            ibtn_sidebar_memo, ibtn_sidebar_activity,
             ibtn_timesection_ok, ibtn_timesection_cancel, ibtn_timesection_palette;
     DrawerLayout drawerLayout;
     ConstraintLayout layout_timebar, layout_dialog_section,
-            layout_sidebar_total_time, layout_sidebar_cur_time, layout_sidebar_remain_time,
-            layout_time_section,
-            layout_sidebar_ctrl, layout_sidebar_startTime_ctrl, layout_sidebar_endTime_ctrl,
-
-    layout_sidebar_ctrl_bar, layout_sidebar_blank, layout_diaglog_box;
-    LinearLayout layout_sidebar_ctrl_cur_time_tv, layout_sidebar_time_list, layout_sidebar_ctrl_ui_btn,
+            layout_sidebar_remain_time,
+            layout_time_section;
+    LinearLayout
             layout_sidebar_ctrl_layout_memo_start_time_tv, layout_sidebar_ctrl_layout_memo_end_time_tv;
     ImageView iv_google_photo, iv_timesection_ctrl, iv_palette_blue, iv_palette_red, iv_palette_green,
             iv_palette_black, iv_palette_yellow, iv_palette_purple, iv_palette_skyBlue, iv_palette_brown,
             iv_palette_pink, iv_palette_lightGreen;
-    Button btn_dialog_section_ok, btn_dialog_section_cancel, btn_palette_ok, btn_palette_cancel;
+    Button btn_palette_ok, btn_palette_cancel;
     EditText dialog_section_et_memo;
 
-    int set_year, set_month, set_day, total_time_len, cur_time_len;
-    boolean is_timesection_touched = false;
+    int set_year, set_month, set_day;
     Calendar calendar;
     CalendarView calendarView;
-    int sidebar_touch_time = 0;
 
-    String App_Section_Color, App_Activity, App_Memo;
+    String App_Activity, App_Memo;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ui, container, false);
+
+        sideBarFragment = new SideBarFragment();
+        memoFragment = new MemoFragment();
+
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.sidebar, sideBarFragment)
+                .replace(R.id.memo, memoFragment)
+                .commit();
+
+
+        calendar = Calendar.getInstance();
 
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -88,28 +95,27 @@ public class UiFragment extends Fragment {
             }
         });
 
+        layout_time_section = (ConstraintLayout) view.findViewById(R.id.fragment_layout_sidebar);
+        layout_sidebar_remain_time = (ConstraintLayout) view.findViewById(R.id.sidebar_layout_remain_time);
+
         tv_toolbar_cur_date = (TextView) view.findViewById(R.id.main_toolbar_tv_cur_date);
-        tv_toolbar_cur_date.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                calendar = Calendar.getInstance();
-                set_date(new Date(calendar.getTimeInMillis()));
 
-                is_timesection_touched = false;
-                update_time();
-
-                if (calendarView.getVisibility() == View.VISIBLE) {
-                    calendarView.setVisibility(View.GONE);
-                    layout_timebar.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
-        calendar = Calendar.getInstance();
-
-        layout_timebar = (ConstraintLayout) view.findViewById(R.id.fragment_layout_sidebar_ctrl);
         ibtn_calendar = (ImageButton) view.findViewById(R.id.main_toolbar_ibtn_calendar);
+        ibtn_day_prev = (ImageButton) view.findViewById(R.id.main_toolbar_ibtn_day_prev);
+        ibtn_day_next = (ImageButton) view.findViewById(R.id.main_toolbar_ibtn_day_next);
+        ibtn_month_prev = (ImageButton) view.findViewById(R.id.main_toolbar_ibtn_month_prev);
+        ibtn_month_next = (ImageButton) view.findViewById(R.id.main_toolbar_ibtn_month_next);
+
         calendarView = (CalendarView) view.findViewById(R.id.fragment_calendarview);
+
+        return view;
+    }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         calendarView.setVisibility(View.GONE);
 
         ViewTreeObserver ibtn_calendar_viewTreeObserver = ibtn_calendar.getViewTreeObserver();
@@ -123,12 +129,37 @@ public class UiFragment extends Fragment {
             });
         }
 
+
+    }
+
+    @Override
+    public void onStart() {
+        Log.d(TAG, "onStart is called");
+
+        tv_toolbar_cur_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calendar = Calendar.getInstance();
+                set_date(new Date(calendar.getTimeInMillis()));
+
+                if (sideBarFragment != null) {
+                    sideBarFragment.is_timesection_touched = false;
+                    sideBarFragment.update_time();
+                }
+
+                if (calendarView.getVisibility() == View.VISIBLE) {
+                    calendarView.setVisibility(View.GONE);
+                    sideBarFragment.layout_sidebar.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
         ibtn_calendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int cur_visibilty = calendarView.getVisibility();
                 calendarView.setVisibility((cur_visibilty == View.VISIBLE) ? View.GONE : View.VISIBLE);
-                layout_timebar.setVisibility((cur_visibilty == View.VISIBLE) ? View.VISIBLE : View.GONE);
+                sideBarFragment.layout_sidebar.setVisibility((cur_visibilty == View.VISIBLE) ? View.VISIBLE : View.GONE);
                 layout_time_section.setVisibility(View.GONE);
 
                 String date_str = String.format("%d-%d-%d", set_year, set_month, set_day);
@@ -142,7 +173,6 @@ public class UiFragment extends Fragment {
                 }
             }
         });
-
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int day) {
@@ -164,11 +194,9 @@ public class UiFragment extends Fragment {
                 }
 
                 calendarView.setVisibility(View.GONE);
-                layout_timebar.setVisibility(View.VISIBLE);
+                sideBarFragment.layout_sidebar.setVisibility(View.VISIBLE);
             }
         });
-
-        ibtn_day_prev = (ImageButton) view.findViewById(R.id.main_toolbar_ibtn_day_prev);
         ibtn_day_prev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -177,12 +205,10 @@ public class UiFragment extends Fragment {
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
-                    layout_timebar.setVisibility(View.VISIBLE);
+                    sideBarFragment.layout_sidebar.setVisibility(View.VISIBLE);
                 }
             }
         });
-
-        ibtn_day_next = (ImageButton) view.findViewById(R.id.main_toolbar_ibtn_day_next);
         ibtn_day_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -191,12 +217,10 @@ public class UiFragment extends Fragment {
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
-                    layout_timebar.setVisibility(View.VISIBLE);
+                    sideBarFragment.layout_sidebar.setVisibility(View.VISIBLE);
                 }
             }
         });
-
-        ibtn_month_prev = (ImageButton) view.findViewById(R.id.main_toolbar_ibtn_month_prev);
         ibtn_month_prev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -205,12 +229,11 @@ public class UiFragment extends Fragment {
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
-                    layout_timebar.setVisibility(View.VISIBLE);
+                    sideBarFragment.layout_sidebar.setVisibility(View.VISIBLE);
                 }
             }
         });
 
-        ibtn_month_next = (ImageButton) view.findViewById(R.id.main_toolbar_ibtn_month_next);
         ibtn_month_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -219,276 +242,53 @@ public class UiFragment extends Fragment {
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
-                    layout_timebar.setVisibility(View.VISIBLE);
+                    sideBarFragment.layout_sidebar.setVisibility(View.VISIBLE);
                 }
             }
         });
 
-        layout_sidebar_total_time = (ConstraintLayout) view.findViewById(R.id.sidebar_layout_total_time);
-        layout_time_section = (ConstraintLayout) view.findViewById(R.id.fragment_layout_sidebar);
-        layout_sidebar_ctrl_ui_btn = (LinearLayout) view.findViewById(R.id.sidebar_ctrl_layout_ui_btn);
-        layout_sidebar_ctrl_cur_time_tv = (LinearLayout) view.findViewById(R.id.sidebar_ctrl_layout_cur_time_tv);
-        layout_sidebar_time_list = (LinearLayout) view.findViewById(R.id.sidebar_layout_time_list);
+        memoFragment.btn_dialog_section_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        layout_sidebar_cur_time = (ConstraintLayout) view.findViewById(R.id.sidebar_layout_cur_time);
-        layout_sidebar_total_time = (ConstraintLayout) view.findViewById(R.id.sidebar_layout_total_time);
-        layout_sidebar_remain_time = (ConstraintLayout) view.findViewById(R.id.sidebar_layout_remain_time);
+                sideBarFragment.layout_sidebar_ctrl.setVisibility(View.VISIBLE);
+                sideBarFragment.layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
+                sideBarFragment.layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
+                memoFragment.layout_diaglog_box.setVisibility(View.GONE);
 
-        layout_sidebar_ctrl = (ConstraintLayout) view.findViewById(R.id.sidebar_ctrl_layout);
-        layout_sidebar_startTime_ctrl = (ConstraintLayout) view.findViewById(R.id.sidebar_startTime_ctrl_layout);
-        layout_sidebar_endTime_ctrl = (ConstraintLayout) view.findViewById(R.id.sidebar_endTime_ctrl_layout);
-        layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
-        layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
+            }
+        });
 
-        tv_sidebar_ctrl_cur_time_hr = (TextView) view.findViewById(R.id.sidebar_ctrl_tv_cur_time_hr);
-        tv_sidebar_ctrl_cur_time_min = (TextView) view.findViewById(R.id.sidebar_ctrl_tv_cur_time_min);
-        ViewTreeObserver layout_sidebar_viewTreeObserver = layout_sidebar_total_time.getViewTreeObserver();
+        memoFragment.btn_dialog_section_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sideBarFragment.layout_sidebar_ctrl.setVisibility(View.VISIBLE);
+                sideBarFragment.layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
+                sideBarFragment.layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
 
+                memoFragment.layout_diaglog_box.setVisibility(View.GONE);
+            }
+        });
 
-        ibtn_sidebar_ctrl_activity = (ImageButton) view.findViewById(R.id.sidebar_ctrl_ibtn_activity);
-        ibtn_sidebar_ctrl_memo = (ImageButton) view.findViewById(R.id.sidebar_ctrl_ibtn_memo);
-        layout_diaglog_box = (ConstraintLayout) view.findViewById(R.id.fragment_dialog_box);
-        layout_diaglog_box.setVisibility(View.GONE);
-        btn_dialog_section_ok = (Button) view.findViewById((R.id.dialog_section_btn_ok));
-        btn_dialog_section_cancel = (Button) view.findViewById((R.id.dialog_section_btn_cancel));
-
-
-        ibtn_sidebar_ctrl_memo.setOnClickListener(new View.OnClickListener() {
+        sideBarFragment.ibtn_sidebar_ctrl_memo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                layout_sidebar_ctrl.setVisibility(View.INVISIBLE);
-//                layout_sidebar_startTime_ctrl.setVisibility(View.VISIBLE);
-//                layout_sidebar_endTime_ctrl.setVisibility(View.VISIBLE);
-
-                layout_diaglog_box.setVisibility(View.VISIBLE);
+                sideBarFragment.layout_sidebar_ctrl.setVisibility(View.INVISIBLE);
+                memoFragment.layout_diaglog_box.setVisibility(View.VISIBLE);
 
             }
         });
 
-        btn_dialog_section_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                layout_sidebar_ctrl.setVisibility(View.VISIBLE);
-                layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
-                layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
-                layout_diaglog_box.setVisibility(View.GONE);
-
-            }
-        });
-
-        btn_dialog_section_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                layout_sidebar_ctrl.setVisibility(View.VISIBLE);
-                layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
-                layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
-
-                layout_diaglog_box.setVisibility(View.GONE);
-            }
-        });
-
-
-        layout_sidebar_ctrl_bar = (ConstraintLayout) view.findViewById(R.id.sidebar_ctrl_layout_bar);
-        layout_sidebar_blank = (ConstraintLayout) view.findViewById(R.id.sidebar_layout_blank);
-        layout_sidebar_blank.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                is_timesection_touched = false;
-                update_time();
-                return false;
-            }
-        });
-
-
-        layout_sidebar_ctrl_cur_time_tv.setOnTouchListener(new View.OnTouchListener() {
-            @SuppressLint("ResourceType")
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-
-                Log.d("sideBar", "layout_sidebar_ctrl_cur_time_tv touch event !!");
-                int[] touch_location = new int[2];
-                layout_sidebar_total_time.getLocationOnScreen(touch_location);
-                int touch_calced_y = (int) (motionEvent.getRawY() - touch_location[1]);
-
-                total_time_len = layout_sidebar_total_time.getHeight();
-                double time_rate = Math.max(0, Math.min(1, (double) touch_calced_y / (double) total_time_len));
-                sidebar_touch_time = (int) (time_rate * 24 * 60);
-                int total_len_buffer = 40;
-
-                if ((touch_calced_y > 0) && (touch_calced_y < total_time_len + total_len_buffer)) {
-                    is_timesection_touched = true;
-
-                    touch_calced_y = Math.max(0, Math.min(touch_calced_y, total_time_len));
-                    tv_sidebar_ctrl_cur_time_hr.setText(String.format("%02d", sidebar_touch_time / 60));
-                    tv_sidebar_ctrl_cur_time_min.setText(String.format("%02d", sidebar_touch_time % 60));
-
-                    ConstraintLayout.LayoutParams layoutParams
-                            = (ConstraintLayout.LayoutParams) layout_sidebar_ctrl.getLayoutParams();
-                    layoutParams.topMargin = touch_calced_y - (layout_sidebar_ctrl.getHeight() / 2);
-                    layout_sidebar_ctrl.setLayoutParams(layoutParams);
-
-                    layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
-                    layoutParams.height = touch_calced_y;
-                    layout_sidebar_cur_time.setLayoutParams(layoutParams);
-
-                    App_Section_Color = getResources().getString(R.color.gray);
-                    layout_sidebar_ctrl_ui_btn.setBackgroundResource(R.drawable.border_button_gray);
-                    ibtn_sidebar_ctrl_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
-                    ibtn_sidebar_ctrl_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
-                    layout_sidebar_ctrl_bar.setBackgroundResource(R.color.gray);
-                    layout_sidebar_ctrl_cur_time_tv.setBackgroundResource(R.drawable.border_button_fill_gray);
-                } else if (touch_calced_y <= 0) {
-                    touch_calced_y = 1;
-                    tv_sidebar_ctrl_cur_time_hr.setText("00");
-                    tv_sidebar_ctrl_cur_time_min.setText("00");
-
-                    ConstraintLayout.LayoutParams layoutParams
-                            = (ConstraintLayout.LayoutParams) layout_sidebar_ctrl.getLayoutParams();
-                    layoutParams.topMargin = touch_calced_y - (layout_sidebar_ctrl.getHeight() / 2);
-                    layout_sidebar_ctrl.setLayoutParams(layoutParams);
-
-                    layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
-                    layoutParams.height = touch_calced_y;
-                    layout_sidebar_cur_time.setLayoutParams(layoutParams);
-
-                    App_Section_Color = getResources().getString(R.color.gray);
-                    layout_sidebar_ctrl_ui_btn.setBackgroundResource(R.drawable.border_button_gray);
-                    ibtn_sidebar_ctrl_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
-                    ibtn_sidebar_ctrl_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
-                    layout_sidebar_ctrl_bar.setBackgroundResource(R.color.gray);
-                    layout_sidebar_ctrl_cur_time_tv.setBackgroundResource(R.drawable.border_button_fill_gray);
-                } else if (touch_calced_y >= total_time_len + total_len_buffer) {
-                    is_timesection_touched = false;
-                    update_time();
-                }
-
-                return true;
-            }
-        });
-
-        layout_sidebar_time_list.setOnTouchListener(new View.OnTouchListener() {
-            @SuppressLint({"ResourceAsColor", "ResourceType"})
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                Log.d("sideBar", "layout_sidebar_time_list touch event !!");
-
-                int[] touch_location = new int[2];
-                layout_sidebar_total_time.getLocationOnScreen(touch_location);
-
-                int touch_calced_y = (int) (motionEvent.getRawY() - touch_location[1]);
-
-                total_time_len = layout_sidebar_total_time.getHeight();
-                double time_rate = Math.max(0, Math.min(1, (double) touch_calced_y / (double) total_time_len));
-                sidebar_touch_time = (int) (time_rate * 24 * 60);
-                int total_len_buffer = 40;
-
-                if ((touch_calced_y > 0) && (touch_calced_y < total_time_len + total_len_buffer)) {
-                    is_timesection_touched = true;
-                    sidebar_touch_time = (sidebar_touch_time + 30) / 30 * 30;
-
-                    touch_calced_y = Math.max(0, Math.min(touch_calced_y, total_time_len));
-                    tv_sidebar_ctrl_cur_time_hr.setText(String.format("%02d", sidebar_touch_time / 60));
-                    tv_sidebar_ctrl_cur_time_min.setText(String.format("%02d", sidebar_touch_time % 60));
-
-                    ConstraintLayout.LayoutParams layoutParams
-                            = (ConstraintLayout.LayoutParams) layout_sidebar_ctrl.getLayoutParams();
-                    layoutParams.topMargin = touch_calced_y - (layout_sidebar_ctrl.getHeight() / 2);
-                    layout_sidebar_ctrl.setLayoutParams(layoutParams);
-
-                    layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
-                    layoutParams.height = touch_calced_y;
-                    layout_sidebar_cur_time.setLayoutParams(layoutParams);
-
-                    layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
-                    layoutParams.height = touch_calced_y;
-                    layout_sidebar_cur_time.setLayoutParams(layoutParams);
-
-                    App_Section_Color = getResources().getString(R.color.blue);
-                    layout_sidebar_ctrl_ui_btn.setBackgroundResource(R.drawable.border_button_blue);
-                    ibtn_sidebar_ctrl_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
-                    ibtn_sidebar_ctrl_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
-                    layout_sidebar_ctrl_bar.setBackgroundResource(R.color.blue);
-                    layout_sidebar_ctrl_cur_time_tv.setBackgroundResource(R.drawable.border_button_fill_blue);
-                } else if (touch_calced_y <= 0) {
-                    is_timesection_touched = true;
-                    touch_calced_y = 1;
-                    tv_sidebar_ctrl_cur_time_hr.setText("00");
-                    tv_sidebar_ctrl_cur_time_min.setText("00");
-
-                    ConstraintLayout.LayoutParams layoutParams
-                            = (ConstraintLayout.LayoutParams) layout_sidebar_ctrl.getLayoutParams();
-                    layoutParams.topMargin = touch_calced_y - (layout_sidebar_ctrl.getHeight() / 2);
-                    layout_sidebar_ctrl.setLayoutParams(layoutParams);
-
-                    App_Section_Color = getResources().getString(R.color.blue);
-                    layout_sidebar_ctrl_ui_btn.setBackgroundResource(R.drawable.border_button_blue);
-                    ibtn_sidebar_ctrl_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
-                    ibtn_sidebar_ctrl_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
-                    layout_sidebar_ctrl_bar.setBackgroundResource(R.color.blue);
-                    layout_sidebar_ctrl_cur_time_tv.setBackgroundResource(R.drawable.border_button_fill_blue);
-                } else if (touch_calced_y >= total_time_len + total_len_buffer) {
-                    is_timesection_touched = true;
-                    touch_calced_y = total_time_len;
-                    tv_sidebar_ctrl_cur_time_hr.setText("24");
-                    tv_sidebar_ctrl_cur_time_min.setText("00");
-
-                    ConstraintLayout.LayoutParams layoutParams
-                            = (ConstraintLayout.LayoutParams) layout_sidebar_ctrl.getLayoutParams();
-                    layoutParams.topMargin = touch_calced_y - (layout_sidebar_ctrl.getHeight() / 2);
-                    layout_sidebar_ctrl.setLayoutParams(layoutParams);
-
-                    layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
-                    layoutParams.height = touch_calced_y;
-                    layout_sidebar_cur_time.setLayoutParams(layoutParams);
-
-                    App_Section_Color = getResources().getString(R.color.blue);
-                    layout_sidebar_ctrl_ui_btn.setBackgroundResource(R.drawable.border_button_blue);
-                    ibtn_sidebar_ctrl_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
-                    ibtn_sidebar_ctrl_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
-                    layout_sidebar_ctrl_bar.setBackgroundResource(R.color.blue);
-                    layout_sidebar_ctrl_cur_time_tv.setBackgroundResource(R.drawable.border_button_fill_blue);
-                }
-                return true;
-            }
-        });
-
-        if (layout_sidebar_viewTreeObserver.isAlive()) {
-            layout_sidebar_viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    layout_sidebar_total_time.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    update_time();
-                }
-            });
-        }
-
-        return view;
-    }
-
-    public void map_cur_location_click_listener() {
-        is_timesection_touched = false;
-        update_time();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        calendarView = (CalendarView) view.findViewById(R.id.fragment_calendarview);
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public void onStart() {
-        Log.d(TAG, "onStart is called");
         super.onStart();
     }
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if(context instanceof UiFragmentListener){
-            uiFragmentListener = (UiFragmentListener)context;
-        } else{
+        if (context instanceof UiFragmentListener) {
+            uiFragmentListener = (UiFragmentListener) context;
+        } else {
             throw new RuntimeException(context.toString() + " must implement FragmentListner");
         }
     }
@@ -503,6 +303,14 @@ public class UiFragment extends Fragment {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         return new Point(location[0], location[1]);
+    }
+
+    public void map_cur_location_click_listener() {
+
+        if (sideBarFragment != null) {
+            sideBarFragment.is_timesection_touched = false;
+            sideBarFragment.update_time();
+        }
     }
 
     public void set_date(Date date) {
@@ -521,78 +329,6 @@ public class UiFragment extends Fragment {
         }
     }
 
-    public String get_time() {
-        Date date = new Date(System.currentTimeMillis());
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-        String cur_time = simpleDateFormat.format(date);
-
-        return cur_time;
-    }
-
-    public void update_time() {
-        final Handler handler = new Handler() {
-            @SuppressLint("ResourceType")
-            @Override
-            public void handleMessage(Message message) {
-//                layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_remain_time.getLayoutParams();
-//                layoutParams.topMargin = Math.min(total_time_len, cur_time_len + layout_side_gap);
-//                layoutParams.height = Math.max(0, total_time_len - cur_time_len - layout_side_gap);
-//                layout_sidebar_remain_time.setLayoutParams(layoutParams);
-//
-                if (!is_timesection_touched) {
-                    String cur_time = get_time();
-                    total_time_len = layout_sidebar_total_time.getHeight();
-
-//                /* ***************** TIME DEBUG ****************** */
-//                cur_time_len = (int)(0.6 * total_time_len);
-//                /***************************************************/
-
-                    int cur_hour = Integer.parseInt(cur_time.split(":")[0]);
-                    int cur_min = Integer.parseInt(cur_time.split(":")[1]);
-                    double time_rate = (cur_hour * 60 + cur_min) / (24 * 60.0);
-                    cur_time_len = (int) (time_rate * total_time_len);
-
-                    tv_sidebar_ctrl_cur_time_hr.setText(String.format("%02d", cur_hour));
-                    tv_sidebar_ctrl_cur_time_min.setText(String.format("%02d", cur_min));
-
-                    ConstraintLayout.LayoutParams layoutParams
-                            = (ConstraintLayout.LayoutParams) layout_sidebar_ctrl.getLayoutParams();
-                    int layout_sidebar_ctrl_top_margin = cur_time_len - (layout_sidebar_ctrl.getHeight() / 2);
-                    layoutParams.topMargin = Math.max(0, Math.min(total_time_len, layout_sidebar_ctrl_top_margin));
-                    layout_sidebar_ctrl.setLayoutParams(layoutParams);
-
-                    layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
-                    layoutParams.height = cur_time_len;
-                    layout_sidebar_cur_time.setLayoutParams(layoutParams);
-
-                    App_Section_Color = getResources().getString(R.color.gray);
-                    layout_sidebar_ctrl_ui_btn.setBackgroundResource(R.drawable.border_button_gray);
-                    ibtn_sidebar_ctrl_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
-                    ibtn_sidebar_ctrl_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
-                    layout_sidebar_ctrl_bar.setBackgroundResource(R.color.gray);
-                    layout_sidebar_ctrl_cur_time_tv.setBackgroundResource(R.drawable.border_button_fill_gray);
-                }
-            }
-        };
-
-        Runnable task = new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        Log.e(TAG, "thread error " + e);
-                    }
-
-                    handler.sendEmptyMessage(1);
-                }
-            }
-        };
-
-        Thread thread = new Thread(task);
-        thread.start();
-    }
 
     private void hideKeyboard() {
         if (getActivity() != null && getActivity().getCurrentFocus() != null) {
