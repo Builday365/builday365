@@ -25,6 +25,7 @@ public class MemoFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_memo, container, false);
 
         layout_diaglog_box = (ConstraintLayout) view.findViewById(R.id.fragment_dialog_box);
+        layout_diaglog_box.setVisibility(View.GONE);
         btn_dialog_section_ok = (Button) view.findViewById((R.id.dialog_section_btn_ok));
         btn_dialog_section_cancel = (Button) view.findViewById((R.id.dialog_section_btn_cancel));
 

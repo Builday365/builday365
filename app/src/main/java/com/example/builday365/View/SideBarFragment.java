@@ -75,11 +75,15 @@ public class SideBarFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
-        ViewTreeObserver layout_sidebar_viewTreeObserver = layout_sidebar_total_time.getViewTreeObserver();
 
-//        layout_diaglog_box.setVisibility(View.GONE);
-//        layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
-//        layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
+        layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
+        layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public void onStart() {
+        ViewTreeObserver layout_sidebar_viewTreeObserver = layout_sidebar_total_time.getViewTreeObserver();
 
         layout_sidebar_blank.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -254,6 +258,8 @@ public class SideBarFragment extends Fragment {
             });
         }
 
+
+        super.onStart();
     }
 
     public String get_time() {
