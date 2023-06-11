@@ -129,6 +129,13 @@ public class UiFragment extends Fragment {
             });
         }
 
+
+    }
+
+    @Override
+    public void onStart() {
+        Log.d(TAG, "onStart is called");
+
         tv_toolbar_cur_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -272,11 +279,7 @@ public class UiFragment extends Fragment {
 
             }
         });
-    }
 
-    @Override
-    public void onStart() {
-        Log.d(TAG, "onStart is called");
         super.onStart();
     }
 
