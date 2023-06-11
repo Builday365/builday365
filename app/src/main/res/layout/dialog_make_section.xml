@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="350dp"
+    android:layout_width="300dp"
     android:layout_height="250dp"
     android:background="#7C7C7C">
 
@@ -28,7 +28,7 @@
         android:text="OK"
         app:backgroundTint="#333333"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/dialog_section_btn_cancel"
+        app:layout_constraintEnd_toStartOf="@id/dialog_section_btn_cancel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.95" />
@@ -41,7 +41,7 @@
         app:backgroundTint="#333333"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/dialog_section_btn_ok"
+        app:layout_constraintStart_toEndOf="@id/dialog_section_btn_ok"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.95" />
 
@@ -53,30 +53,44 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:minHeight="48dp"
-        app:layout_constraintBottom_toTopOf="@+id/dialog_section_btn_ok"
+        app:layout_constraintBottom_toTopOf="@id/dialog_section_btn_ok"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/memo_layout_Time"
+        app:layout_constraintTop_toBottomOf="@id/memo_layout_Time"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/memo_layout_Time"
-        android:layout_width="300dp"
-        android:layout_height="50dp"
+        android:layout_width="250dp"
+        android:layout_height="80dp"
         android:layout_marginTop="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/dialog_section_et_memo"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/dialog_section_et_memo"
+        app:layout_constraintEnd_toStartOf="@id/memo_layout_toolBox"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6">
+        app:layout_constraintTop_toBottomOf="@id/textView6">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/memo_layout_startTime_text"
-            android:layout_width="100dp"
+            android:id="@+id/memo_layout_startTime_hr_box"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/Tilde"
+            app:layout_constraintEnd_toStartOf="@id/startTime_Colon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
+
+
+            <ImageButton
+                android:id="@+id/memo_startTime_hr_up_btn"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@color/transparent"
+                android:scaleType="fitCenter"
+                app:layout_constraintBottom_toTopOf="@id/memo_startTime_hr"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/buildday_icon_memo_time_up_btn"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
             <TextView
                 android:id="@+id/memo_startTime_hr"
@@ -86,23 +100,61 @@
                 android:maxLength="2"
                 android:text="00"
                 android:textSize="30sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/startTime_Colon"
+                app:layout_constraintBottom_toTopOf="@id/memo_startTime_hr_down_btn"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/memo_startTime_hr_up_btn" />
 
-            <TextView
-                android:id="@+id/startTime_Colon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLength="2"
-                android:text=":"
-                android:textSize="30sp"
-
+            <ImageButton
+                android:id="@+id/memo_startTime_hr_down_btn"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@color/transparent"
+                android:scaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/memo_startTime_min"
-                app:layout_constraintStart_toEndOf="@+id/memo_startTime_hr"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/memo_startTime_hr"
+                app:srcCompat="@drawable/buildday_icon_memo_time_down_btn"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <TextView
+            android:id="@+id/startTime_Colon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLength="2"
+            android:text=":"
+            android:textSize="30sp"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/memo_layout_startTime_min_box"
+            app:layout_constraintStart_toEndOf="@id/memo_layout_startTime_hr_box"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/memo_layout_startTime_min_box"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/Tilde"
+            app:layout_constraintStart_toEndOf="@id/startTime_Colon"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/memo_startTime_min_up_btn"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@color/transparent"
+                android:scaleType="fitCenter"
+                app:layout_constraintBottom_toTopOf="@id/memo_startTime_min"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/buildday_icon_memo_time_up_btn"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
             <TextView
                 android:id="@+id/memo_startTime_min"
@@ -113,11 +165,23 @@
                 android:text="00"
                 android:textSize="30sp"
 
+                app:layout_constraintBottom_toTopOf="@id/memo_startTime_min_down_btn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/memo_startTime_min_up_btn" />
+
+            <ImageButton
+                android:id="@+id/memo_startTime_min_down_btn"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@color/transparent"
+                android:scaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/startTime_Colon"
-                app:layout_constraintTop_toTopOf="parent" />
-
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/memo_startTime_min"
+                app:srcCompat="@drawable/buildday_icon_memo_time_down_btn"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -130,19 +194,31 @@
             android:textSize="30sp"
 
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/memo_layout_endTime_text"
-            app:layout_constraintStart_toEndOf="@+id/memo_layout_startTime_text"
+            app:layout_constraintEnd_toStartOf="@id/memo_layout_endTime_hr_box"
+            app:layout_constraintStart_toEndOf="@id/memo_layout_startTime_min_box"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/memo_layout_endTime_text"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
+            android:id="@+id/memo_layout_endTime_hr_box"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.3"
-            app:layout_constraintStart_toEndOf="@+id/Tilde"
+            app:layout_constraintEnd_toStartOf="@id/endTime_Colon"
+            app:layout_constraintStart_toEndOf="@id/Tilde"
             app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/memo_endTime_hr_up_btn"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@color/transparent"
+                android:scaleType="fitCenter"
+                app:layout_constraintBottom_toTopOf="@id/memo_endTime_hr"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/buildday_icon_memo_time_up_btn"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
             <TextView
                 android:id="@+id/memo_endTime_hr"
@@ -152,22 +228,61 @@
                 android:maxLength="2"
                 android:text="00"
                 android:textSize="30sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/endTime_Colon"
+                app:layout_constraintBottom_toTopOf="@id/memo_endTime_hr_down_btn"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/memo_endTime_hr_up_btn" />
 
-            <TextView
-                android:id="@+id/endTime_Colon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLength="2"
-                android:text=":"
-                android:textSize="30sp"
+            <ImageButton
+                android:id="@+id/memo_endTime_hr_down_btn"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@color/transparent"
+                android:scaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/memo_endTime_min"
-                app:layout_constraintStart_toEndOf="@+id/memo_endTime_hr"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/memo_endTime_hr"
+                app:srcCompat="@drawable/buildday_icon_memo_time_down_btn"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/endTime_Colon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLength="2"
+            android:text=":"
+            android:textSize="30sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/memo_layout_endTime_min_box"
+            app:layout_constraintStart_toEndOf="@id/memo_layout_endTime_hr_box"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/memo_layout_endTime_min_box"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/endTime_Colon"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/memo_endTime_min_up_btn"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@color/transparent"
+                android:scaleType="fitCenter"
+                app:layout_constraintBottom_toTopOf="@id/memo_endTime_min"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/buildday_icon_memo_time_up_btn"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
 
             <TextView
                 android:id="@+id/memo_endTime_min"
@@ -177,14 +292,68 @@
                 android:maxLength="2"
                 android:text="00"
                 android:textSize="30sp"
+                app:layout_constraintBottom_toTopOf="@id/memo_endTime_min_down_btn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/memo_endTime_min_up_btn" />
+
+
+            <ImageButton
+                android:id="@+id/memo_endTime_min_down_btn"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@color/transparent"
+                android:scaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/endTime_Colon"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/memo_endTime_min"
+                app:srcCompat="@drawable/buildday_icon_memo_time_down_btn"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/memo_layout_toolBox"
+        android:layout_width="50dp"
+        android:layout_height="140dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/memo_layout_Time"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/memo_layout_toolBox_pellet"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="@color/transparent"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toTopOf="@id/memo_layout_toolBox_trashcan"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/buildday_icon_memo_pellete"
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+        <ImageButton
+            android:id="@+id/memo_layout_toolBox_trashcan"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="@color/transparent"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/memo_layout_toolBox_pellet"
+            app:srcCompat="@drawable/buildday_icon_memo_trashcan"
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
