@@ -1,13 +1,8 @@
 package com.example.builday365.View;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -39,8 +34,8 @@ import java.util.Date;
 public class UiFragment extends Fragment {
     private static final String TAG = "UiFragment";
     private UiFragmentListener uiFragmentListener;
-    private SideBarFragment sideBarFragment;
-    private MemoFragment memoFragment;
+    private SideBarLayout sideBarLayout;
+    private MemoLayout memoLayout;
 
     public interface UiFragmentListener {
         void onInputBSent(CharSequence input);
@@ -76,15 +71,8 @@ public class UiFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ui, container, false);
 
-        sideBarFragment = new SideBarFragment();
-        memoFragment = new MemoFragment();
-
-        getChildFragmentManager().beginTransaction()
-                .replace(R.id.sidebar, sideBarFragment)
-                .replace(R.id.memo, memoFragment)
-                .commit();
-
-
+        memoLayout = new MemoLayout(view);
+        sideBarLayout = new SideBarLayout(view);
         calendar = Calendar.getInstance();
 
         view.setOnTouchListener(new View.OnTouchListener() {
@@ -135,21 +123,22 @@ public class UiFragment extends Fragment {
     @Override
     public void onStart() {
         Log.d(TAG, "onStart is called");
-
+        sideBarLayout.setContext(getContext());
+        sideBarLayout.init();
         tv_toolbar_cur_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 calendar = Calendar.getInstance();
                 set_date(new Date(calendar.getTimeInMillis()));
 
-                if (sideBarFragment != null) {
-                    sideBarFragment.is_timesection_touched = false;
-                    sideBarFragment.update_time();
+                if (sideBarLayout != null) {
+                    sideBarLayout.is_timesection_touched = false;
+                    sideBarLayout.update_time();
                 }
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
-                    sideBarFragment.layout_sidebar.setVisibility(View.VISIBLE);
+                    sideBarLayout.layout_sidebar.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -159,7 +148,7 @@ public class UiFragment extends Fragment {
             public void onClick(View view) {
                 int cur_visibilty = calendarView.getVisibility();
                 calendarView.setVisibility((cur_visibilty == View.VISIBLE) ? View.GONE : View.VISIBLE);
-                sideBarFragment.layout_sidebar.setVisibility((cur_visibilty == View.VISIBLE) ? View.VISIBLE : View.GONE);
+                sideBarLayout.layout_sidebar.setVisibility((cur_visibilty == View.VISIBLE) ? View.VISIBLE : View.GONE);
                 layout_time_section.setVisibility(View.GONE);
 
                 String date_str = String.format("%d-%d-%d", set_year, set_month, set_day);
@@ -194,7 +183,7 @@ public class UiFragment extends Fragment {
                 }
 
                 calendarView.setVisibility(View.GONE);
-                sideBarFragment.layout_sidebar.setVisibility(View.VISIBLE);
+                sideBarLayout.layout_sidebar.setVisibility(View.VISIBLE);
             }
         });
         ibtn_day_prev.setOnClickListener(new View.OnClickListener() {
@@ -205,7 +194,7 @@ public class UiFragment extends Fragment {
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
-                    sideBarFragment.layout_sidebar.setVisibility(View.VISIBLE);
+                    sideBarLayout.layout_sidebar.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -217,7 +206,7 @@ public class UiFragment extends Fragment {
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
-                    sideBarFragment.layout_sidebar.setVisibility(View.VISIBLE);
+                    sideBarLayout.layout_sidebar.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -229,7 +218,7 @@ public class UiFragment extends Fragment {
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
-                    sideBarFragment.layout_sidebar.setVisibility(View.VISIBLE);
+                    sideBarLayout.layout_sidebar.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -242,40 +231,40 @@ public class UiFragment extends Fragment {
 
                 if (calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.setVisibility(View.GONE);
-                    sideBarFragment.layout_sidebar.setVisibility(View.VISIBLE);
+                    sideBarLayout.layout_sidebar.setVisibility(View.VISIBLE);
                 }
             }
         });
 
-        memoFragment.btn_dialog_section_ok.setOnClickListener(new View.OnClickListener() {
+        memoLayout.btn_dialog_section_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                sideBarFragment.layout_sidebar_ctrl.setVisibility(View.VISIBLE);
-                sideBarFragment.layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
-                sideBarFragment.layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
-                memoFragment.layout_diaglog_box.setVisibility(View.GONE);
+                sideBarLayout.layout_sidebar_ctrl.setVisibility(View.VISIBLE);
+                sideBarLayout.layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
+                sideBarLayout.layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
+                memoLayout.layout_diaglog_box.setVisibility(View.GONE);
 
             }
         });
 
-        memoFragment.btn_dialog_section_cancel.setOnClickListener(new View.OnClickListener() {
+        memoLayout.btn_dialog_section_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sideBarFragment.layout_sidebar_ctrl.setVisibility(View.VISIBLE);
-                sideBarFragment.layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
-                sideBarFragment.layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
+                sideBarLayout.layout_sidebar_ctrl.setVisibility(View.VISIBLE);
+                sideBarLayout.layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
+                sideBarLayout.layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
 
-                memoFragment.layout_diaglog_box.setVisibility(View.GONE);
+                memoLayout.layout_diaglog_box.setVisibility(View.GONE);
             }
         });
 
-        sideBarFragment.ibtn_sidebar_ctrl_memo.setOnClickListener(new View.OnClickListener() {
+        sideBarLayout.ibtn_sidebar_ctrl_memo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                sideBarFragment.layout_sidebar_ctrl.setVisibility(View.INVISIBLE);
-                memoFragment.layout_diaglog_box.setVisibility(View.VISIBLE);
+                sideBarLayout.layout_sidebar_ctrl.setVisibility(View.INVISIBLE);
+                memoLayout.layout_diaglog_box.setVisibility(View.VISIBLE);
 
             }
         });
@@ -288,6 +277,7 @@ public class UiFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof UiFragmentListener) {
             uiFragmentListener = (UiFragmentListener) context;
+
         } else {
             throw new RuntimeException(context.toString() + " must implement FragmentListner");
         }
@@ -307,9 +297,9 @@ public class UiFragment extends Fragment {
 
     public void map_cur_location_click_listener() {
 
-        if (sideBarFragment != null) {
-            sideBarFragment.is_timesection_touched = false;
-            sideBarFragment.update_time();
+        if (sideBarLayout != null) {
+            sideBarLayout.is_timesection_touched = false;
+            sideBarLayout.update_time();
         }
     }
 

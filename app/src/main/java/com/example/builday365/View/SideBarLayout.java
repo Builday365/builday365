@@ -1,6 +1,7 @@
 package com.example.builday365.View;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,7 +13,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,8 +27,9 @@ import com.example.builday365.R;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class SideBarFragment extends Fragment {
+public class SideBarLayout {
 
+    private Context context;
     private static final String TAG = "SideBarFragment";
 
     boolean is_timesection_touched = false;
@@ -40,13 +41,11 @@ public class SideBarFragment extends Fragment {
     TextView tv_sidebar_ctrl_cur_time_hr, tv_sidebar_ctrl_cur_time_min;
     ImageButton ibtn_sidebar_ctrl_activity, ibtn_sidebar_ctrl_memo;
 
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_sidebar, container, false);
+    SideBarLayout(View view)
+    {
 
         Log.d(TAG,"onCreateView called");
+
         layout_sidebar = (ConstraintLayout) view.findViewById(R.id.fragment_layout_sidebar_ctrl);
         layout_sidebar_ctrl = (ConstraintLayout) view.findViewById(R.id.sidebar_ctrl_layout);
         layout_sidebar_ctrl_bar = (ConstraintLayout) view.findViewById(R.id.sidebar_ctrl_layout_bar);
@@ -67,22 +66,17 @@ public class SideBarFragment extends Fragment {
         ibtn_sidebar_ctrl_memo = (ImageButton) view.findViewById(R.id.sidebar_ctrl_ibtn_memo);
 
 
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-
-
         layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
         layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
 
+        }
+
+    public void init(){
+        Log.d(TAG,"SideBarLayout Init");
+        sideBarLayoutListeners();
     }
 
-    @Override
-    public void onStart() {
+    public void sideBarLayoutListeners(){
         ViewTreeObserver layout_sidebar_viewTreeObserver = layout_sidebar_total_time.getViewTreeObserver();
 
         layout_sidebar_blank.setOnTouchListener(new View.OnTouchListener() {
@@ -132,7 +126,7 @@ public class SideBarFragment extends Fragment {
                     layoutParams.height = touch_calced_y;
                     layout_sidebar_cur_time.setLayoutParams(layoutParams);
 
-                    App_Section_Color = getResources().getString(R.color.blue);
+                    App_Section_Color = context.getResources().getString(R.color.blue);
                     layout_sidebar_ctrl_ui_btn.setBackgroundResource(R.drawable.border_button_blue);
                     ibtn_sidebar_ctrl_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
                     ibtn_sidebar_ctrl_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
@@ -149,7 +143,7 @@ public class SideBarFragment extends Fragment {
                     layoutParams.topMargin = touch_calced_y - (layout_sidebar_ctrl.getHeight() / 2);
                     layout_sidebar_ctrl.setLayoutParams(layoutParams);
 
-                    App_Section_Color = getResources().getString(R.color.blue);
+                    App_Section_Color = context.getResources().getString(R.color.blue);
                     layout_sidebar_ctrl_ui_btn.setBackgroundResource(R.drawable.border_button_blue);
                     ibtn_sidebar_ctrl_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
                     ibtn_sidebar_ctrl_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
@@ -170,7 +164,7 @@ public class SideBarFragment extends Fragment {
                     layoutParams.height = touch_calced_y;
                     layout_sidebar_cur_time.setLayoutParams(layoutParams);
 
-                    App_Section_Color = getResources().getString(R.color.blue);
+                    App_Section_Color = context.getResources().getString(R.color.blue);
                     layout_sidebar_ctrl_ui_btn.setBackgroundResource(R.drawable.border_button_blue);
                     ibtn_sidebar_ctrl_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
                     ibtn_sidebar_ctrl_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
@@ -212,7 +206,7 @@ public class SideBarFragment extends Fragment {
                     layoutParams.height = touch_calced_y;
                     layout_sidebar_cur_time.setLayoutParams(layoutParams);
 
-                    App_Section_Color = getResources().getString(R.color.gray);
+                    App_Section_Color = context.getResources().getString(R.color.gray);
                     layout_sidebar_ctrl_ui_btn.setBackgroundResource(R.drawable.border_button_gray);
                     ibtn_sidebar_ctrl_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
                     ibtn_sidebar_ctrl_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
@@ -232,7 +226,7 @@ public class SideBarFragment extends Fragment {
                     layoutParams.height = touch_calced_y;
                     layout_sidebar_cur_time.setLayoutParams(layoutParams);
 
-                    App_Section_Color = getResources().getString(R.color.gray);
+                    App_Section_Color = context.getResources().getString(R.color.gray);
                     layout_sidebar_ctrl_ui_btn.setBackgroundResource(R.drawable.border_button_gray);
                     ibtn_sidebar_ctrl_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
                     ibtn_sidebar_ctrl_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
@@ -258,8 +252,10 @@ public class SideBarFragment extends Fragment {
             });
         }
 
+    }
 
-        super.onStart();
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     public String get_time() {
@@ -306,7 +302,7 @@ public class SideBarFragment extends Fragment {
                     layoutParams.height = cur_time_len;
                     layout_sidebar_cur_time.setLayoutParams(layoutParams);
 
-                    App_Section_Color = getResources().getString(R.color.gray);
+                    App_Section_Color = context.getResources().getString(R.color.gray);
                     layout_sidebar_ctrl_ui_btn.setBackgroundResource(R.drawable.border_button_gray);
                     ibtn_sidebar_ctrl_activity.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
                     ibtn_sidebar_ctrl_memo.setImageTintList(ColorStateList.valueOf(Color.parseColor(App_Section_Color)));
