@@ -1,7 +1,4 @@
-package com.example.builday365.Model.Timeline;
-
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+package com.example.builday365.model.Timeline;
 
 import java.util.Date;
 

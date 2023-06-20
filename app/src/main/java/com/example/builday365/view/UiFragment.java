@@ -1,4 +1,4 @@
-package com.example.builday365.View;
+package com.example.builday365.view;
 
 import android.content.Context;
 import android.graphics.Point;

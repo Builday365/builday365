@@ -1,4 +1,4 @@
-package com.example.builday365.ViewModel;
+package com.example.builday365.viewmodel;
 
 import android.app.Application;
 import android.util.Log;
@@ -6,7 +6,7 @@ import android.util.Log;
 import androidx.lifecycle.ViewModel;
 import androidx.room.Room;
 
-import com.example.builday365.Model.RoomDb;
+import com.example.builday365.model.RoomDb;
 
 public class MainViewModel extends ViewModel {
 

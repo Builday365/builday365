@@ -1,4 +1,4 @@
-package com.example.builday365.View;
+package com.example.builday365.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

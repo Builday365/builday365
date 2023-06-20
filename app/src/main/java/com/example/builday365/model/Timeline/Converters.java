@@ -1,4 +1,4 @@
-package com.example.builday365.Model.Timeline;
+package com.example.builday365.model.Timeline;
 
 import androidx.room.ProvidedTypeConverter;
 import androidx.room.TypeConverter;

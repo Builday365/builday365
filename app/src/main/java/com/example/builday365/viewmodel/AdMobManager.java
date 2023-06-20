@@ -1,4 +1,4 @@
-package com.example.builday365.ViewModel;
+package com.example.builday365.viewmodel;
 
 import android.content.Context;
 import android.util.Log;

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.MainActivity">
+    tools:context=".view.MainActivity">
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/main_view"
@@ -17,7 +17,7 @@
 
         <fragment
             android:id="@+id/map"
-            android:name="com.example.builday365.View.MapsFragment"
+            android:name="com.example.builday365.view.MapsFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -28,7 +28,7 @@
 
         <fragment
             android:id="@+id/ui"
-            android:name="com.example.builday365.View.UiFragment"
+            android:name="com.example.builday365.view.UiFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"

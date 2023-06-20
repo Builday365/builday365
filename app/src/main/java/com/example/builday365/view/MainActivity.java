@@ -1,4 +1,4 @@
-package com.example.builday365.View;
+package com.example.builday365.view;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
@@ -9,8 +9,8 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
-import com.example.builday365.Model.RoomDb;
-import com.example.builday365.ViewModel.*;
+import com.example.builday365.model.RoomDb;
+import com.example.builday365.viewmodel.*;
 import com.example.builday365.R;
 
 public class MainActivity extends AppCompatActivity
