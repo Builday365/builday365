@@ -3,24 +3,34 @@ package com.example.builday365.model.Timeline;
 import java.util.Date;
 
 public class Memo {
-    private Date timeStamp;
+    private Date startTime;
+    private Date endTime;
     private String memoContent;
 
-    public Memo(Date timeStamp, String memoContent) {
-        this.timeStamp = timeStamp;
+    public Memo(Date startTime, Date endTime, String memoContent) {
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.memoContent = memoContent;
     }
 
-    public Date getTimeStamp() {
-        return timeStamp;
+    public Date getStartTime() {
+        return startTime;
     }
 
-    public void setTimeStamp(Date timeStamp) {
-        this.timeStamp = timeStamp;
+    public Date getEndTime() {
+        return endTime;
     }
 
     public String getMemoContent() {
         return memoContent;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     public void setMemoContent(String memoContent) {
@@ -30,7 +40,8 @@ public class Memo {
     @Override
     public String toString() {
         return "Memo{" +
-                "timeStamp=" + timeStamp +
+                "startTime=" + startTime +
+                ", endTime=" + endTime +
                 ", memoContent='" + memoContent + '\'' +
                 '}';
     }

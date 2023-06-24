@@ -13,6 +13,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,8 +23,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.builday365.R;
+import com.example.builday365.model.Timeline.Memo;
+import com.example.builday365.model.Timeline.TimeLine;
+import com.example.builday365.viewmodel.SideBarViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -30,21 +36,28 @@ import java.util.Date;
 public class SideBarLayout {
 
     private Context context;
+    private SideBarViewModel sidebarVm;
     private static final String TAG = "SideBarFragment";
 
     boolean is_timesection_touched = false;
     int total_time_len, cur_time_len, sidebar_touch_time = 0;
     String App_Section_Color;
 
+    //memo
+    ConstraintLayout layout_diaglog_box;
+    Button btn_dialog_section_ok, btn_dialog_section_cancel;
+
+    //sidebar
     ConstraintLayout layout_sidebar, layout_sidebar_ctrl_bar, layout_sidebar_blank, layout_sidebar_total_time, layout_sidebar_ctrl, layout_sidebar_cur_time, layout_sidebar_startTime_ctrl, layout_sidebar_endTime_ctrl;
     LinearLayout layout_sidebar_ctrl_cur_time_tv, layout_sidebar_time_list, layout_sidebar_ctrl_ui_btn;
     TextView tv_sidebar_ctrl_cur_time_hr, tv_sidebar_ctrl_cur_time_min;
+    EditText et_dialog_section_et_memo;
     ImageButton ibtn_sidebar_ctrl_activity, ibtn_sidebar_ctrl_memo;
 
-    SideBarLayout(View view)
-    {
 
-        Log.d(TAG,"onCreateView called");
+    SideBarLayout(View view, SideBarViewModel sideBarViewModel) {
+
+        Log.d(TAG, "onCreateView called");
 
         layout_sidebar = (ConstraintLayout) view.findViewById(R.id.fragment_layout_sidebar_ctrl);
         layout_sidebar_ctrl = (ConstraintLayout) view.findViewById(R.id.sidebar_ctrl_layout);
@@ -53,7 +66,9 @@ public class SideBarLayout {
         layout_sidebar_total_time = (ConstraintLayout) view.findViewById(R.id.sidebar_layout_total_time);
         layout_sidebar_cur_time = (ConstraintLayout) view.findViewById(R.id.sidebar_layout_cur_time);
         layout_sidebar_startTime_ctrl = (ConstraintLayout) view.findViewById(R.id.sidebar_startTime_ctrl_layout);
+        layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
         layout_sidebar_endTime_ctrl = (ConstraintLayout) view.findViewById(R.id.sidebar_endTime_ctrl_layout);
+        layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
 
         layout_sidebar_ctrl_ui_btn = (LinearLayout) view.findViewById(R.id.sidebar_ctrl_layout_ui_btn);
         layout_sidebar_ctrl_cur_time_tv = (LinearLayout) view.findViewById(R.id.sidebar_ctrl_layout_cur_time_tv);
@@ -61,22 +76,56 @@ public class SideBarLayout {
 
         tv_sidebar_ctrl_cur_time_hr = (TextView) view.findViewById(R.id.sidebar_ctrl_tv_cur_time_hr);
         tv_sidebar_ctrl_cur_time_min = (TextView) view.findViewById(R.id.sidebar_ctrl_tv_cur_time_min);
+        et_dialog_section_et_memo = (EditText) view.findViewById(R.id.dialog_section_et_memo);
 
         ibtn_sidebar_ctrl_activity = (ImageButton) view.findViewById(R.id.sidebar_ctrl_ibtn_activity);
         ibtn_sidebar_ctrl_memo = (ImageButton) view.findViewById(R.id.sidebar_ctrl_ibtn_memo);
 
+        layout_diaglog_box = (ConstraintLayout) view.findViewById(R.id.fragment_dialog_box);
+        layout_diaglog_box.setVisibility(View.INVISIBLE);
 
-        layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
-        layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
+        btn_dialog_section_ok = (Button) view.findViewById((R.id.dialog_section_btn_ok));
+        btn_dialog_section_cancel = (Button) view.findViewById((R.id.dialog_section_btn_cancel));
 
-        }
+        sidebarVm = sideBarViewModel;
 
-    public void init(){
-        Log.d(TAG,"SideBarLayout Init");
-        sideBarLayoutListeners();
     }
 
-    public void sideBarLayoutListeners(){
+    public void init() {
+        Log.d(TAG, "SideBarLayout Init");
+        sideBarLayoutListeners();
+        memoElementListeners();
+    }
+
+    private void memoElementListeners() {
+        btn_dialog_section_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "btn_dialog_section_ok clicked");
+
+                layout_sidebar_ctrl.setVisibility(View.VISIBLE);
+                layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
+                layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
+                layout_diaglog_box.setVisibility(View.GONE);
+
+                sidebarVm.addMemo(et_dialog_section_et_memo.getText().toString(), new Date(), new Date());
+
+            }
+        });
+
+        btn_dialog_section_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                layout_sidebar_ctrl.setVisibility(View.VISIBLE);
+                layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
+                layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
+
+                layout_diaglog_box.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    public void sideBarLayoutListeners() {
         ViewTreeObserver layout_sidebar_viewTreeObserver = layout_sidebar_total_time.getViewTreeObserver();
 
         layout_sidebar_blank.setOnTouchListener(new View.OnTouchListener() {
@@ -241,6 +290,15 @@ public class SideBarLayout {
             }
         });
 
+        ibtn_sidebar_ctrl_memo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                layout_sidebar_ctrl.setVisibility(View.INVISIBLE);
+                layout_diaglog_box.setVisibility(View.VISIBLE);
+
+            }
+        });
 
         if (layout_sidebar_viewTreeObserver.isAlive()) {
             layout_sidebar_viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {

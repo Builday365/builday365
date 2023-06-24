@@ -23,8 +23,12 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.builday365.R;
+import com.example.builday365.model.Timeline.TimeLine;
+import com.example.builday365.viewmodel.SideBarViewModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,7 +39,7 @@ public class UiFragment extends Fragment {
     private static final String TAG = "UiFragment";
     private UiFragmentListener uiFragmentListener;
     private SideBarLayout sideBarLayout;
-    private MemoLayout memoLayout;
+    SideBarViewModel sideBarViewModel;
 
     public interface UiFragmentListener {
         void onInputBSent(CharSequence input);
@@ -71,10 +75,11 @@ public class UiFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ui, container, false);
 
-        memoLayout = new MemoLayout(view);
-        sideBarLayout = new SideBarLayout(view);
-        calendar = Calendar.getInstance();
 
+        sideBarViewModel = new ViewModelProvider(this).get(SideBarViewModel.class);
+        sideBarLayout = new SideBarLayout(view, sideBarViewModel);
+
+        calendar = Calendar.getInstance();
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -103,6 +108,8 @@ public class UiFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        sidebarObservers();
 
         calendarView.setVisibility(View.GONE);
 
@@ -236,41 +243,23 @@ public class UiFragment extends Fragment {
             }
         });
 
-        memoLayout.btn_dialog_section_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                sideBarLayout.layout_sidebar_ctrl.setVisibility(View.VISIBLE);
-                sideBarLayout.layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
-                sideBarLayout.layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
-                memoLayout.layout_diaglog_box.setVisibility(View.GONE);
-
-            }
-        });
-
-        memoLayout.btn_dialog_section_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sideBarLayout.layout_sidebar_ctrl.setVisibility(View.VISIBLE);
-                sideBarLayout.layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
-                sideBarLayout.layout_sidebar_endTime_ctrl.setVisibility(View.GONE);
-
-                memoLayout.layout_diaglog_box.setVisibility(View.GONE);
-            }
-        });
-
-        sideBarLayout.ibtn_sidebar_ctrl_memo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                sideBarLayout.layout_sidebar_ctrl.setVisibility(View.INVISIBLE);
-                memoLayout.layout_diaglog_box.setVisibility(View.VISIBLE);
-
-            }
-        });
 
         super.onStart();
     }
+
+    private void sidebarObservers() {
+
+        sideBarViewModel.getTimeline().observe(getViewLifecycleOwner(), new Observer<TimeLine>() {
+            @Override
+            public void onChanged(TimeLine timeLine) {
+                Log.d(TAG, "TimeLine is updated !!");
+
+            }
+        });
+
+
+    }
+
 
     @Override
     public void onAttach(@NonNull Context context) {
