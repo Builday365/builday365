@@ -45,7 +45,9 @@ public class SideBarLayout {
 
     //memo
     ConstraintLayout layout_diaglog_box;
-    Button btn_dialog_section_ok, btn_dialog_section_cancel;
+    Button m_dialog_section_btn_ok, m_dialog_section_btn_cancel;
+    ImageButton m_startTime_hr_up_btn, m_startTime_hr_down_btn, m_startTime_min_up_btn, m_startTime_min_down_btn, m_endTime_hr_up_btn, m_endTime_hr_down_btn, m_endTime_min_up_btn, m_endTime_min_down_btn;
+
 
     //sidebar
     ConstraintLayout layout_sidebar, layout_sidebar_ctrl_bar, layout_sidebar_blank, layout_sidebar_total_time, layout_sidebar_ctrl, layout_sidebar_cur_time, layout_sidebar_startTime_ctrl, layout_sidebar_endTime_ctrl;
@@ -84,8 +86,18 @@ public class SideBarLayout {
         layout_diaglog_box = (ConstraintLayout) view.findViewById(R.id.fragment_dialog_box);
         layout_diaglog_box.setVisibility(View.INVISIBLE);
 
-        btn_dialog_section_ok = (Button) view.findViewById((R.id.dialog_section_btn_ok));
-        btn_dialog_section_cancel = (Button) view.findViewById((R.id.dialog_section_btn_cancel));
+
+        m_startTime_hr_up_btn = (ImageButton) view.findViewById((R.id.memo_startTime_hr_up_btn));
+        m_startTime_hr_down_btn = (ImageButton) view.findViewById((R.id.memo_startTime_hr_down_btn));
+        m_startTime_min_up_btn = (ImageButton) view.findViewById((R.id.memo_startTime_min_up_btn));
+        m_startTime_min_down_btn = (ImageButton) view.findViewById((R.id.memo_startTime_min_down_btn));
+        m_endTime_hr_up_btn = (ImageButton) view.findViewById((R.id.memo_endTime_hr_up_btn));
+        m_endTime_hr_down_btn = (ImageButton) view.findViewById((R.id.memo_endTime_hr_down_btn));
+        m_endTime_min_up_btn = (ImageButton) view.findViewById((R.id.memo_endTime_min_up_btn));
+        m_endTime_min_down_btn = (ImageButton) view.findViewById((R.id.memo_endTime_min_down_btn));
+
+        m_dialog_section_btn_ok = (Button) view.findViewById((R.id.dialog_section_btn_ok));
+        m_dialog_section_btn_cancel = (Button) view.findViewById((R.id.dialog_section_btn_cancel));
 
         sidebarVm = sideBarViewModel;
 
@@ -98,10 +110,67 @@ public class SideBarLayout {
     }
 
     private void memoElementListeners() {
-        btn_dialog_section_ok.setOnClickListener(new View.OnClickListener() {
+
+        m_startTime_hr_up_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "btn_dialog_section_ok clicked");
+                Log.d(TAG,"m_startTime_hr_up_btn is called");
+            }
+        });
+        m_startTime_hr_down_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG,"m_startTime_hr_down_btn is called");
+
+            }
+        });
+        m_startTime_min_up_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG,"m_startTime_min_up_btn is called");
+
+            }
+        });
+        m_startTime_min_down_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG,"m_startTime_min_down_btn is called");
+
+            }
+        });
+        m_endTime_hr_up_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG,"m_endTime_hr_up_btn is called");
+
+            }
+        });
+        m_endTime_hr_down_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG,"m_endTime_hr_down_btn is called");
+
+            }
+        });
+        m_endTime_min_up_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG,"m_endTime_min_up_btn is called");
+
+            }
+        });
+        m_endTime_min_down_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG,"m_endTime_min_down_btn is called");
+
+            }
+        });
+
+        m_dialog_section_btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "m_dialog_section_btn_ok clicked");
 
                 layout_sidebar_ctrl.setVisibility(View.VISIBLE);
                 layout_sidebar_startTime_ctrl.setVisibility(View.GONE);
@@ -113,7 +182,7 @@ public class SideBarLayout {
             }
         });
 
-        btn_dialog_section_cancel.setOnClickListener(new View.OnClickListener() {
+        m_dialog_section_btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 layout_sidebar_ctrl.setVisibility(View.VISIBLE);

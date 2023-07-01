@@ -15,6 +15,8 @@ public class SideBarViewModel extends ViewModel {
     private MutableLiveData<String> memo = new MutableLiveData<String>();
     private MutableLiveData<TimeLine> mtimeline = new MutableLiveData<TimeLine>();
 
+    public int m_startTime_hr = 0;
+
 
     public SideBarViewModel() {
     }
