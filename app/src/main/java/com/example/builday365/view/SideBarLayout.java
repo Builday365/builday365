@@ -398,18 +398,9 @@ public class SideBarLayout {
             @SuppressLint("ResourceType")
             @Override
             public void handleMessage(Message message) {
-//                layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_remain_time.getLayoutParams();
-//                layoutParams.topMargin = Math.min(total_time_len, cur_time_len + layout_side_gap);
-//                layoutParams.height = Math.max(0, total_time_len - cur_time_len - layout_side_gap);
-//                layout_sidebar_remain_time.setLayoutParams(layoutParams);
-//
                 if (!is_timesection_touched) {
                     String cur_time = get_time();
                     total_time_len = layout_sidebar_total_time.getHeight();
-
-//                /* ***************** TIME DEBUG ****************** */
-//                cur_time_len = (int)(0.6 * total_time_len);
-//                /***************************************************/
 
                     int cur_hour = Integer.parseInt(cur_time.split(":")[0]);
                     int cur_min = Integer.parseInt(cur_time.split(":")[1]);
@@ -421,8 +412,10 @@ public class SideBarLayout {
 
                     ConstraintLayout.LayoutParams layoutParams
                             = (ConstraintLayout.LayoutParams) layout_sidebar_ctrl.getLayoutParams();
-                    int layout_sidebar_ctrl_top_margin = cur_time_len - (layout_sidebar_ctrl.getHeight() / 2);
-                    layoutParams.topMargin = Math.max(0, Math.min(total_time_len, layout_sidebar_ctrl_top_margin));
+                    int layout_sidebar_ctrl_half_height = layout_sidebar_ctrl.getHeight() / 2;
+                    int layout_sidebar_ctrl_top_margin = cur_time_len - layout_sidebar_ctrl_half_height;
+                    layoutParams.topMargin = Math.max(-layout_sidebar_ctrl_half_height,
+                                            Math.min(total_time_len, layout_sidebar_ctrl_top_margin));
                     layout_sidebar_ctrl.setLayoutParams(layoutParams);
 
                     layoutParams = (ConstraintLayout.LayoutParams) layout_sidebar_cur_time.getLayoutParams();
