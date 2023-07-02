@@ -27,7 +27,7 @@
             android:layout_gravity="bottom|left"
             android:scaleType="center"
             android:contentDescription="floatingActionButton"
-            android:src="@drawable/builday_icon_currentlocation1"
+            android:src="@drawable/btn_move_currentlocation1"
             app:backgroundTint="@color/transparent"
             app:tint="@null"
             app:useCompatPadding="true"

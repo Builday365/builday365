@@ -173,7 +173,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
     public void onCameraMoveStarted(int i) {
         if (mMapsViewModel == null) return;
         if (i == REASON_GESTURE) {
-            mBinding.fab.setImageResource(R.drawable.builday_icon_currentlocation2);
+            mBinding.fab.setImageResource(R.drawable.btn_move_currentlocation2);
             mMapsViewModel.setFocused(false);
         }
     }
@@ -211,7 +211,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMapLongClickLi
                     if (data == null) return;
                     CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(data, 15);
                     mGoogleMap.animateCamera(cameraUpdate);
-                    mBinding.fab.setImageResource(R.drawable.builday_icon_currentlocation1);
+                    mBinding.fab.setImageResource(R.drawable.btn_move_currentlocation1);
                 }
             }
         });
