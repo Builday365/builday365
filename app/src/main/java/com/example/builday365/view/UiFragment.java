@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.example.builday365.R;
 import com.example.builday365.model.Timeline.TimeLine;
 import com.example.builday365.viewmodel.SideBarViewModel;
@@ -45,39 +46,58 @@ public class UiFragment extends Fragment {
         void onInputBSent(CharSequence input);
     }
 
-    TextView tv_toolbar_cur_date, tv_google_name, tv_sidebar_cur_time, tv_timesection_cur_time,
-            tv_timesection_click_time, tv_timesection_start_time,
-            tv_sidebar_ctrl_memo_start_time_hr, tv_sidebar_ctrl_memo_start_time_min,
-            tv_sidebar_ctrl_memo_end_time_hr, tv_sidebar_ctrl_memo_end_time_min;
-    ImageButton ibtn_calendar, ibtn_day_prev, ibtn_day_next, ibtn_month_prev, ibtn_month_next,
-            ibtn_sidebar_memo, ibtn_sidebar_activity,
-            ibtn_timesection_ok, ibtn_timesection_cancel, ibtn_timesection_palette;
-    DrawerLayout drawerLayout;
-    ConstraintLayout layout_timebar, layout_dialog_section,
-            layout_sidebar_remain_time,
-            layout_time_section;
-    LinearLayout
-            layout_sidebar_ctrl_layout_memo_start_time_tv, layout_sidebar_ctrl_layout_memo_end_time_tv;
-    ImageView iv_google_photo, iv_timesection_ctrl, iv_palette_blue, iv_palette_red, iv_palette_green,
-            iv_palette_black, iv_palette_yellow, iv_palette_purple, iv_palette_skyBlue, iv_palette_brown,
-            iv_palette_pink, iv_palette_lightGreen;
-    Button btn_palette_ok, btn_palette_cancel;
-    EditText dialog_section_et_memo;
+    TextView tv_toolbar_cur_date, menu_main_tv_user_name;
+    ImageButton ibtn_side_menu, ibtn_calendar, ibtn_day_prev, ibtn_day_next, ibtn_month_prev, ibtn_month_next;
+    ImageView menu_main_iv_user_pic;
+    ConstraintLayout  layout_sidebar_remain_time, layout_time_section, fragment_main_menu;
+    LinearLayout menu_main_layout_general, menu_main_layout_data, menu_main_layout_analysis,
+            menu_main_layout_gps, menu_main_layout_sensor, menu_main_layout_account, menu_main_layout_about;
 
     int set_year, set_month, set_day;
     Calendar calendar;
     CalendarView calendarView;
-
-    String App_Activity, App_Memo;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ui, container, false);
 
-
         sideBarViewModel = new ViewModelProvider(this).get(SideBarViewModel.class);
         sideBarLayout = new SideBarLayout(view, sideBarViewModel);
+
+        ibtn_side_menu = (ImageButton) view.findViewById(R.id.main_toolbar_ibtn_side_menu);
+        fragment_main_menu = (ConstraintLayout) view.findViewById(R.id.fragment_main_menu);
+        menu_main_layout_general = (LinearLayout) view.findViewById(R.id.menu_main_layout_general);
+        menu_main_layout_data = (LinearLayout) view.findViewById(R.id.menu_main_layout_data);
+        menu_main_layout_analysis = (LinearLayout) view.findViewById(R.id.menu_main_layout_analysis);
+        menu_main_layout_gps = (LinearLayout) view.findViewById(R.id.menu_main_layout_gps);
+        menu_main_layout_sensor = (LinearLayout) view.findViewById(R.id.menu_main_layout_sensor);
+        menu_main_layout_account = (LinearLayout) view.findViewById(R.id.menu_main_layout_account);
+        menu_main_layout_about = (LinearLayout) view.findViewById(R.id.menu_main_layout_about);
+        menu_main_tv_user_name = (TextView) view.findViewById(R.id.menu_main_tv_user_name);
+        menu_main_iv_user_pic = (ImageView) view.findViewById(R.id.menu_main_iv_user_pic);
+        fragment_main_menu.setVisibility(View.GONE);
+
+        String google_name = getActivity().getIntent().getExtras().getString("google_name");
+        String google_photo_url = getActivity().getIntent().getExtras().getString("google_photo");
+
+        // FIX when DB Level is Done
+        int user_level = 1;
+
+        menu_main_tv_user_name.setText("Lv." + Integer.toString(user_level) + " " + google_name);
+        Glide.with(this).load(google_photo_url).circleCrop().into(menu_main_iv_user_pic);
+
+        ibtn_side_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (fragment_main_menu.getVisibility() == View.VISIBLE) {
+                    fragment_main_menu.setVisibility(View.GONE);
+                }
+                else {
+                    fragment_main_menu.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         calendar = Calendar.getInstance();
         view.setOnTouchListener(new View.OnTouchListener() {
