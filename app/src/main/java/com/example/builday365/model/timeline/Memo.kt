@@ -1,4 +1,4 @@
-package com.example.builday365.model.test
+package com.example.builday365.model.timeline
 
 import java.util.Date
 

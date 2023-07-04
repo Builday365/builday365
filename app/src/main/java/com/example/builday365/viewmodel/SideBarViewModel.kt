@@ -3,8 +3,8 @@ package com.example.builday365.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.builday365.model.test.Memo
-import com.example.builday365.model.test.TimeLine
+import com.example.builday365.model.timeline.Memo
+import com.example.builday365.model.timeline.TimeLine
 import java.util.Date
 
 class SideBarViewModel : ViewModel() {

@@ -1,4 +1,4 @@
-package com.example.builday365.model.test
+package com.example.builday365.model.timeline
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson

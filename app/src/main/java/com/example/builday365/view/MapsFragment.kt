@@ -22,12 +22,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
+//import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.builday365.R
-import com.example.builday365.databinding.FragmentMapsBinding
+//import com.example.builday365.databinding.FragmentMapsBinding
 import com.example.builday365.viewmodel.MapsViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -50,7 +50,7 @@ class MapsFragment : Fragment(), OnMapLongClickListener, OnCameraMoveStartedList
         Manifest.permission.ACCESS_COARSE_LOCATION
     )
     private var mMapsViewModel: MapsViewModel? = null
-    private var mBinding: FragmentMapsBinding? = null
+//    private var mBinding: FragmentMapsBinding? = null
     private var mGoogleMap: GoogleMap? = null
     private var mHomeMarker: Marker? = null
     private var mLastLocationMarker: Marker? = null
@@ -61,9 +61,9 @@ class MapsFragment : Fragment(), OnMapLongClickListener, OnCameraMoveStartedList
         savedInstanceState: Bundle?
     ): View? {
         Log.d(TAG, "[onCreateView]")
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_maps, container, false)
-        mBinding.setLifecycleOwner(this)
-        return mBinding.getRoot()
+//        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_maps, container, false)
+//        mBinding.setLifecycleOwner(this)
+//        return mBinding.getRoot()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -71,8 +71,8 @@ class MapsFragment : Fragment(), OnMapLongClickListener, OnCameraMoveStartedList
         super.onViewCreated(view, savedInstanceState)
         mMapsViewModel = ViewModelProvider(this).get(MapsViewModel::class.java)
         mMapsViewModel!!.setFocused(true)
-        mBinding!!.mapsViewModel = mMapsViewModel
-        mBinding!!.fab.setOnClickListener { mMapsViewModel!!.onFabClick() }
+//        mBinding!!.mapsViewModel = mMapsViewModel
+//        mBinding!!.fab.setOnClickListener { mMapsViewModel!!.onFabClick() }
         observe()
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
@@ -145,7 +145,7 @@ class MapsFragment : Fragment(), OnMapLongClickListener, OnCameraMoveStartedList
     override fun onCameraMoveStarted(i: Int) {
         if (mMapsViewModel == null) return
         if (i == OnCameraMoveStartedListener.REASON_GESTURE) {
-            mBinding!!.fab.setImageResource(R.drawable.btn_move_currentlocation2)
+//            mBinding!!.fab.setImageResource(R.drawable.btn_move_currentlocation2)
             mMapsViewModel!!.setFocused(false)
         }
     }
@@ -155,6 +155,7 @@ class MapsFragment : Fragment(), OnMapLongClickListener, OnCameraMoveStartedList
         permissions: Array<String>,
         grandResults: IntArray
     ) {
+
         super.onRequestPermissionsResult(permsRequestCode, permissions, grandResults)
         Log.d(TAG, "[onRequestPermissionsResult]$permsRequestCode")
         if (permsRequestCode == LOCATION_PERMISSION_CODE && grandResults.size == LOCATION_PERMISSIONS.size) {
@@ -167,7 +168,7 @@ class MapsFragment : Fragment(), OnMapLongClickListener, OnCameraMoveStartedList
             setLastLocation()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 if (ContextCompat.checkSelfPermission(
-                        activity!!,
+                        requireActivity(),
                         Manifest.permission.ACCESS_BACKGROUND_LOCATION
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
@@ -180,28 +181,32 @@ class MapsFragment : Fragment(), OnMapLongClickListener, OnCameraMoveStartedList
     private fun observe() {
         if (mMapsViewModel == null) return
         mMapsViewModel!!.focused.observe(viewLifecycleOwner, object : Observer<Boolean?> {
-            override fun onChanged(aBoolean: Boolean) {
-                Log.d(TAG, "[onChanged] focused $aBoolean")
-                if (aBoolean == true) {
+            override fun onChanged(t: Boolean?) {
+                Log.d(TAG, "[onChanged] focused $t")
+                if (t == true) {
                     val data = mMapsViewModel!!.lastLocation.value ?: return
                     val cameraUpdate = CameraUpdateFactory.newLatLngZoom(data, 15f)
                     mGoogleMap!!.animateCamera(cameraUpdate)
-                    mBinding!!.fab.setImageResource(R.drawable.btn_move_currentlocation1)
+//                    mBinding!!.fab.setImageResource(R.drawable.btn_move_currentlocation1)
                 }
             }
         })
         mMapsViewModel!!.lastLocation.observe(viewLifecycleOwner, object : Observer<LatLng?> {
-            override fun onChanged(latLng: LatLng) {
-                if (latLng == null) return
-                Log.d(TAG, "[onChanged] lastLocation $latLng")
-                setLastLocationMarker(latLng)
+
+
+
+
+            override fun onChanged(t: LatLng?) {
+                if (t == null) return
+                Log.d(TAG, "[onChanged] lastLocation $t")
+                setLastLocationMarker(t)
             }
         })
         mMapsViewModel!!.homeLocation.observe(viewLifecycleOwner, object : Observer<LatLng?> {
-            override fun onChanged(latLng: LatLng) {
-                if (latLng == null) return
-                Log.d(TAG, "[onChanged] homeLocation $latLng")
-                setHomeLocationMarker(latLng)
+            override fun onChanged(t: LatLng?) {
+                if (t == null) return
+                Log.d(TAG, "[onChanged] homeLocation $t")
+                setHomeLocationMarker(t)
             }
         })
     }
@@ -210,7 +215,7 @@ class MapsFragment : Fragment(), OnMapLongClickListener, OnCameraMoveStartedList
         Log.d(TAG, "[setLastLocation]")
         if (checkPermission() == false) return
         val locationManager =
-            activity!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
         if (lastLocation == null) {
             Log.d(TAG, "[setLastLocation] the last location info is not exist")
@@ -290,7 +295,7 @@ class MapsFragment : Fragment(), OnMapLongClickListener, OnCameraMoveStartedList
 
     private fun getAddress(latitude: Double, longitude: Double): String {
         Log.d(TAG, "[getAddress]")
-        val geocoder = Geocoder(activity!!, Locale.getDefault())
+        val geocoder = Geocoder(requireActivity(), Locale.getDefault())
         var addresses: List<Address>? = null
         try {
             addresses = geocoder.getFromLocation(latitude, longitude, 7)
@@ -313,12 +318,12 @@ class MapsFragment : Fragment(), OnMapLongClickListener, OnCameraMoveStartedList
     private fun checkPermission(): Boolean {
         Log.d(TAG, "[checkPermission]")
         if (ContextCompat.checkSelfPermission(
-                activity!!,
+                requireActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             if (ContextCompat.checkSelfPermission(
-                    activity!!,
+                    requireActivity(),
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ) == PackageManager.PERMISSION_GRANTED
             ) {

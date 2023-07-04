@@ -83,8 +83,8 @@ class UiFragment : Fragment() {
         menu_main_tv_user_name = view.findViewById<View>(R.id.menu_main_tv_user_name) as TextView
         menu_main_iv_user_pic = view.findViewById<View>(R.id.menu_main_iv_user_pic) as ImageView
         fragment_main_menu!!.visibility = View.GONE
-        val google_name = activity!!.intent.extras!!.getString("google_name")
-        val google_photo_url = activity!!.intent.extras!!.getString("google_photo")
+        val google_name = requireActivity().intent.extras!!.getString("google_name")
+        val google_photo_url = requireActivity().intent.extras!!.getString("google_photo")
 
         // FIX when DB Level is Done
         val user_level = 1
@@ -265,11 +265,11 @@ class UiFragment : Fragment() {
     }
 
     private fun hideKeyboard() {
-        if (activity != null && activity!!.currentFocus != null) {
+        if (activity != null && requireActivity().currentFocus != null) {
             val inputManager =
-                activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputManager.hideSoftInputFromWindow(
-                activity!!.currentFocus!!.windowToken,
+                requireActivity().currentFocus!!.windowToken,
                 InputMethodManager.HIDE_NOT_ALWAYS
             )
         }

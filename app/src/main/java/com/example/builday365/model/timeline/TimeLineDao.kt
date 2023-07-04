@@ -1,4 +1,4 @@
-package com.example.builday365.model.test
+package com.example.builday365.model.timeline
 
 import androidx.room.Dao
 import androidx.room.Delete
