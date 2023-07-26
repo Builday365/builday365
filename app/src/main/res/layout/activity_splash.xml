@@ -19,4 +19,10 @@
         app:layout_constraintVertical_bias="0.276"
         app:srcCompat="@drawable/splash_logo" />
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/test_img" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
